@@ -1,14 +1,14 @@
-#PGS: Penalized GEE with Grid Search
+#HMA: High-dimensional Mediation Analysis
 
-Penalized GEE model for association study of high-dimensional genomic data. 
+High-dimensional Mediation Analysis
 
-##Download PGS R package (current version 0.2.0):
+##Download HMA R package (current version 0.0.1):
 
-[PGS for Mac OS X](https://github.com/YinanZheng/PGS/releases/download/PGS_0.2.0/PGS_0.2.0.tgz)
+[PGS for Mac OS X](https://github.com/YinanZheng/HMA/releases/download/PGS_0.0.1/PGS_0.0.1.tgz)
 
-[PGS for Windows (32/64)](https://github.com/YinanZheng/PGS/releases/download/PGS_0.2.0/PGS_0.2.0.zip)
+[PGS for Windows (32/64)](https://github.com/YinanZheng/PGS/releases/download/PGS_0.0.1/PGS_0.0.1.zip)
 
-[PGS for Linux (86/64)](https://github.com/YinanZheng/PGS/releases/download/PGS_0.2.0/PGS_0.2.0.tar.gz)
+[PGS for Linux (86/64)](https://github.com/YinanZheng/PGS/releases/download/PGS_0.0.1/PGS_0.0.1.tar.gz)
 
 ## Installation in R session
 
