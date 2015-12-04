@@ -1,14 +1,14 @@
-#HMA: High-dimensional Mediation Analysis
+#HIMA: High-dimensional Mediation Analysis
 
-High-dimensional Mediation Analysis
+HIMA is used to estimate and test high-dimensional mediation effects.
 
-##Download HMA R package (current version 0.0.1):
+##Download HIMA R package (current version 0.0.1):
 
-[HMA for Mac OS X](https://github.com/YinanZheng/HMA/releases/download/HMA_0.0.1/HMA_0.0.1.tgz)
+[HIMA for Mac OS X](https://github.com/YinanZheng/HMA/releases/download/HIMA_0.0.1/HIMA_0.0.1.tgz)
 
-[HMA for Windows (32/64)](https://github.com/YinanZheng/HMA/releases/download/HMA_0.0.1/HMA_0.0.1.zip)
+[HIMA for Windows (32/64)](https://github.com/YinanZheng/HMA/releases/download/HIMA_0.0.1/HIMA_0.0.1.zip)
 
-[HMA for Linux (86/64)](https://github.com/YinanZheng/HMA/releases/download/HMA_0.0.1/HMA_0.0.1.tar.gz)
+[HIMA for Linux (86/64)](https://github.com/YinanZheng/HMA/releases/download/HIMA_0.0.1/HIMA_0.0.1.tar.gz)
 
 ## Installation in R session
 
@@ -18,7 +18,7 @@ _`# First check and install dependencies:`_
     new.packages <- list.of.dependencies[!(list.of.dependencies %in% installed.packages()[,"Package"])]
     if(length(new.packages)) install.packages(new.packages) else cat("Dependencies are ready!\n")
     
-_`# Install HMA:`_
+_`# Install HIMA:`_
 
     install.packages("HMA_0.0.1.tgz", repo = NULL) # Mac OS X
     install.packages("HMA_0.0.1.zip", repo = NULL) # Windows
@@ -26,7 +26,7 @@ _`# Install HMA:`_
 
 ##Wiki & Examples:
 
-[Wiki: HMA]
+[Wiki: HIMA]
 
 [Example: Simulation data]
 
