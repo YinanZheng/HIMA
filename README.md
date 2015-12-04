@@ -34,6 +34,7 @@ _`# Install HMA:`_
 
 ##Citation:
 
+Haixiang Zhang, Zhou Zhang, Yinan Zheng, Tao Gao, Grace Yoon, Wei Zhang, Lifang Hou, Andrea Baccarelli and Lei Liu. Estimating and Testing High-dimensional Mediation Effects in Epigenetic Studies. Bioinformatics 2016 (under review)
 
 ##Contact package maintainer:
 Yinan Zheng 
