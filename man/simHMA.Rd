@@ -4,16 +4,18 @@
 \alias{simHMA}
 \title{Simulation Data Generator for High-dimensional Mediation Analyais}
 \usage{
-simHMA(n, p, a, beta)
+simHMA(n, p, alpha, beta, intercept)
 }
 \arguments{
 \item{n}{an integer specifying sample size.}
 
 \item{p}{an integer specifying the dimension of covariates.}
 
-\item{beta}{a numeric vector specifying the regression coefficients beta}
+\item{alpha}{a numeric vector specifying the regression coefficients alpha.}
 
-\item{alpha}{a numeric vector specifying the regression coefficients alpha}
+\item{beta}{a numeric vector specifying the regression coefficients beta.}
+
+\item{c}{a numeric vector specifying intercept of each mediator.}
 }
 \description{
 \code{simHMA} is used to simulate data for High-dimensional Mediation Analyais
@@ -27,8 +29,10 @@ beta <- rep(0, p) # the regression coefficients beta
 
 alpha[1:3]  <- c(0.5, 0.5, 0.3)
 beta[1:3] <- c(0.5, 1.2, 0.3)
+intercept <- runif(p,0,2)
 
-simdat = simHMA(n, p, alpha, beta)
+simdat = simHMA(n, p, alpha, beta, c)
+\\export
 }
 \seealso{
 see \code{\link{hma}} to run HMA algorithm.
