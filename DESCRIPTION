@@ -1,0 +1,23 @@
+Package: PGS
+Type: Package
+Title: Penalized GEE with Grid Search
+Version: 0.2.0
+Date: 2015-12-04
+Author: Yinan Zheng [aut, cre], Fei Zhe [aut], Haixiang Zhang [ctb], Yi Li
+    [cph], Lifang Hou [cph]
+Maintainer: Yinan Zheng <y-zheng@northwestern.edu>
+Description: Penalized Generalized Estimating Equations method with grid search for association study of high-dimensional genomic data with repeated measures.
+License: GPL-2
+Depends:
+    R (>= 3.0.0),
+    doParallel,
+    lme4,
+    geepack,
+    ggplot2,
+    reshape2
+Imports:
+    Rcpp (>= 0.11.0)
+LazyData: false
+LinkingTo: Rcpp, RcppArmadillo
+SystemRequirements: GNU make
+RoxygenNote: 5.0.1
