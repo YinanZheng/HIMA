@@ -4,11 +4,11 @@ HIMA is used to estimate and test high-dimensional mediation effects.
 
 ##Download HIMA R package (current version 0.0.1):
 
-[HIMA for Mac OS X](https://github.com/YinanZheng/HMA/releases/download/HIMA_0.0.1/HIMA_0.0.1.tgz)
+[HIMA for Mac OS X](comming soon)
 
-[HIMA for Windows (32/64)](https://github.com/YinanZheng/HMA/releases/download/HIMA_0.0.1/HIMA_0.0.1.zip)
+[HIMA for Windows (32/64)](https://github.com/YinanZheng/HIMA/releases/download/HIMA_v0.0.1/HIMA_0.0.1.zip)
 
-[HIMA for Linux (86/64)](https://github.com/YinanZheng/HMA/releases/download/HIMA_0.0.1/HIMA_0.0.1.tar.gz)
+[HIMA for Linux (86/64)](comming soon)
 
 ## Installation in R session
 
@@ -20,9 +20,9 @@ _`# First check and install dependencies:`_
     
 _`# Install HIMA:`_
 
-    install.packages("HMA_0.0.1.tgz", repo = NULL) # Mac OS X
-    install.packages("HMA_0.0.1.zip", repo = NULL) # Windows
-    install.packages("HMA_0.0.1.tar.gz", repo = NULL) # Linux
+    install.packages("HIMA_0.0.1.tgz", repo = NULL) # Mac OS X
+    install.packages("HIMA_0.0.1.zip", repo = NULL) # Windows
+    install.packages("HIMA_0.0.1.tar.gz", repo = NULL) # Linux
 
 ##Wiki & Examples:
 
