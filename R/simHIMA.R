@@ -3,10 +3,10 @@
 #' \code{simHIMA} is used to simulate data for High-dimensional Mediation Analyais
 #' 
 #' @param n an integer specifying sample size.
-#' @param p an integer specifying the dimension of covariates.
-#' @param alpha a numeric vector specifying the regression coefficients alpha.
-#' @param beta a numeric vector specifying the regression coefficients beta.
-#' @param c a numeric vector specifying intercept of each mediator.
+#' @param p an integer specifying the dimension of mediators.
+#' @param alpha a numeric vector specifying the regression coefficients alpha (exposure --> mediators).
+#' @param beta a numeric vector specifying the regression coefficients beta (mediators --> outcome).
+#' @param seed an integer specifying a seed for random number generation.
 #' 
 #' @seealso see \code{\link{hima}} to run HMA algorithm.
 #' 
@@ -14,18 +14,19 @@
 #' n <- 100  # sample size
 #' p <- 5000 # the dimension of covariates
 #' 
-#' alpha <- rep(0, p) # the regression coefficients alpha
-#' beta <- rep(0, p) # the regression coefficients beta
+#' alpha <- rep(0, p) # the regression coefficients alpha (exposure --> mediators)
+#' beta <- rep(0, p) # the regression coefficients beta (mediators --> outcome)
+# 
+#' alpha[1:3] <- c(0.5, 0.5, 0.3) 
+#' beta[1:3] <- c(0.5, 1.2, 0.3) # the first three makers are true mediators.
 #' 
-#' alpha[1:3]  <- c(0.5, 0.5, 0.3)
-#' beta[1:3] <- c(0.5, 1.2, 0.3)
-#' intercept <- runif(p,0,2)
-#'
-#' simdat = simHMA(n, p, alpha, beta, c)
-
+#' simdat = simHMA(n, p, alpha, beta, seed=2016) # Generate simulation data
+#' 
 #' @export
-simHIMA <- function(n, p, alpha, beta, intercept)
+simHIMA <- function(n, p, alpha, beta, seed)
 {
+  set.seed(seed)
+  intercept <- runif(p,0,2)
   M <- matrix(0,n,p) #  high-dimensional mediator matrix with n by p
   colnames(M) = paste0("M",1:p)
   x <- rnorm(n, mean=1, sd=1.5)

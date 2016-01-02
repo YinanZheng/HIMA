@@ -2,4 +2,3 @@
 
 export(hima)
 export(simHIMA)
-export(sis)

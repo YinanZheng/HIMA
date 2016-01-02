@@ -16,21 +16,18 @@
 #' @seealso see \code{\link{hima}} using the results from \code{\link{sis}} as input to run HIMA.
 #'
 #' @examples
-#'
 #' n <- 100  # sample size
 #' p <- 5000 # the dimension of covariates
 #' 
 #' alpha <- rep(0, p) # the regression coefficients alpha (exposure --> mediators)
 #' beta <- rep(0, p) # the regression coefficients beta (mediators --> outcome)
 # 
-#' alpha[1:3]  <- c(0.5, 0.5, 0.3) 
+#' alpha[1:3] <- c(0.5, 0.5, 0.3) 
 #' beta[1:3] <- c(0.5, 1.2, 0.3) # the first three makers are true mediators.
-#' intercept <- runif(p,0,2)
 #' 
-#' set.seed(2016)
-#' simdat = simHIMA(n, p, alpha, beta, intercept) # Generate simulation data
+#' simdat = simHMA(n, p, alpha, beta, seed=2016) # Generate simulation data
 #' 
-#' res = hima(simdat$X, simdat$Y, simdat$M) # Run HIMA
+#' res = hima(simdat$X, simdat$Y, simdat$M, ncore=detectCores()) # Run HIMA
 #' head(res)
 #' 
 #' @export
