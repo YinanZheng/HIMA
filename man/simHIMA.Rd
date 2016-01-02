@@ -32,7 +32,6 @@ beta[1:3] <- c(0.5, 1.2, 0.3)
 intercept <- runif(p,0,2)
 
 simdat = simHMA(n, p, alpha, beta, c)
-\\export
 }
 \seealso{
 see \code{\link{hima}} to run HMA algorithm.

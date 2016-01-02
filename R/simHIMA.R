@@ -23,7 +23,7 @@
 #'
 #' simdat = simHMA(n, p, alpha, beta, c)
 
-#' \export
+#' @export
 simHIMA <- function(n, p, alpha, beta, intercept)
 {
   M <- matrix(0,n,p) #  high-dimensional mediator matrix with n by p
