@@ -4,11 +4,11 @@ HIMA is used to estimate and test high-dimensional mediation effects.
 
 ##Download HIMA R package (current version 0.0.1):
 
-[HIMA for Mac OS X] comming soon
+[HIMA for Mac OS X] coming soon
 
 [HIMA for Windows (32/64)](https://github.com/YinanZheng/HIMA/releases/download/HIMA_v0.0.1/HIMA_0.0.1.zip)
 
-[HIMA for Linux (86/64)] comming soon
+[HIMA for Linux (86/64)] coming soon
 
 ## Installation in R session
 
