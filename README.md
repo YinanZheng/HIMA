@@ -14,7 +14,7 @@ HIMA is used to estimate and test high-dimensional mediation effects.
 
 _`# First check and install dependencies:`_
 
-    list.of.dependencies <- c("glmnet")
+    list.of.dependencies <- c("glmnet","doParallel")
     new.packages <- list.of.dependencies[!(list.of.dependencies %in% installed.packages()[,"Package"])]
     if(length(new.packages)) install.packages(new.packages) else cat("Dependencies are ready!\n")
     
