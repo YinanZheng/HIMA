@@ -6,12 +6,13 @@
 #' @param Y a vector of outcome.
 #' @param M a data frame or matrix of high-dimensional mediators. Rows represent samples, columns represent variables.
 #' @param COV a data frame or matrix of covariates dataset. Default = \code{NULL}.
-#' @param pn number of permutation. Default = 500.
-#' @param alpha elastic-net mixing parameter, ranging from 0 to 1. alpha = 1 is the lasso penalty, and alpha = 0 the ridge penalty. Default = 0.2. See \code{\link{glmnet}}.
+#' @param topN an integer specifying the number of top markers from sure independent screening. Default = \code{NULL}. If \code{NULL}, \code{ceiling(n/log10(n))} will be used as \code{topN}, where \code{n} is the sample size. 
+#' @param pn number of permutation. Default = \code{500}.
+#' @param alpha elastic-net mixing parameter, ranging from \code{0} to \code{1}. alpha = \code{1} is the lasso penalty, and alpha = \code{0} the ridge penalty. Default = \code{0.2}. See \code{\link{glmnet}}.
 #' @param parallel logical. Enable parallel computing feature? Default = \code{TRUE}.
-#' @param ncore number of cores to run parallel. Effective when paralle = \code{TRUE}. Default = 2.
+#' @param ncore number of cores to run parallel. Effective when \code{parallel = TRUE}. Default = \code{2}.
 #' 
-#' @return a data.frame contains mediation testing results of mediators that survived from the sure independent screening (see \code{\link{sis}}). Columns including names of mediators (\code{ID}), effects of exposure (\code{a_est_SIS}), effects of mediators (\code{b_est_SIS}), and p-value of mediation test (\code{p}).
+#' @return a data.frame contains mediation testing results of mediators that survived from the sure independent screening (see \code{\link{sis}}). Columns include names of mediators (\code{ID}), effects of exposure (\code{a_est_SIS}), effects of mediators (\code{b_est_SIS}), and p-value of mediation test (\code{p}).
 #' 
 #' @seealso see \code{\link{hima}} using the results from \code{\link{sis}} as input to run HIMA.
 #'
@@ -31,15 +32,15 @@
 #' head(res)
 #' 
 #' @export
-hima <- function(X, Y, M, COV = NULL, pn = 500, alpha = 0.2, parallel = TRUE, ncore = 2)
+hima <- function(X, Y, M, COV = NULL, topN=NULL, pn=500, alpha=0.2, parallel=TRUE, ncore=2)
 {
   n = nrow(M)
   p = ncol(M)
-  d <- ceiling(n/log10(n))  # the number of top mediators that associated with exposure (X)
+  if(is.null(topN)) d <- ceiling(n/log10(n)) else d = topN  # the number of top mediators that associated with exposure (X)
   
-  ##  the following is the SIS idea
+  ## the following is the SIS idea
   cat(paste0("Start running sure independent screening...", "     (",Sys.time(),")"),"\n")
-  a_est = sis(M, X, parallel = parallel, ncore = ncore)
+  a_est = sis(M, X, COV, parallel = parallel, ncore = ncore)
   a_est = a_est[order(abs(a_est), decreasing = T)]
   namd_SIS = names(a_est)[1:d]
   ID <- match(namd_SIS, colnames(M)) # the index of top mediators
@@ -53,14 +54,14 @@ hima <- function(X, Y, M, COV = NULL, pn = 500, alpha = 0.2, parallel = TRUE, nc
   Coefficients <- coef(fit, s = cv.fit$lambda.min)
   b_est_SIS <- Coefficients[2:(d+1)]  # the estimator for b
   
-  #### the following begin the Permutation
+  ## the following begin the permutation
   cat(paste0("Start running permutation (repeats=", pn,")...","     (",Sys.time(),")"),"\n")
-  PN <- pn # the number of permutation
+  PN <- pn
   a_est_per <- matrix(0,PN,d)
   b_est_per <- matrix(0,PN,d)
   for (k in 1: PN){
     if(k %% 100 == 0) cat("-->",k,"times","\n")
-    a_est_per[k,] <- sis(M_SIS[sample(1:d,d),], X, parallel = parallel, ncore = ncore)
+    a_est_per[k,] <- sis(M_SIS[sample(1:d,d),], X, COV, parallel = parallel, ncore = ncore)
     fit = glmnet(X_SIS, sample(Y), alpha = alpha)
     cv.fit <- cv.glmnet(X_SIS, sample(Y), alpha = alpha)
     Coefficients <- coef(fit, s = cv.fit$lambda.min)

@@ -4,8 +4,8 @@
 \alias{hima}
 \title{High-dimensional Mediation Analysis}
 \usage{
-hima(X, Y, M, COV = NULL, pn = 500, alpha = 0.2, parallel = TRUE,
-  ncore = 2)
+hima(X, Y, M, COV = NULL, topN = NULL, pn = 500, alpha = 0.2,
+  parallel = TRUE, ncore = 2)
 }
 \arguments{
 \item{X}{a vector of exposure.}
@@ -16,16 +16,18 @@ hima(X, Y, M, COV = NULL, pn = 500, alpha = 0.2, parallel = TRUE,
 
 \item{COV}{a data frame or matrix of covariates dataset. Default = \code{NULL}.}
 
-\item{pn}{number of permutation. Default = 500.}
+\item{topN}{an integer specifying the number of top markers from sure independent screening. Default = \code{NULL}. If \code{NULL}, \code{ceiling(n/log10(n))} will be used as \code{topN}, where \code{n} is the sample size.}
 
-\item{alpha}{elastic-net mixing parameter, ranging from 0 to 1. alpha = 1 is the lasso penalty, and alpha = 0 the ridge penalty. Default = 0.2. See \code{\link{glmnet}}.}
+\item{pn}{number of permutation. Default = \code{500}.}
+
+\item{alpha}{elastic-net mixing parameter, ranging from \code{0} to \code{1}. alpha = \code{1} is the lasso penalty, and alpha = \code{0} the ridge penalty. Default = \code{0.2}. See \code{\link{glmnet}}.}
 
 \item{parallel}{logical. Enable parallel computing feature? Default = \code{TRUE}.}
 
-\item{ncore}{number of cores to run parallel. Effective when paralle = \code{TRUE}. Default = 2.}
+\item{ncore}{number of cores to run parallel. Effective when \code{parallel = TRUE}. Default = \code{2}.}
 }
 \value{
-a data.frame contains mediation testing results of mediators that survived from the sure independent screening (see \code{\link{sis}}). Columns including names of mediators (\code{ID}), effects of exposure (\code{a_est_SIS}), effects of mediators (\code{b_est_SIS}), and p-value of mediation test (\code{p}).
+a data.frame contains mediation testing results of mediators that survived from the sure independent screening (see \code{\link{sis}}). Columns include names of mediators (\code{ID}), effects of exposure (\code{a_est_SIS}), effects of mediators (\code{b_est_SIS}), and p-value of mediation test (\code{p}).
 }
 \description{
 \code{hima} is used to estimate and test high-dimensional mediation effects.

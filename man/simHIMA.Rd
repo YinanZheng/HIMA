@@ -18,7 +18,7 @@ simHIMA(n, p, alpha, beta, seed)
 \item{seed}{an integer specifying a seed for random number generation.}
 }
 \description{
-\code{simHIMA} is used to simulate data for High-dimensional Mediation Analyais
+\code{simHIMA} is used to generate simulation data for high-dimensional mediation analyais.
 }
 \examples{
 n <- 100  # sample size
@@ -33,6 +33,6 @@ simdat = simHMA(n, p, alpha, beta, seed=2016) # Generate simulation data
 
 }
 \seealso{
-see \code{\link{hima}} to run HMA algorithm.
+see \code{\link{hima}} to run HIMA.
 }
 

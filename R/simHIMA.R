@@ -1,6 +1,6 @@
 #' Simulation Data Generator for High-dimensional Mediation Analyais
 #' 
-#' \code{simHIMA} is used to simulate data for High-dimensional Mediation Analyais
+#' \code{simHIMA} is used to generate simulation data for high-dimensional mediation analyais.
 #' 
 #' @param n an integer specifying sample size.
 #' @param p an integer specifying the dimension of mediators.
@@ -8,7 +8,7 @@
 #' @param beta a numeric vector specifying the regression coefficients beta (mediators --> outcome).
 #' @param seed an integer specifying a seed for random number generation.
 #' 
-#' @seealso see \code{\link{hima}} to run HMA algorithm.
+#' @seealso see \code{\link{hima}} to run HIMA.
 #' 
 #' @examples
 #' n <- 100  # sample size
