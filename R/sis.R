@@ -5,6 +5,9 @@ sis <- function(Y, x.vect, COV=NULL, parallel=TRUE, ncore = 2)
   L.Y = ncol(Y); Y.names = colnames(Y)
   res.COV = NULL
   
+  Y_scale = scaleto(Y)
+  x.vect_scale = scaleto(x.vect)
+  
   if (is.null(COV))
   { 
     datarun = data.frame(Yone = NA, x.vect=x.vect)
@@ -12,8 +15,9 @@ sis <- function(Y, x.vect, COV=NULL, parallel=TRUE, ncore = 2)
   } else {
     COV <- data.frame(COV)
     COV <- data.frame(model.matrix(~.,COV))[,-1]
-    conf.names = colnames(COV)          
-    datarun = data.frame(Yone = NA, x.vect=x.vect, COV = COV)
+    conf.names = colnames(COV)      
+    COV_scale = scaleto(COV)
+    datarun = data.frame(Yone = NA, x.vect=x.vect, COV = COV_scale)
     modelstatement_MLR = eval(parse(text=(paste0("Yone ~ x.vect +", paste0(paste0("COV.",conf.names),collapse = "+")))))
   }
   

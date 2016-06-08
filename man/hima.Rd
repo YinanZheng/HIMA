@@ -41,7 +41,7 @@ beta <- rep(0, p) # the regression coefficients beta (mediators --> outcome)
 alpha[1:3] <- c(0.5, 0.5, 0.3) 
 beta[1:3] <- c(0.5, 1.2, 0.3) # the first three makers are true mediators.
 
-simdat = simHMA(n, p, alpha, beta, seed=2016) # Generate simulation data
+simdat = simHIMA(n, p, alpha, beta, seed=2016) # Generate simulation data
 
 res = hima(simdat$X, simdat$Y, simdat$M, ncore=detectCores()) # Run HIMA
 head(res)
