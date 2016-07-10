@@ -9,7 +9,6 @@ Description: HIMA is used to estimate and test high-dimensional mediation effect
 License: GPL-3
 Depends:
     R (>= 3.0.0),
-    glmnet,
     ncvreg,
     doParallel
 LazyData: false

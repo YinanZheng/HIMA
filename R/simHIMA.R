@@ -11,8 +11,8 @@
 #' @seealso see \code{\link{hima}} to run HIMA.
 #' 
 #' @examples
-#' n <- 200  # sample size
-#' p <- 500 # the dimension of covariates
+#' n <- 300  # sample size
+#' p <- 10000 # the dimension of covariates
 #' 
 #' alpha <- rep(0, p) # the regression coefficients alpha (exposure --> mediators)
 #' beta <- rep(0, p) # the regression coefficients beta (mediators --> outcome)

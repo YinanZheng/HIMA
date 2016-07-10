@@ -21,8 +21,8 @@ simHIMA(n, p, alpha, beta, seed)
 \code{simHIMA} is used to generate simulation data for high-dimensional mediation analyais.
 }
 \examples{
-n <- 200  # sample size
-p <- 500 # the dimension of covariates
+n <- 300  # sample size
+p <- 10000 # the dimension of covariates
 
 alpha <- rep(0, p) # the regression coefficients alpha (exposure --> mediators)
 beta <- rep(0, p) # the regression coefficients beta (mediators --> outcome)
