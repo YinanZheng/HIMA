@@ -14,16 +14,3 @@ iblkcol_lag <- function(M, ...) {
   class(obj) <- c('abstractiter', 'iter')
   obj
 }
-
-iblkcol_cum <- function(M, a) {
-  it <- iter(a)
-  
-  nextEl <- function() {
-    n <- nextElem(it)
-    r <- seq(1, length=n)
-    M[,r, drop=FALSE]
-  }
-  obj <- list(nextElem=nextEl)
-  class(obj) <- c('abstractiter', 'iter')
-  obj
-}

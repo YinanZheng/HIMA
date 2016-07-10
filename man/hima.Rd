@@ -4,8 +4,8 @@
 \alias{hima}
 \title{High-dimensional Mediation Analysis}
 \usage{
-hima(X, Y, M, COV = NULL, topN = NULL, pn = 500, alpha = 0.2,
-  parallel = TRUE, ncore = 2)
+hima(X, Y, M, COV = NULL, family = "gaussian", penalty = "MCP",
+  topN = NULL, scale = TRUE, parallel = TRUE, ncore = 2)
 }
 \arguments{
 \item{X}{a vector of exposure.}
@@ -16,18 +16,20 @@ hima(X, Y, M, COV = NULL, topN = NULL, pn = 500, alpha = 0.2,
 
 \item{COV}{a data frame or matrix of covariates dataset. Default = \code{NULL}.}
 
+\item{family}{Either "gaussian", "binomial", or "poisson", depending on the response. See \code{\link{ncvreg}}}
+
+\item{penalty}{The penalty to be applied to the model. Either "MCP" (the default), "SCAD", or "lasso". See \code{\link{ncvreg}}.}
+
 \item{topN}{an integer specifying the number of top markers from sure independent screening. Default = \code{NULL}. If \code{NULL}, \code{ceiling(n/log10(n))} will be used as \code{topN}, where \code{n} is the sample size.}
 
-\item{pn}{number of permutation. Default = \code{500}.}
-
-\item{alpha}{elastic-net mixing parameter, ranging from \code{0} to \code{1}. alpha = \code{1} is the lasso penalty, and alpha = \code{0} the ridge penalty. Default = \code{0.2}. See \code{\link{glmnet}}.}
+\item{scale}{logical. Whether standardization should be applied to the high dimensional mediator data \code{M}. Default = \code{TRUE}.}
 
 \item{parallel}{logical. Enable parallel computing feature? Default = \code{TRUE}.}
 
 \item{ncore}{number of cores to run parallel. Effective when \code{parallel = TRUE}. Default = \code{2}.}
 }
 \value{
-a data.frame contains mediation testing results of mediators that survived from the sure independent screening (see \code{\link{sis}}). Columns include names of mediators (\code{ID}), effects of exposure (\code{a_est_SIS}), effects of mediators (\code{b_est_SIS}), and p-value of mediation test (\code{p}).
+a data.frame contains mediation testing results of selected mediators.
 }
 \description{
 \code{hima} is used to estimate and test high-dimensional mediation effects.
@@ -43,11 +45,9 @@ beta[1:3] <- c(0.5, 1.2, 0.3) # the first three makers are true mediators.
 
 simdat = simHIMA(n, p, alpha, beta, seed=2016) # Generate simulation data
 
-res = hima(simdat$X, simdat$Y, simdat$M, ncore=detectCores()) # Run HIMA
-head(res)
+hima(simdat$X, simdat$Y, simdat$M, penalty = "SCAD", ncore=detectCores()) # Run HIMA with MCP penalty
+hima(simdat$X, simdat$Y, simdat$M, penalty = "SCAD", ncore=detectCores()) # Run HIMA with SCAD penalty
+hima(simdat$X, simdat$Y, simdat$M, penalty = "lasso", ncore=detectCores()) # Run HIMA with lasso penalty
 
-}
-\seealso{
-see \code{\link{hima}} using the results from \code{\link{sis}} as input to run HIMA.
 }
 

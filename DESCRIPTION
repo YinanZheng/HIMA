@@ -1,8 +1,8 @@
 Package: HIMA
 Type: Package
 Title: High-Dimensional Mediation Analysis
-Version: 0.0.1
-Date: 2015-12-04
+Version: 1.0.0
+Date: 2016-07-09
 Author: Haixiang Zhang [aut], Yinan Zheng [cre], Zhou Zhang [aut], Lei Liu [cph]
 Maintainer: Yinan Zheng <y-zheng@northwestern.edu>
 Description: HIMA is used to estimate and test high-dimensional mediation effects.
@@ -10,6 +10,7 @@ License: GPL-3
 Depends:
     R (>= 3.0.0),
     glmnet,
+    ncvreg,
     doParallel
 LazyData: false
 SystemRequirements: GNU make
