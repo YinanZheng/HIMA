@@ -4,32 +4,45 @@
 \alias{hima}
 \title{High-dimensional Mediation Analysis}
 \usage{
-hima(X, Y, M, COV = NULL, family = "gaussian", penalty = "MCP",
-  topN = NULL, scale = TRUE, parallel = TRUE, ncore = 2)
+hima(X, Y, M, COV = NULL, family = c("gaussian", "binomial", "poisson"),
+  penalty = c("MCP", "SCAD", "lasso"), topN = NULL, scale = TRUE,
+  parallel = TRUE, ncore = NULL, verbose = TRUE, ...)
 }
 \arguments{
 \item{X}{a vector of exposure.}
 
 \item{Y}{a vector of outcome.}
 
-\item{M}{a data frame or matrix of high-dimensional mediators. Rows represent samples, columns represent variables.}
+\item{M}{a data frame or matrix of high-dimensional mediators. Rows represent samples, columns 
+represent variables.}
 
 \item{COV}{a data frame or matrix of covariates dataset. Default = \code{NULL}.}
 
-\item{family}{Either "gaussian", "binomial", or "poisson", depending on the response. See \code{\link{ncvreg}}}
+\item{family}{either 'gaussian', 'binomial', or 'poisson', depending on the response. See 
+\code{\link{ncvreg}}}
 
-\item{penalty}{The penalty to be applied to the model. Either "MCP" (the default), "SCAD", or "lasso". See \code{\link{ncvreg}}.}
+\item{penalty}{the penalty to be applied to the model. Either 'MCP' (the default), 'SCAD', or 
+'lasso'. See \code{\link{ncvreg}}.}
 
-\item{topN}{an integer specifying the number of top markers from sure independent screening. Default = \code{NULL}. If \code{NULL}, \code{ceiling(n/log10(n))} will be used as \code{topN}, where \code{n} is the sample size.}
+\item{topN}{an integer specifying the number of top markers from sure independent screening. 
+Default = \code{NULL}. If \code{NULL}, \code{ceiling(n/log10(n))} will be used as \code{topN}, 
+where \code{n} is the sample size.}
 
-\item{scale}{logical. Whether standardization should be applied to the high dimensional mediator data \code{M}. Default = \code{TRUE}.}
+\item{scale}{logical. Whether standardization should be applied to the high dimensional mediator 
+data \code{M}. Default = \code{TRUE}.}
 
 \item{parallel}{logical. Enable parallel computing feature? Default = \code{TRUE}.}
 
-\item{ncore}{number of cores to run parallel. Effective when \code{parallel = TRUE}. Default = \code{2}.}
+\item{ncore}{number of cores to run parallel computation. Valid when \code{parallel == TRUE}. 
+By default max number of cores available in the machine will be utilized. If \code{ncore = 1}, 
+no parallel computating is allowed.}
+
+\item{verbose}{logical. Should the function be verbose?}
+
+\item{...}{other arguments passed to \code{\link{ncvreg}}.}
 }
 \value{
-a data.frame contains mediation testing results of selected mediators.
+A data.frame containing mediation testing results of selected mediators.
 }
 \description{
 \code{hima} is used to estimate and test high-dimensional mediation effects.
@@ -38,19 +51,25 @@ a data.frame contains mediation testing results of selected mediators.
 n <- 300  # sample size
 p <- 10000 # the dimension of covariates
 
-alpha <- rep(0, p) # the regression coefficients alpha (exposure --> mediators)
-beta <- rep(0, p) # the regression coefficients beta (mediators --> outcome)
+# the regression coefficients alpha (exposure --> mediators)
+alpha <- rep(0, p) 
+
+# the regression coefficients beta (mediators --> outcome)
+beta <- rep(0, p) 
+
+# the first four markers are true mediators.
 alpha[1:4] <- c(0.45,0.55,0.5,0.55)
-beta[1:4] <- c(0.40,0.55,0.5,0.40) # the first four markers are true mediators.
+beta[1:4] <- c(0.40,0.55,0.5,0.40) 
 
 alpha[7:8] <- 0.55
 beta[5:6] <- 0.50
 
-simdat = simHIMA(n, p, alpha, beta, seed=2016) # Generate simulation data
+# Generate simulation data
+simdat = simHIMA(n, p, alpha, beta, seed=2016) 
 
-hima(simdat$X, simdat$Y, simdat$M, penalty = "MCP", ncore=detectCores()) # Run HIMA with MCP penalty
-hima(simdat$X, simdat$Y, simdat$M, penalty = "SCAD", ncore=detectCores()) # Run HIMA with SCAD penalty
-hima(simdat$X, simdat$Y, simdat$M, penalty = "lasso", ncore=detectCores()) # Run HIMA with lasso penalty
+# Run HIMA with MCP penalty by default
+hima.fit <- hima(simdat$X, simdat$Y, simdat$M, ncore = 1) 
+head(hima.fit)
 
 }
 

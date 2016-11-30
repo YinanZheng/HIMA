@@ -26,25 +26,24 @@
 #' simdat = simHIMA(n, p, alpha, beta, seed=2016) # Generate simulation data
 #' 
 #' @export
-simHIMA <- function(n, p, alpha, beta, seed)
-{
+simHIMA <- function(n, p, alpha, beta, seed) {
   set.seed(seed)
-  ck <- t(runif(p,0,2))
+  ck <- t(runif(p, 0, 2))
   
-  M <- matrix(0,n,p) 
-  X  <-  t(t(rnorm(n, mean=0, sd=1.5)))
+  M <- matrix(0, n, p)
+  X <- t(t(rnorm(n, mean = 0, sd = 1.5)))
   
-  for (i in 1:n){
+  for (i in 1:n) {
     e <- rnorm(p, 0, 1.2)
-    M[i,] <- ck + X[i]*alpha + e  #  The mediators matrix n times p
+    M[i, ] <- ck + X[i] * alpha + e  #  The mediators matrix n times p
   }
- 
-  colnames(M) = paste0("M",1:ncol(M))
   
-  XM <- cbind(X,M) #  [X M]
-  B <- c(0.5,beta) # (p+1) times 1
-  E <- rnorm(n,0,1)
-  Y <-  0.5 + XM%*%t(t(B)) + t(t(E)) #  the response  n times 1
-
+  colnames(M) <- paste0("M", 1:ncol(M))
+  
+  XM <- cbind(X, M)  #  [X M]
+  B <- c(0.5, beta)  # (p+1) times 1
+  E <- rnorm(n, 0, 1)
+  Y <- 0.5 + XM %*% t(t(B)) + t(t(E))  #  the response  n times 1
+  
   return(list(Y = Y, M = M, X = X, n = n, p = p))
 }
