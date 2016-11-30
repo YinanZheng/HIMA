@@ -45,5 +45,8 @@ simHIMA <- function(n, p, alpha, beta, seed) {
   E <- rnorm(n, 0, 1)
   Y <- 0.5 + XM %*% t(t(B)) + t(t(E))  #  the response  n times 1
   
-  return(list(Y = Y, M = M, X = X, n = n, p = p))
+  Y_binary <- matrix(0, nrow = n)
+  Y_binary[Y > 0, ] <- 1
+  
+  return(list(Y = Y, Y_binary = Y_binary, M = M, X = X, n = n, p = p))
 }

@@ -49,6 +49,9 @@
 #' hima.fit <- hima(simdat$X, simdat$Y, simdat$M, ncore = 1) 
 #' head(hima.fit)
 #' 
+#' hima.logistic.fit <- hima(simdat$X, simdat$Y_binary, simdat$M, family = "binomial", ncore = 1) 
+#' head(hima.logistic.fit)
+#' 
 #' @export
 hima <- function(X, Y, M, COV = NULL, 
                  family = c("gaussian", "binomial", "poisson"), 

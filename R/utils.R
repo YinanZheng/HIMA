@@ -2,16 +2,16 @@
 
 checkParallel <- function(program.name, parallel, ncore, verbose = TRUE) {
   if (parallel == TRUE & ncore > 1) {
-    if (ncore > detectCores()) {
+    if (ncore > parallel::detectCores()) {
       message("You requested ", ncore, " cores. There are only ", 
-              detectCores(), " in your machine!")
-      ncore <- detectCores()
+              parallel::detectCores(), " in your machine!")
+      ncore <- parallel::detectCores()
     }
     if (verbose) 
       message("    Running ", program.name, " with ", ncore, " cores in parallel...   (", 
               Sys.time(), ")")
-    if (getDoParWorkers() != ncore) 
-      registerDoParallel(ncore)
+    if (foreach::getDoParWorkers() != ncore) 
+      doParallel::registerDoParallel(ncore)
   } else {
     if (verbose) 
       message("    Running ", program.name, " with single core...   (", 
