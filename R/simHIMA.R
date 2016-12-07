@@ -16,7 +16,7 @@
 #' 
 #' alpha <- rep(0, p) # the regression coefficients alpha (exposure --> mediators)
 #' beta <- rep(0, p) # the regression coefficients beta (mediators --> outcome)
-# 
+#' 
 #' alpha[1:4] <- c(0.45,0.55,0.5,0.55)
 #' beta[1:4] <- c(0.40,0.55,0.5,0.40) # the first four markers are true mediators.
 #' 
@@ -44,9 +44,7 @@ simHIMA <- function(n, p, alpha, beta, seed) {
   B <- c(0.5, beta)  # (p+1) times 1
   E <- rnorm(n, 0, 1)
   Y <- 0.5 + XM %*% t(t(B)) + t(t(E))  #  the response  n times 1
-  
-  Y_binary <- matrix(0, nrow = n)
-  Y_binary[Y > 0, ] <- 1
+  Y_binary <- matrix(rbinom(n, 1, 1/(1+exp(-Y))), nrow = n)
   
   return(list(Y = Y, Y_binary = Y_binary, M = M, X = X, n = n, p = p))
 }

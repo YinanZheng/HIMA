@@ -1,7 +1,7 @@
 # Internal function: parallel computing check
 
 checkParallel <- function(program.name, parallel, ncore, verbose = TRUE) {
-  if (parallel == TRUE & ncore > 1) {
+  if (parallel & ncore > 1) {
     if (ncore > parallel::detectCores()) {
       message("You requested ", ncore, " cores. There are only ", 
               parallel::detectCores(), " in your machine!")
@@ -10,7 +10,6 @@ checkParallel <- function(program.name, parallel, ncore, verbose = TRUE) {
     if (verbose) 
       message("    Running ", program.name, " with ", ncore, " cores in parallel...   (", 
               Sys.time(), ")")
-    if (foreach::getDoParWorkers() != ncore) 
       doParallel::registerDoParallel(ncore)
   } else {
     if (verbose) 
@@ -68,13 +67,13 @@ scaleto <- function(dat) {
 
 # Internal function: Sure Independent Screening
 
-himasis <- function(Y, M, X, COV, glm.family, modelstatement, scale = TRUE, 
+himasis <- function(Y, M, X, COV, glm.family, modelstatement, 
                     parallel = TRUE, ncore = 2, verbose = TRUE) {
   L.M <- ncol(M)
   M.names <- colnames(M)
   
-  if (scale) 
-    M_scale <- scaleto(M) else M_scale <- M
+  # if (scale) 
+    # M_scale <- scaleto(M) else M_scale <- M
   
   X <- data.frame(X)
   X <- data.frame(model.matrix(~., X))[, -1]
@@ -100,7 +99,7 @@ himasis <- function(Y, M, X, COV, glm.family, modelstatement, scale = TRUE,
   results <- foreach(n = iterators::idiv(L.M, chunks = ncore), 
                      M_chunk = iblkcol_lag(M, chunks = ncore), 
                      .combine = "cbind") %dopar% {sapply(seq_len(n), doOne, datarun, M_chunk)}
-  
+
   colnames(results) <- M.names
   return(results)
 }

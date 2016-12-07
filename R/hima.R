@@ -14,8 +14,6 @@
 #' @param topN an integer specifying the number of top markers from sure independent screening. 
 #' Default = \code{NULL}. If \code{NULL}, \code{ceiling(n/log10(n))} will be used as \code{topN}, 
 #' where \code{n} is the sample size. 
-#' @param scale logical. Whether standardization should be applied to the high dimensional mediator 
-#' data \code{M}. Default = \code{TRUE}.
 #' @param parallel logical. Enable parallel computing feature? Default = \code{TRUE}.
 #' @param ncore number of cores to run parallel computation. Valid when \code{parallel == TRUE}. 
 #' By default max number of cores available in the machine will be utilized. If \code{ncore = 1}, 
@@ -46,10 +44,10 @@
 #' simdat = simHIMA(n, p, alpha, beta, seed=2016) 
 #' 
 #' # Run HIMA with MCP penalty by default
-#' hima.fit <- hima(simdat$X, simdat$Y, simdat$M, ncore = 1) 
+#' hima.fit <- hima(simdat$X, simdat$Y, simdat$M) 
 #' head(hima.fit)
 #' 
-#' hima.logistic.fit <- hima(simdat$X, simdat$Y_binary, simdat$M, family = "binomial", ncore = 1) 
+#' hima.logistic.fit <- hima(simdat$X, simdat$Y_binary, simdat$M, family = "binomial") 
 #' head(hima.logistic.fit)
 #' 
 #' @export
@@ -57,7 +55,6 @@ hima <- function(X, Y, M, COV = NULL,
                  family = c("gaussian", "binomial", "poisson"), 
                  penalty = c("MCP", "SCAD", "lasso"), 
                  topN = NULL, 
-                 scale = TRUE, 
                  parallel = TRUE, 
                  ncore = NULL, 
                  verbose = TRUE, 
@@ -75,7 +72,7 @@ hima <- function(X, Y, M, COV = NULL,
   
   if(verbose) message("Step 1: Screening...", "     (", Sys.time(), ")")
   SIS_P_value_b <- himasis(Y, M, X, COV, glm.family = family, modelstatement = "Y ~ Mone + X", 
-                           scale = scale, parallel = TRUE, ncore = ncore, verbose)[2, ]
+                           parallel = parallel, ncore = ncore, verbose)[2, ]
   SIS_P_value_1 <- sort(SIS_P_value_b)
   ID <- which(SIS_P_value_b <= SIS_P_value_1[d])  # the index of top mediators
   M_SIS <- M[, ID]
@@ -109,9 +106,8 @@ hima <- function(X, Y, M, COV = NULL,
                       "     (", Sys.time(), ")")
   
   alpha <- himasis(NA, M[, ID_test], X, COV, glm.family = "gaussian", 
-                   modelstatement = "Mone ~ X", scale = scale, parallel = TRUE, ncore = ncore, 
+                   modelstatement = "Mone ~ X", parallel = parallel, ncore = ncore, 
                    verbose = FALSE)
-  closeAllConnections()
   
   alpha_est_ID_test <- as.numeric(alpha[1, ])  #  the estimator for alpha
   P_adjust_alpha <- length(ID_test) * alpha[2, ]  # The adjusted p-value for alpha
@@ -158,5 +154,8 @@ hima <- function(X, Y, M, COV = NULL,
                         `p-value` = P_value[ID_test], check.names = FALSE)
   
   if(verbose) message("Done!", "     (", Sys.time(), ")")
+  
+  closeAllConnections()
+  
   return(results)
 }

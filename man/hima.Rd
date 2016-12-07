@@ -5,8 +5,8 @@
 \title{High-dimensional Mediation Analysis}
 \usage{
 hima(X, Y, M, COV = NULL, family = c("gaussian", "binomial", "poisson"),
-  penalty = c("MCP", "SCAD", "lasso"), topN = NULL, scale = TRUE,
-  parallel = TRUE, ncore = NULL, verbose = TRUE, ...)
+  penalty = c("MCP", "SCAD", "lasso"), topN = NULL, parallel = TRUE,
+  ncore = NULL, verbose = TRUE, ...)
 }
 \arguments{
 \item{X}{a vector of exposure.}
@@ -27,9 +27,6 @@ represent variables.}
 \item{topN}{an integer specifying the number of top markers from sure independent screening. 
 Default = \code{NULL}. If \code{NULL}, \code{ceiling(n/log10(n))} will be used as \code{topN}, 
 where \code{n} is the sample size.}
-
-\item{scale}{logical. Whether standardization should be applied to the high dimensional mediator 
-data \code{M}. Default = \code{TRUE}.}
 
 \item{parallel}{logical. Enable parallel computing feature? Default = \code{TRUE}.}
 
@@ -68,8 +65,11 @@ beta[5:6] <- 0.50
 simdat = simHIMA(n, p, alpha, beta, seed=2016) 
 
 # Run HIMA with MCP penalty by default
-hima.fit <- hima(simdat$X, simdat$Y, simdat$M, ncore = 1) 
+hima.fit <- hima(simdat$X, simdat$Y, simdat$M) 
 head(hima.fit)
+
+hima.logistic.fit <- hima(simdat$X, simdat$Y_binary, simdat$M, family = "binomial") 
+head(hima.logistic.fit)
 
 }
 
