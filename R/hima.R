@@ -34,11 +34,11 @@
 #' beta <- rep(0, p) 
 #' 
 #' # the first four markers are true mediators.
-#' alpha[1:4] <- c(0.45,0.55,0.5,0.55)
-#' beta[1:4] <- c(0.40,0.55,0.5,0.40) 
+#' alpha[1:4] <- c(0.45,0.5,0.55,0.6)
+#' beta[1:4] <- c(0.8,0.75,0.7,0.65)
 #' 
-#' alpha[7:8] <- 0.55
-#' beta[5:6] <- 0.50
+#' alpha[7:8] <- 0.5
+#' beta[5:6] <- 0.5
 #' 
 #' # Generate simulation data
 #' simdat = simHIMA(n, p, alpha, beta, seed=2016) 
@@ -67,14 +67,27 @@ hima <- function(X, Y, M, COV = NULL,
   
   n <- nrow(M)
   p <- ncol(M)
-  if (is.null(topN)) 
-    d <- ceiling(2 * n/log(n)) else d <- topN  # the number of top mediators that associated with exposure (X)
+  if (is.null(topN)) {
+    if (family == "binomial") d <- ceiling(n/(2*log(n))) else d <- ceiling(2 * n/log(n)) 
+  } else {
+    d <- topN  # the number of top mediators that associated with exposure (X)
+  }
   
   if(verbose) message("Step 1: Screening...", "     (", Sys.time(), ")")
-  SIS_P_value_b <- himasis(Y, M, X, COV, glm.family = family, modelstatement = "Y ~ Mone + X", 
-                           parallel = parallel, ncore = ncore, verbose)[2, ]
-  SIS_P_value_1 <- sort(SIS_P_value_b)
-  ID <- which(SIS_P_value_b <= SIS_P_value_1[d])  # the index of top mediators
+  
+  if(family == "binomial")
+  {
+    alpha = SIS_alpha <- himasis(NA, M, X, COV, glm.family = "gaussian", modelstatement = "Mone ~ X", 
+                             parallel = parallel, ncore = ncore, verbose)
+    SIS_p <- SIS_alpha[2,]
+  } else {
+    SIS_beta <- himasis(Y, M, X, COV, glm.family = family, modelstatement = "Y ~ Mone + X", 
+                             parallel = parallel, ncore = ncore, verbose)
+    SIS_p <- SIS_beta[2,]
+  }
+
+  SIS_p_sort <- sort(SIS_p)
+  ID <- which(SIS_p <= SIS_p_sort[d])  # the index of top mediators
   M_SIS <- M[, ID]
   XM <- cbind(M_SIS, X)
   
@@ -88,11 +101,13 @@ hima <- function(X, Y, M, COV = NULL,
   } else {
     COV <- data.frame(COV)
     COV <- data.frame(model.matrix(~., COV))[, -1]
+    conf.names <- colnames(COV)
     XM_COV <- cbind(XM, COV)
     fit <- ncvreg(XM_COV, Y, family = family, 
                   penalty = penalty, 
                   penalty.factor = c(rep(1, ncol(M_SIS)), rep(0, 1 + ncol(COV))), ...)
   }
+  plot(fit)
   
   lam <- fit$lambda[which.min(BIC(fit))]
   Coefficients <- coef(fit, lambda = lam)
@@ -105,9 +120,27 @@ hima <- function(X, Y, M, COV = NULL,
   if(verbose) message("Step 3: Joint significance test ...", 
                       "     (", Sys.time(), ")")
   
-  alpha <- himasis(NA, M[, ID_test], X, COV, glm.family = "gaussian", 
-                   modelstatement = "Mone ~ X", parallel = parallel, ncore = ncore, 
-                   verbose = FALSE)
+  if(family == "binomial")
+  {
+    alpha <- alpha[,ID_test]
+    # modelstatement <- eval(parse(text = paste0("Y ~ ", paste0(names(ID_test), collapse = "+"))))
+    # if (is.null(COV)) {
+    #   datarun <- data.frame(Y = Y, M[,ID_test])
+    #   modelstatement <- modelstatement
+    # } else {
+    #   datarun <- data.frame(Y = Y, M[,ID_test], COV = COV)
+    #   modelstatement <- eval(parse(text = (paste0(modelstatement, "+", 
+    #                                               paste0(paste0("COV.", conf.names), collapse = "+")))))
+    # }
+    # 
+    # beta <- glm(modelstatement, data = datarun, family = family)
+    # 
+  } else {
+    alpha <- himasis(NA, M[, ID_test], X, COV, glm.family = "gaussian", 
+                     modelstatement = "Mone ~ X", parallel = parallel, ncore = ncore, 
+                     verbose = FALSE)
+  }
+
   
   alpha_est_ID_test <- as.numeric(alpha[1, ])  #  the estimator for alpha
   P_adjust_alpha <- length(ID_test) * alpha[2, ]  # The adjusted p-value for alpha
@@ -156,6 +189,7 @@ hima <- function(X, Y, M, COV = NULL,
   if(verbose) message("Done!", "     (", Sys.time(), ")")
   
   closeAllConnections()
+  registerDoSEQ()
   
   return(results)
 }
