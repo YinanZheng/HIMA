@@ -3,11 +3,11 @@
 #' \code{hima} is used to estimate and test high-dimensional mediation effects.
 #' 
 #' @param X a vector of exposure. 
-#' @param Y a vector of outcome.
+#' @param Y a vector of outcome. Can be either continuous or binary (0-1).
 #' @param M a data frame or matrix of high-dimensional mediators. Rows represent samples, columns 
 #' represent variables.
 #' @param COV a data frame or matrix of covariates dataset. Default = \code{NULL}.
-#' @param family either 'gaussian', 'binomial', or 'poisson', depending on the response. See 
+#' @param family either 'gaussian' or 'binomial', depending on the data type of outcome (\code{Y}). See 
 #' \code{\link{ncvreg}}
 #' @param penalty the penalty to be applied to the model. Either 'MCP' (the default), 'SCAD', or 
 #' 'lasso'. See \code{\link{ncvreg}}.
@@ -31,28 +31,35 @@
 #' alpha <- rep(0, p) 
 #' 
 #' # the regression coefficients beta (mediators --> outcome)
-#' beta <- rep(0, p) 
-#' 
-#' # the first four markers are true mediators.
+#' beta1 <- rep(0, p) # for continuous outcome
+#' beta2 <- rep(0, p) # for binary outcome
+
+#' # the first four markers are true mediators
 #' alpha[1:4] <- c(0.45,0.5,0.55,0.6)
-#' beta[1:4] <- c(0.8,0.75,0.7,0.65)
-#' 
+#' beta1[1:4] <- c(0.5,0.45,0.4,0.35)
+#' beta2[1:4] <- c(1.5,1.45,1.4,1.35)
+#'
+#' # these are also not true mediators
 #' alpha[7:8] <- 0.5
-#' beta[5:6] <- 0.5
+#' beta1[5:6] <- 0.4
+#' beta2[5:6] <- 1.4
 #' 
 #' # Generate simulation data
-#' simdat = simHIMA(n, p, alpha, beta, seed=2016) 
-#' 
+#' simdat_cont = simHIMA(n, p, alpha, beta1, seed=2016) 
+#' simdat_bin = simHIMA(n, p, alpha, beta2, binaryOutcome = TRUE, seed=2016) 
+
 #' # Run HIMA with MCP penalty by default
-#' hima.fit <- hima(simdat$X, simdat$Y, simdat$M) 
+#' hima.fit <- hima(simdat_cont$X, simdat_cont$Y, simdat_cont$M, 
+#' parallel = FALSE) 
 #' head(hima.fit)
 #' 
-#' hima.logistic.fit <- hima(simdat$X, simdat$Y_binary, simdat$M, family = "binomial") 
+#' hima.logistic.fit <- hima(simdat_bin$X, simdat_bin$Y, simdat_bin$M, 
+#' family = "binomial", , parallel = FALSE) 
 #' head(hima.logistic.fit)
 #' 
 #' @export
 hima <- function(X, Y, M, COV = NULL, 
-                 family = c("gaussian", "binomial", "poisson"), 
+                 family = c("gaussian", "binomial"), 
                  penalty = c("MCP", "SCAD", "lasso"), 
                  topN = NULL, 
                  parallel = TRUE, 
@@ -107,7 +114,7 @@ hima <- function(X, Y, M, COV = NULL,
                   penalty = penalty, 
                   penalty.factor = c(rep(1, ncol(M_SIS)), rep(0, 1 + ncol(COV))), ...)
   }
-  plot(fit)
+  # plot(fit)
   
   lam <- fit$lambda[which.min(BIC(fit))]
   Coefficients <- coef(fit, lambda = lam)

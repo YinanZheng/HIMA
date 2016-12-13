@@ -6,6 +6,7 @@
 #' @param p an integer specifying the dimension of mediators.
 #' @param alpha a numeric vector specifying the regression coefficients alpha (exposure --> mediators).
 #' @param beta a numeric vector specifying the regression coefficients beta (mediators --> outcome).
+#' @param binaryOutcome logical. Should the simulated outcome variable be binary?
 #' @param seed an integer specifying a seed for random number generation.
 #' 
 #' @seealso see \code{\link{hima}} to run HIMA.
@@ -14,19 +15,23 @@
 #' n <- 300  # sample size
 #' p <- 10000 # the dimension of covariates
 #' 
-#' alpha <- rep(0, p) # the regression coefficients alpha (exposure --> mediators)
-#' beta <- rep(0, p) # the regression coefficients beta (mediators --> outcome)
+#' # the regression coefficients alpha (exposure --> mediators)
+#' alpha <- rep(0, p) 
 #' 
-#' alpha[1:4] <- c(0.45,0.55,0.5,0.55)
-#' beta[1:4] <- c(0.40,0.55,0.5,0.40) # the first four markers are true mediators.
+#' # the regression coefficients beta (mediators --> outcome)
+#' beta <- rep(0, p) 
 #' 
-#' alpha[7:8] <- 0.55
-#' beta[5:6] <- 0.50
+#' # the first four markers are true mediators.
+#' alpha[1:4] <- c(0.45,0.5,0.55,0.6)
+#' beta[1:4] <- c(0.5,0.45,0.4,0.35)
+#' 
+#' alpha[7:8] <- 0.5
+#' beta[5:6] <- 0.5
 #' 
 #' simdat = simHIMA(n, p, alpha, beta, seed=2016) # Generate simulation data
 #' 
 #' @export
-simHIMA <- function(n, p, alpha, beta, seed) {
+simHIMA <- function(n, p, alpha, beta, binaryOutcome = FALSE, seed) {
   set.seed(seed)
   ck <- t(runif(p, 0, 2))
   
@@ -44,7 +49,9 @@ simHIMA <- function(n, p, alpha, beta, seed) {
   B <- c(0.5, beta)  # (p+1) times 1
   E <- rnorm(n, 0, 1)
   Y <- 0.5 + XM %*% t(t(B)) + t(t(E))  #  the response  n times 1
-  Y_binary <- matrix(rbinom(n, 1, 1/(1+exp(-Y))), nrow = n)
   
-  return(list(Y = Y, Y_binary = Y_binary, M = M, X = X, n = n, p = p))
+  if(binaryOutcome)
+    Y <- matrix(rbinom(n, 1, 1/(1+exp(-Y))), nrow = n)
+  
+  return(list(Y = Y, M = M, X = X, n = n, p = p))
 }

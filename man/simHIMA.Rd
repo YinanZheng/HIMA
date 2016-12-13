@@ -4,7 +4,7 @@
 \alias{simHIMA}
 \title{Simulation Data Generator for High-dimensional Mediation Analyais}
 \usage{
-simHIMA(n, p, alpha, beta, seed)
+simHIMA(n, p, alpha, beta, binaryOutcome = FALSE, seed)
 }
 \arguments{
 \item{n}{an integer specifying sample size.}
@@ -15,6 +15,8 @@ simHIMA(n, p, alpha, beta, seed)
 
 \item{beta}{a numeric vector specifying the regression coefficients beta (mediators --> outcome).}
 
+\item{binaryOutcome}{logical. Should the simulated outcome variable be binary?}
+
 \item{seed}{an integer specifying a seed for random number generation.}
 }
 \description{
@@ -24,14 +26,18 @@ simHIMA(n, p, alpha, beta, seed)
 n <- 300  # sample size
 p <- 10000 # the dimension of covariates
 
-alpha <- rep(0, p) # the regression coefficients alpha (exposure --> mediators)
-beta <- rep(0, p) # the regression coefficients beta (mediators --> outcome)
+# the regression coefficients alpha (exposure --> mediators)
+alpha <- rep(0, p) 
 
-alpha[1:4] <- c(0.45,0.55,0.5,0.55)
-beta[1:4] <- c(0.40,0.55,0.5,0.40) # the first four markers are true mediators.
+# the regression coefficients beta (mediators --> outcome)
+beta <- rep(0, p) 
 
-alpha[7:8] <- 0.55
-beta[5:6] <- 0.50
+# the first four markers are true mediators.
+alpha[1:4] <- c(0.45,0.5,0.55,0.6)
+beta[1:4] <- c(0.5,0.45,0.4,0.35)
+
+alpha[7:8] <- 0.5
+beta[5:6] <- 0.5
 
 simdat = simHIMA(n, p, alpha, beta, seed=2016) # Generate simulation data
 

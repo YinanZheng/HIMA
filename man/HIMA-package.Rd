@@ -9,7 +9,7 @@
 HIMA is an R package for estimating and testing high-dimensional mediation effects in genomic/epigenomic studies.
 
 \tabular{ll}{ Package: \tab HIMA\cr Type: \tab Package\cr
-Version: \tab 1.0.1\cr Date: \tab 2016-11-29\cr License: \tab GPL-3\cr }
+Version: \tab 1.0.2\cr Date: \tab 2016-12-13\cr License: \tab GPL-3\cr }
 }
 \author{
 Yinan Zheng \email{y-zheng@northwestern.edu},
