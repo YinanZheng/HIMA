@@ -54,7 +54,7 @@
 #' head(hima.fit)
 #' 
 #' hima.logistic.fit <- hima(simdat_bin$X, simdat_bin$Y, simdat_bin$M, 
-#' family = "binomial", , parallel = FALSE) 
+#' family = "binomial", parallel = FALSE) 
 #' head(hima.logistic.fit)
 #' 
 #' @export
