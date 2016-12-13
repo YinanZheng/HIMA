@@ -6,6 +6,3 @@
 
 * Improvement: More powerful model fit when outcome variable is binary.
 * New: Generalized linear regression is now allowed in screening step. 
-
-
-

@@ -33,7 +33,7 @@
 #' # the regression coefficients beta (mediators --> outcome)
 #' beta1 <- rep(0, p) # for continuous outcome
 #' beta2 <- rep(0, p) # for binary outcome
-
+#' 
 #' # the first four markers are true mediators
 #' alpha[1:4] <- c(0.45,0.5,0.55,0.6)
 #' beta1[1:4] <- c(0.5,0.45,0.4,0.35)
@@ -130,18 +130,6 @@ hima <- function(X, Y, M, COV = NULL,
   if(family == "binomial")
   {
     alpha <- alpha[,ID_test]
-    # modelstatement <- eval(parse(text = paste0("Y ~ ", paste0(names(ID_test), collapse = "+"))))
-    # if (is.null(COV)) {
-    #   datarun <- data.frame(Y = Y, M[,ID_test])
-    #   modelstatement <- modelstatement
-    # } else {
-    #   datarun <- data.frame(Y = Y, M[,ID_test], COV = COV)
-    #   modelstatement <- eval(parse(text = (paste0(modelstatement, "+", 
-    #                                               paste0(paste0("COV.", conf.names), collapse = "+")))))
-    # }
-    # 
-    # beta <- glm(modelstatement, data = datarun, family = family)
-    # 
   } else {
     alpha <- himasis(NA, M[, ID_test], X, COV, glm.family = "gaussian", 
                      modelstatement = "Mone ~ X", parallel = parallel, ncore = ncore, 
