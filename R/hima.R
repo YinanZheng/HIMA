@@ -39,7 +39,7 @@
 #' beta1[1:4] <- c(0.5,0.45,0.4,0.35)
 #' beta2[1:4] <- c(1.5,1.45,1.4,1.35)
 #'
-#' # these are also not true mediators
+#' # these are not true mediators
 #' alpha[7:8] <- 0.5
 #' beta1[5:6] <- 0.4
 #' beta2[5:6] <- 1.4
@@ -47,7 +47,7 @@
 #' # Generate simulation data
 #' simdat_cont = simHIMA(n, p, alpha, beta1, seed=2016) 
 #' simdat_bin = simHIMA(n, p, alpha, beta2, binaryOutcome = TRUE, seed=2016) 
-
+#' 
 #' # Run HIMA with MCP penalty by default
 #' hima.fit <- hima(simdat_cont$X, simdat_cont$Y, simdat_cont$M, 
 #' parallel = FALSE) 

@@ -28,7 +28,8 @@
 #' alpha[7:8] <- 0.5
 #' beta[5:6] <- 0.5
 #' 
-#' simdat = simHIMA(n, p, alpha, beta, seed=2016) # Generate simulation data
+#' # Generate simulation data
+#' simdat = simHIMA(n, p, alpha, beta, seed=2016) 
 #' 
 #' @export
 simHIMA <- function(n, p, alpha, beta, binaryOutcome = FALSE, seed) {
