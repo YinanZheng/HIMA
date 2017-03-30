@@ -6,13 +6,15 @@
 #' @param Y a vector of outcome. Can be either continuous or binary (0-1).
 #' @param M a data frame or matrix of high-dimensional mediators. Rows represent samples, columns 
 #' represent variables.
-#' @param COV a data frame or matrix of covariates dataset. Default = \code{NULL}.
+#' @param COV a data frame or matrix of covariates dataset. Covariates specified here will not participate 
+#' penalization. Default = \code{NULL}. 
 #' @param family either 'gaussian' or 'binomial', depending on the data type of outcome (\code{Y}). See 
 #' \code{\link{ncvreg}}
 #' @param penalty the penalty to be applied to the model. Either 'MCP' (the default), 'SCAD', or 
 #' 'lasso'. See \code{\link{ncvreg}}.
 #' @param topN an integer specifying the number of top markers from sure independent screening. 
-#' Default = \code{NULL}. If \code{NULL}, \code{ceiling(n/log10(n))} will be used as \code{topN}, 
+#' Default = \code{NULL}. If \code{NULL}, \code{topN} will be either \code{ceiling(n/log(n))} if 
+#' \code{family = 'gaussian'}, or \code{ceiling(n/(2*log(n)))} if \code{family = 'binomial'}, 
 #' where \code{n} is the sample size. 
 #' @param parallel logical. Enable parallel computing feature? Default = \code{TRUE}.
 #' @param ncore number of cores to run parallel computation. Valid when \code{parallel == TRUE}. 
@@ -21,7 +23,15 @@
 #' @param verbose logical. Should the function be verbose?
 #' @param ... other arguments passed to \code{\link{ncvreg}}.
 #' 
-#' @return A data.frame containing mediation testing results of selected mediators.
+#' @return A data.frame containing mediation testing results of selected mediators. 
+#' \itemize{
+#'     \item{alpha: }{coefficient estimates of exposure --> mediators.}
+#'     \item{beta: }{coefficient estimates of mediators --> outcome (adjusted for exposure).}
+#'     \item{gamma: }{coefficient estimates of exposure --> outcome (total effect).}
+#'     \item{alpha*beta: }{mediation effect.}
+#'     \item{\% total effect: }{alpha*beta / gamma. Percentage of the mediation effect out of the total effect.}
+#'     \item{p-value: }{statistical significance of the mediator.}
+#' }
 #'
 #' @examples
 #' n <- 300  # sample size
@@ -95,6 +105,8 @@ hima <- function(X, Y, M, COV = NULL,
 
   SIS_p_sort <- sort(SIS_p)
   ID <- which(SIS_p <= SIS_p_sort[d])  # the index of top mediators
+  if(verbose) cat("Top", length(ID), "mediators selected (ranked from most to least significant): ", names(SIS_p_sort[seq_len(d)]), "\n")
+
   M_SIS <- M[, ID]
   XM <- cbind(M_SIS, X)
   
@@ -104,7 +116,7 @@ hima <- function(X, Y, M, COV = NULL,
   if (is.null(COV)) {
     fit <- ncvreg(XM, Y, family = family, 
                   penalty = penalty, 
-                  penalty.factor = c(rep(1, ncol(M_SIS)), 0))
+                  penalty.factor = c(rep(1, ncol(M_SIS)), 0), ...)
   } else {
     COV <- data.frame(COV)
     COV <- data.frame(model.matrix(~., COV))[, -1]
@@ -117,74 +129,81 @@ hima <- function(X, Y, M, COV = NULL,
   # plot(fit)
   
   lam <- fit$lambda[which.min(BIC(fit))]
+  if(verbose) cat("lambda selected: ", lam, "\n")
   Coefficients <- coef(fit, lambda = lam)
   est <- Coefficients[2:(d + 1)]
   ID_1_non <- which(est != 0)
-  beta_est <- est[ID_1_non]  # The non-zero MCP estimators of \beta
-  ID_test <- ID[ID_1_non]  # The index of the ID of non-zero beta in the regression of Y= c + rX + b_1 M_1 + ...+ b_p M_p
-  ## 
-  
-  if(verbose) message("Step 3: Joint significance test ...", 
-                      "     (", Sys.time(), ")")
-  
-  if(family == "binomial")
+  if(length(ID_1_non) == 0)
   {
-    alpha <- alpha[,ID_test]
+    if(verbose) cat("All", penalty, "beta estimates of the", length(ID), "mediators are zero. Please check ncvreg package for more options (?ncvreg).", "\n")
   } else {
-    alpha <- himasis(NA, M[, ID_test], X, COV, glm.family = "gaussian", 
-                     modelstatement = "Mone ~ X", parallel = parallel, ncore = ncore, 
-                     verbose = FALSE)
+    if(verbose) cat("Non-zero", penalty, "beta estimate(s) of mediator(s) found: ", names(ID_1_non), "\n")
+    beta_est <- est[ID_1_non]  # The non-zero MCP estimators of \beta
+    ID_test <- ID[ID_1_non]  # The index of the ID of non-zero beta in the regression of Y= c + rX + b_1 M_1 + ...+ b_p M_p
+    ## 
+    
+    if(verbose) message("Step 3: Joint significance test ...", 
+                        "     (", Sys.time(), ")")
+    
+    if(family == "binomial")
+    {
+      alpha <- alpha[,ID_test, drop = FALSE]
+    } else {
+      alpha <- himasis(NA, M[, ID_test, drop = FALSE], X, COV, glm.family = "gaussian", 
+                       modelstatement = "Mone ~ X", parallel = parallel, ncore = ncore, 
+                       verbose = FALSE)
+    }
+    
+    
+    alpha_est_ID_test <- as.numeric(alpha[1, ])  #  the estimator for alpha
+    P_adjust_alpha <- length(ID_test) * alpha[2, ]  # The adjusted p-value for alpha
+    P_adjust_alpha[P_adjust_alpha > 1] <- 1
+    
+    alpha_est <- alpha_est_ID_test
+    
+    #################### the following is the post-test based on the oracle property of the
+    #################### MCP penalty
+    if (is.null(COV)) {
+      YMX <- data.frame(Y = Y, M[, ID_test, drop = FALSE], X = X)
+    } else {
+      YMX <- data.frame(Y = Y, M[, ID_test, drop = FALSE], X = X, COV)
+    }
+    
+    res <- summary(glm(Y ~ ., family = family, data = YMX))$coefficients
+    est <- res[2:(length(ID_test) + 1), 1]  # The estimator for alpha
+    P_adjust_beta <- length(ID_test) * res[2:(length(ID_test) + 1), 4]  # The adjused p-value for beta
+    P_adjust_beta[P_adjust_beta > 1] <- 1
+    
+    ab_est <- alpha_est * beta_est
+    ## 
+    PA <- rbind(P_adjust_beta, P_adjust_alpha)
+    P_value <- apply(PA, 2, max)
+    
+    P_value_0 <- P_value_1 <- rep(1, p)
+    P_value_0[ID_test] <- P_value
+    
+    PB <- rbind(P_value_0, P_value_1)
+    P_value <- apply(PB, 2, min)
+    
+    
+    # Total effect
+    if (is.null(COV)) {
+      YX <- data.frame(Y = Y, X = X)
+    } else {
+      YX <- data.frame(Y = Y, X = X, COV)
+    }
+    
+    gamma_est <- coef(glm(Y ~ ., family = family, data = YX))[2]
+    
+    results <- data.frame(alpha = alpha_est, beta = beta_est, gamma = gamma_est, 
+                          `alpha*beta` = ab_est, `% total effect` = ab_est/gamma_est * 100, 
+                          `p-value` = P_value[ID_test], check.names = FALSE)
+    
+    if(verbose) message("Done!", "     (", Sys.time(), ")")
+    
+    closeAllConnections()
+    registerDoSEQ()
+    
+    return(results)
   }
-
-  
-  alpha_est_ID_test <- as.numeric(alpha[1, ])  #  the estimator for alpha
-  P_adjust_alpha <- length(ID_test) * alpha[2, ]  # The adjusted p-value for alpha
-  P_adjust_alpha[P_adjust_alpha > 1] <- 1
-  
-  alpha_est <- alpha_est_ID_test
-  
-  #################### the following is the post-test based on the oracle property of the
-  #################### MCP penalty
-  if (is.null(COV)) {
-    YMX <- data.frame(Y = Y, M[, ID_test], X = X)
-  } else {
-    YMX <- data.frame(Y = Y, M[, ID_test], X = X, COV)
-  }
-  
-  res <- summary(glm(Y ~ ., family = family, data = YMX))$coefficients
-  est <- res[2:(length(ID_test) + 1), 1]  # The estimator for alpha
-  P_adjust_beta <- length(ID_test) * res[2:(length(ID_test) + 1), 4]  # The adjused p-value for beta
-  P_adjust_beta[P_adjust_beta > 1] <- 1
-  
-  ab_est <- alpha_est * beta_est
-  ## 
-  PA <- rbind(P_adjust_beta, P_adjust_alpha)
-  P_value <- apply(PA, 2, max)
-  
-  P_value_0 <- P_value_1 <- rep(1, p)
-  P_value_0[ID_test] <- P_value
-  
-  PB <- rbind(P_value_0, P_value_1)
-  P_value <- apply(PB, 2, min)
-  
-  
-  # Total effect
-  if (is.null(COV)) {
-    YX <- data.frame(Y = Y, X = X)
-  } else {
-    YX <- data.frame(Y = Y, X = X, COV)
-  }
-  
-  gamma_est <- coef(glm(Y ~ ., family = family, data = YX))[2]
-  
-  results <- data.frame(alpha = alpha_est, beta = beta_est, gamma = gamma_est, 
-                        `alpha*beta` = ab_est, `% total effect` = ab_est/gamma_est * 100, 
-                        `p-value` = P_value[ID_test], check.names = FALSE)
-  
-  if(verbose) message("Done!", "     (", Sys.time(), ")")
-  
-  closeAllConnections()
-  registerDoSEQ()
-  
-  return(results)
 }

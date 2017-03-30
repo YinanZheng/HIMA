@@ -16,7 +16,8 @@ hima(X, Y, M, COV = NULL, family = c("gaussian", "binomial"),
 \item{M}{a data frame or matrix of high-dimensional mediators. Rows represent samples, columns 
 represent variables.}
 
-\item{COV}{a data frame or matrix of covariates dataset. Default = \code{NULL}.}
+\item{COV}{a data frame or matrix of covariates dataset. Covariates specified here will not participate 
+penalization. Default = \code{NULL}.}
 
 \item{family}{either 'gaussian' or 'binomial', depending on the data type of outcome (\code{Y}). See 
 \code{\link{ncvreg}}}
@@ -25,7 +26,8 @@ represent variables.}
 'lasso'. See \code{\link{ncvreg}}.}
 
 \item{topN}{an integer specifying the number of top markers from sure independent screening. 
-Default = \code{NULL}. If \code{NULL}, \code{ceiling(n/log10(n))} will be used as \code{topN}, 
+Default = \code{NULL}. If \code{NULL}, \code{topN} will be either \code{ceiling(n/log(n))} if 
+\code{family = 'gaussian'}, or \code{ceiling(n/(2*log(n)))} if \code{family = 'binomial'}, 
 where \code{n} is the sample size.}
 
 \item{parallel}{logical. Enable parallel computing feature? Default = \code{TRUE}.}
@@ -39,7 +41,15 @@ no parallel computating is allowed.}
 \item{...}{other arguments passed to \code{\link{ncvreg}}.}
 }
 \value{
-A data.frame containing mediation testing results of selected mediators.
+A data.frame containing mediation testing results of selected mediators. 
+\itemize{
+    \item{alpha: }{coefficient estimates of exposure --> mediators.}
+    \item{beta: }{coefficient estimates of mediators --> outcome (adjusted for exposure).}
+    \item{gamma: }{coefficient estimates of exposure --> outcome (total effect).}
+    \item{alpha*beta: }{mediation effect.}
+    \item{\% total effect: }{alpha*beta / gamma. Percentage of the mediation effect out of the total effect.}
+    \item{p-value: }{statistical significance of the mediator.}
+}
 }
 \description{
 \code{hima} is used to estimate and test high-dimensional mediation effects.
@@ -79,4 +89,3 @@ family = "binomial", parallel = FALSE)
 head(hima.logistic.fit)
 
 }
-

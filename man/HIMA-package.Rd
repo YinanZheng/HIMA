@@ -2,14 +2,19 @@
 % Please edit documentation in R/HIMA-package.R
 \docType{package}
 \name{HIMA-package}
-\alias{HIMA}
 \alias{HIMA-package}
+\alias{HIMA}
 \title{High-dimensional Mediation Analysis}
 \description{
 HIMA is an R package for estimating and testing high-dimensional mediation effects in genomic/epigenomic studies.
 
 \tabular{ll}{ Package: \tab HIMA\cr Type: \tab Package\cr
-Version: \tab 1.0.2\cr Date: \tab 2016-12-13\cr License: \tab GPL-3\cr }
+Version: \tab 1.0.3\cr Date: \tab 2017-03-30\cr License: \tab GPL-3\cr }
+}
+\references{
+Zhang H, Zheng Y, Zhang Z, Gao T, Joyce B, Yoon G, Zhang W, Schwartz J, Just A, Colicino E, Vokonas P, Zhao L, 
+Lv J, Baccarelli A, Hou L, Liu L. Estimating and Testing High-dimensional Mediation Effects in Epigenetic Studies. 
+Bioinformatics. 2016. DOI: \url{http://dx.doi.org/10.1093/bioinformatics/btw351}. PubMed PMID: 27357171.
 }
 \author{
 Yinan Zheng \email{y-zheng@northwestern.edu},
@@ -20,10 +25,4 @@ Lei liu \email{lei.liu@northwestern.edu}
 
 Maintainer: Yinan Zheng \email{y-zheng@northwestern.edu}
 }
-\references{
-Zhang H, Zheng Y, Zhang Z, Gao T, Joyce B, Yoon G, Zhang W, Schwartz J, Just A, Colicino E, Vokonas P, Zhao L, 
-Lv J, Baccarelli A, Hou L, Liu L. Estimating and Testing High-dimensional Mediation Effects in Epigenetic Studies. 
-Bioinformatics. 2016. DOI: \url{http://dx.doi.org/10.1093/bioinformatics/btw351}. PubMed PMID: 27357171.
-}
 \keyword{package}
-

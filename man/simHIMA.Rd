@@ -46,4 +46,3 @@ simdat = simHIMA(n, p, alpha, beta, seed=2016)
 \seealso{
 see \code{\link{hima}} to run HIMA.
 }
-

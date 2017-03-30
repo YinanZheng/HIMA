@@ -6,3 +6,8 @@
 
 * Improvement: More powerful model fit when outcome variable is binary.
 * New: Generalized linear regression is now allowed in screening step. 
+
+# REMP 1.0.3 (2017-03-30)
+
+* Improvement: Added error handler when no mediators were selected from penalized model.
+* Improvement: More transparent information returned during model fitting (when verbose = TRUE).
