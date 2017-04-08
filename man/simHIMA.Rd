@@ -40,7 +40,7 @@ alpha[7:8] <- 0.5
 beta[5:6] <- 0.5
 
 # Generate simulation data
-simdat = simHIMA(n, p, alpha, beta, seed=2016) 
+simdat = simHIMA(n, p, alpha, beta, seed=1029) 
 
 }
 \seealso{

@@ -11,3 +11,8 @@
 
 * Improvement: Added error handler when no mediators were selected from penalized model.
 * Improvement: More transparent information returned during model fitting (when verbose = TRUE).
+
+# REMP 1.0.4 (2017-04-08)
+
+* Improvement: Benjamini-Hochberg FDR adjustment is available.
+

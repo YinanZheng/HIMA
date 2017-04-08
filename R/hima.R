@@ -30,7 +30,8 @@
 #'     \item{gamma: }{coefficient estimates of exposure --> outcome (total effect).}
 #'     \item{alpha*beta: }{mediation effect.}
 #'     \item{\% total effect: }{alpha*beta / gamma. Percentage of the mediation effect out of the total effect.}
-#'     \item{p-value: }{statistical significance of the mediator.}
+#'     \item{p-value: }{statistical significance of the mediator (Bonferroni method).}
+#'     \item{FDR: }{statistical significance of the mediator (Benjamini-Hochberg procedure).}
 #' }
 #'
 #' @examples
@@ -46,17 +47,17 @@
 #' 
 #' # the first four markers are true mediators
 #' alpha[1:4] <- c(0.45,0.5,0.55,0.6)
-#' beta1[1:4] <- c(0.5,0.45,0.4,0.35)
-#' beta2[1:4] <- c(1.5,1.45,1.4,1.35)
+#' beta1[1:4] <- c(0.55,0.6,0.65,0.7)
+#' beta2[1:4] <- c(1.45,1.5,1.55,1.6)
 #'
 #' # these are not true mediators
 #' alpha[7:8] <- 0.5
-#' beta1[5:6] <- 0.4
-#' beta2[5:6] <- 1.4
+#' beta1[5:6] <- 0.8
+#' beta2[5:6] <- 1.7
 #' 
 #' # Generate simulation data
-#' simdat_cont = simHIMA(n, p, alpha, beta1, seed=2016) 
-#' simdat_bin = simHIMA(n, p, alpha, beta2, binaryOutcome = TRUE, seed=2016) 
+#' simdat_cont = simHIMA(n, p, alpha, beta1, seed=1029) 
+#' simdat_bin = simHIMA(n, p, alpha, beta2, binaryOutcome = TRUE, seed=1029) 
 #' 
 #' # Run HIMA with MCP penalty by default
 #' hima.fit <- hima(simdat_cont$X, simdat_cont$Y, simdat_cont$M, 
@@ -156,8 +157,9 @@ hima <- function(X, Y, M, COV = NULL,
     
     
     alpha_est_ID_test <- as.numeric(alpha[1, ])  #  the estimator for alpha
-    P_adjust_alpha <- length(ID_test) * alpha[2, ]  # The adjusted p-value for alpha
+    P_adjust_alpha <- length(ID_test) * alpha[2, ]  # The adjusted p-value for alpha (bonferroni)
     P_adjust_alpha[P_adjust_alpha > 1] <- 1
+    P_fdr_alpha <- p.adjust(alpha[2, ], "fdr")  # The adjusted p-value for alpha (FDR)
     
     alpha_est <- alpha_est_ID_test
     
@@ -173,18 +175,16 @@ hima <- function(X, Y, M, COV = NULL,
     est <- res[2:(length(ID_test) + 1), 1]  # The estimator for alpha
     P_adjust_beta <- length(ID_test) * res[2:(length(ID_test) + 1), 4]  # The adjused p-value for beta
     P_adjust_beta[P_adjust_beta > 1] <- 1
+    P_fdr_beta <- p.adjust(res[2:(length(ID_test) + 1), 4], "fdr")  # The adjusted p-value for beta (FDR)
     
     ab_est <- alpha_est * beta_est
-    ## 
+    
+    ## Use the maximum value as p value 
     PA <- rbind(P_adjust_beta, P_adjust_alpha)
     P_value <- apply(PA, 2, max)
     
-    P_value_0 <- P_value_1 <- rep(1, p)
-    P_value_0[ID_test] <- P_value
-    
-    PB <- rbind(P_value_0, P_value_1)
-    P_value <- apply(PB, 2, min)
-    
+    FDRA <- rbind(P_fdr_beta, P_fdr_alpha)
+    FDR <- apply(FDRA, 2, max)
     
     # Total effect
     if (is.null(COV)) {
@@ -197,7 +197,7 @@ hima <- function(X, Y, M, COV = NULL,
     
     results <- data.frame(alpha = alpha_est, beta = beta_est, gamma = gamma_est, 
                           `alpha*beta` = ab_est, `% total effect` = ab_est/gamma_est * 100, 
-                          `p-value` = P_value[ID_test], check.names = FALSE)
+                          `p-value` = P_value, `BH-FDR` = FDR, check.names = FALSE)
     
     if(verbose) message("Done!", "     (", Sys.time(), ")")
     
