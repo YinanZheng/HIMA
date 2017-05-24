@@ -201,8 +201,7 @@ hima <- function(X, Y, M, COV = NULL,
     
     if(verbose) message("Done!", "     (", Sys.time(), ")")
     
-    closeAllConnections()
-    registerDoSEQ()
+    doParallel::stopImplicitCluster()
     
     return(results)
   }
