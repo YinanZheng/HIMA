@@ -1,7 +1,7 @@
 # Internal function: parallel computing check
 
-checkParallel <- function(program.name, parallel, ncore, verbose = TRUE) {
-  if (parallel & ncore > 1) {
+checkParallel <- function(program.name, parallel, ncore, verbose) {
+  if (parallel & (ncore > 1)) {
     if (ncore > parallel::detectCores()) {
       message("You requested ", ncore, " cores. There are only ", 
               parallel::detectCores(), " in your machine!")

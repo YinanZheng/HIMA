@@ -63,14 +63,13 @@
 #' simdat_bin = simHIMA(n, p, alpha, beta2, binaryOutcome = TRUE, seed=1029) 
 #' 
 #' # Run HIMA with MCP penalty by default
-#' # Y is continuous
-#' hima.fit <- hima(simdat_cont$X, simdat_cont$Y, simdat_cont$M, 
-#' parallel = FALSE, verbose = TRUE) 
+#' # When Y is continuous (default)
+#' hima.fit <- hima(simdat_cont$X, simdat_cont$Y, simdat_cont$M, verbose = TRUE) 
 #' head(hima.fit)
 #' 
-#' # Y is binary
+#' # When Y is binary (should specify family)
 #' hima.logistic.fit <- hima(simdat_bin$X, simdat_bin$Y, simdat_bin$M, 
-#' family = "binomial", parallel = FALSE, verbose = TRUE) 
+#' family = "binomial", verbose = TRUE) 
 #' head(hima.logistic.fit)
 #' 
 #' @export
@@ -78,18 +77,18 @@ hima <- function(X, Y, M, COV.XM = NULL, COV.MY = COV.XM,
                  family = c("gaussian", "binomial"), 
                  penalty = c("MCP", "SCAD", "lasso"), 
                  topN = NULL, 
-                 parallel = TRUE, 
-                 ncore = NULL, 
+                 parallel = FALSE, 
+                 ncore = 1, 
                  verbose = FALSE, 
                  ...) {
     family <- match.arg(family)
     penalty <- match.arg(penalty)
     
-    if (is.null(ncore)) 
-      ncore <- parallel::detectCores()
-    
+    if (parallel & (ncore == 1)) ncore <- parallel::detectCores()
+
     n <- nrow(M)
     p <- ncol(M)
+    
     if (is.null(topN)) {
       if (family == "binomial") d <- ceiling(n/(2*log(n))) else d <- ceiling(2 * n/log(n)) 
     } else {

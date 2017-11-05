@@ -6,7 +6,7 @@
 \usage{
 hima(X, Y, M, COV.XM = NULL, COV.MY = COV.XM, family = c("gaussian",
   "binomial"), penalty = c("MCP", "SCAD", "lasso"), topN = NULL,
-  parallel = TRUE, ncore = NULL, verbose = FALSE, ...)
+  parallel = FALSE, ncore = 1, verbose = FALSE, ...)
 }
 \arguments{
 \item{X}{a vector of exposure.}
@@ -85,14 +85,13 @@ simdat_cont = simHIMA(n, p, alpha, beta1, seed=1029)
 simdat_bin = simHIMA(n, p, alpha, beta2, binaryOutcome = TRUE, seed=1029) 
 
 # Run HIMA with MCP penalty by default
-# Y is continuous
-hima.fit <- hima(simdat_cont$X, simdat_cont$Y, simdat_cont$M, 
-parallel = FALSE, verbose = TRUE) 
+# When Y is continuous (default)
+hima.fit <- hima(simdat_cont$X, simdat_cont$Y, simdat_cont$M, verbose = TRUE) 
 head(hima.fit)
 
-# Y is binary
+# When Y is binary (should specify family)
 hima.logistic.fit <- hima(simdat_bin$X, simdat_bin$Y, simdat_bin$M, 
-family = "binomial", parallel = FALSE, verbose = TRUE) 
+family = "binomial", verbose = TRUE) 
 head(hima.logistic.fit)
 
 }
