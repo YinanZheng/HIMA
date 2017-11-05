@@ -13,15 +13,16 @@ hima(X, Y, M, COV.XM = NULL, COV.MY = COV.XM, family = c("gaussian",
 
 \item{Y}{a vector of outcome. Can be either continuous or binary (0-1).}
 
-\item{M}{a data frame or matrix of high-dimensional mediators. Rows represent samples, columns 
+\item{M}{a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns 
 represent variables.}
 
-\item{COV.XM}{a data frame or matrix of covariates dataset for testing the association \code{M ~ X}. 
-Covariates specified here will not participate penalization. Default = \code{NULL}.}
+\item{COV.XM}{a \code{data.frame} or \code{matrix} of covariates dataset for testing the association \code{M ~ X}. 
+Covariates specified here will not participate penalization. Default = \code{NULL}. If the covariates 
+contain mixed data types, please make sure all categorical variables are properly formatted as \code{factor} type.}
 
-\item{COV.MY}{a data frame or matrix of covariates dataset for testing the association \code{Y ~ M}. 
-Covariates specified here will not participate penalization. Default = \code{COV.XM}, namely the same
-set of covariates as the one used for \code{M ~ X}. Different sets of covariates are allowed.}
+\item{COV.MY}{a \code{data.frame} or \code{matrix} of covariates dataset for testing the association \code{Y ~ M}. 
+Covariates specified here will not participate penalization. If not specified, the same set of covariates for 
+\code{M ~ X} will be applied. Using different sets of covariates is allowed but this needs to be handled carefully.}
 
 \item{family}{either 'gaussian' or 'binomial', depending on the data type of outcome (\code{Y}). See 
 \code{\link{ncvreg}}}
@@ -37,8 +38,7 @@ where \code{n} is the sample size.}
 \item{parallel}{logical. Enable parallel computing feature? Default = \code{TRUE}.}
 
 \item{ncore}{number of cores to run parallel computing Valid when \code{parallel == TRUE}. 
-By default max number of cores available in the machine will be utilized. If \code{ncore = 1}, 
-no parallel computing is allowed.}
+By default max number of cores available in the machine will be utilized.}
 
 \item{verbose}{logical. Should the function be verbose? Default = \code{FALSE}.}
 

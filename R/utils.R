@@ -68,7 +68,7 @@ scaleto <- function(dat) {
 # Internal function: Sure Independent Screening
 
 himasis <- function(Y, M, X, COV, glm.family, modelstatement, 
-                    parallel, ncore, verbose) {
+                    parallel, ncore, verbose, tag) {
   L.M <- ncol(M)
   M.names <- colnames(M)
   
@@ -79,7 +79,7 @@ himasis <- function(Y, M, X, COV, glm.family, modelstatement,
   X <- data.frame(model.matrix(~., X))[, -1]
   
   if (is.null(COV)) {
-    if (verbose) message("    No covariate adjusted")
+    if (verbose) message("    No covariate is adjusted")
     datarun <- data.frame(Y = Y, Mone = NA, X = X)
     modelstatement <- modelstatement
   } else {
@@ -95,7 +95,7 @@ himasis <- function(Y, M, X, COV, glm.family, modelstatement,
   doOne <- eval(parse(text = doOneGen(paste0("try(glm(modelstatement, family = ", 
                                              glm.family, ", data = datarun))"), "c(1,4)")))
   
-  checkParallel("Sure Independent Screening", parallel, ncore, verbose)
+  checkParallel(tag, parallel, ncore, verbose)
   
   results <- foreach(n = iterators::idiv(L.M, chunks = ncore), 
                      M_chunk = iblkcol_lag(M, chunks = ncore), 
