@@ -4,9 +4,9 @@
 \alias{hima}
 \title{High-dimensional Mediation Analysis}
 \usage{
-hima(X, Y, M, COV = NULL, family = c("gaussian", "binomial"),
-  penalty = c("MCP", "SCAD", "lasso"), topN = NULL, parallel = TRUE,
-  ncore = NULL, verbose = TRUE, ...)
+hima(X, Y, M, COV.XM = NULL, COV.MY = COV.XM, family = c("gaussian",
+  "binomial"), penalty = c("MCP", "SCAD", "lasso"), topN = NULL,
+  parallel = TRUE, ncore = NULL, verbose = FALSE, ...)
 }
 \arguments{
 \item{X}{a vector of exposure.}
@@ -16,8 +16,12 @@ hima(X, Y, M, COV = NULL, family = c("gaussian", "binomial"),
 \item{M}{a data frame or matrix of high-dimensional mediators. Rows represent samples, columns 
 represent variables.}
 
-\item{COV}{a data frame or matrix of covariates dataset. Covariates specified here will not participate 
-penalization. Default = \code{NULL}.}
+\item{COV.XM}{a data frame or matrix of covariates dataset for testing the association \code{M ~ X}. 
+Covariates specified here will not participate penalization. Default = \code{NULL}.}
+
+\item{COV.MY}{a data frame or matrix of covariates dataset for testing the association \code{Y ~ M}. 
+Covariates specified here will not participate penalization. Default = \code{COV.XM}, namely the same
+set of covariates as the one used for \code{M ~ X}. Different sets of covariates are allowed.}
 
 \item{family}{either 'gaussian' or 'binomial', depending on the data type of outcome (\code{Y}). See 
 \code{\link{ncvreg}}}
@@ -32,20 +36,20 @@ where \code{n} is the sample size.}
 
 \item{parallel}{logical. Enable parallel computing feature? Default = \code{TRUE}.}
 
-\item{ncore}{number of cores to run parallel computation. Valid when \code{parallel == TRUE}. 
+\item{ncore}{number of cores to run parallel computing Valid when \code{parallel == TRUE}. 
 By default max number of cores available in the machine will be utilized. If \code{ncore = 1}, 
-no parallel computating is allowed.}
+no parallel computing is allowed.}
 
-\item{verbose}{logical. Should the function be verbose?}
+\item{verbose}{logical. Should the function be verbose? Default = \code{FALSE}.}
 
 \item{...}{other arguments passed to \code{\link{ncvreg}}.}
 }
 \value{
 A data.frame containing mediation testing results of selected mediators. 
 \itemize{
-    \item{alpha: }{coefficient estimates of exposure --> mediators.}
-    \item{beta: }{coefficient estimates of mediators --> outcome (adjusted for exposure).}
-    \item{gamma: }{coefficient estimates of exposure --> outcome (total effect).}
+    \item{alpha: }{coefficient estimates of exposure (X) --> mediators (M).}
+    \item{beta: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
+    \item{gamma: }{coefficient estimates of exposure (X) --> outcome (Y) (total effect).}
     \item{alpha*beta: }{mediation effect.}
     \item{\% total effect: }{alpha*beta / gamma. Percentage of the mediation effect out of the total effect.}
     \item{p-value: }{statistical significance of the mediator (Bonferroni method).}
@@ -81,12 +85,14 @@ simdat_cont = simHIMA(n, p, alpha, beta1, seed=1029)
 simdat_bin = simHIMA(n, p, alpha, beta2, binaryOutcome = TRUE, seed=1029) 
 
 # Run HIMA with MCP penalty by default
+# Y is continuous
 hima.fit <- hima(simdat_cont$X, simdat_cont$Y, simdat_cont$M, 
-parallel = FALSE) 
+parallel = FALSE, verbose = TRUE) 
 head(hima.fit)
 
+# Y is binary
 hima.logistic.fit <- hima(simdat_bin$X, simdat_bin$Y, simdat_bin$M, 
-family = "binomial", parallel = FALSE) 
+family = "binomial", parallel = FALSE, verbose = TRUE) 
 head(hima.logistic.fit)
 
 }

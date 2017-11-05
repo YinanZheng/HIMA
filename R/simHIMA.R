@@ -1,6 +1,6 @@
 #' Simulation Data Generator for High-dimensional Mediation Analyais
 #' 
-#' \code{simHIMA} is used to generate simulation data for high-dimensional mediation analyais.
+#' \code{simHIMA} is used to generate simulation data for high-dimensional mediation analysis.
 #' 
 #' @param n an integer specifying sample size.
 #' @param p an integer specifying the dimension of mediators.

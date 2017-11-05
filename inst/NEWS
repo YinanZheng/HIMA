@@ -16,3 +16,6 @@
 
 * Improvement: Benjamini-Hochberg FDR adjustment is available.
 
+# REMP 1.0.5 (2017-11-05)
+
+* Improvement: Two different sets of covariates are allowed for step 1 and step 2 separately.

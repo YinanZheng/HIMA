@@ -20,7 +20,7 @@ simHIMA(n, p, alpha, beta, binaryOutcome = FALSE, seed)
 \item{seed}{an integer specifying a seed for random number generation.}
 }
 \description{
-\code{simHIMA} is used to generate simulation data for high-dimensional mediation analyais.
+\code{simHIMA} is used to generate simulation data for high-dimensional mediation analysis.
 }
 \examples{
 n <- 300  # sample size

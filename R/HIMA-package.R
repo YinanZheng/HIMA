@@ -4,7 +4,7 @@
 #' HIMA is an R package for estimating and testing high-dimensional mediation effects in genomic/epigenomic studies.
 #' 
 #' \tabular{ll}{ Package: \tab HIMA\cr Type: \tab Package\cr
-#' Version: \tab 1.0.4\cr Date: \tab 2017-04-08\cr License: \tab GPL-3\cr }
+#' Version: \tab 1.0.5\cr Date: \tab 2017-11-05\cr License: \tab GPL-3\cr }
 #' 
 #' @name HIMA-package
 #' 
@@ -14,10 +14,9 @@
 #' 
 #' @author 
 #' Yinan Zheng \email{y-zheng@@northwestern.edu},
-#' Haixiang Zhang \email{lei.liu@@northwestern.edu},  
-#' Zhou Zhang \email{zhou.zhang@@northwestern.edu}     
+#' Haixiang Zhang \email{haixiang.zhang@@tju.edu.cn},  
 #' Lifang Hou \email{l-hou@@northwestern.edu}
-#' Lei liu \email{lei.liu@@northwestern.edu}
+#' Lei liu \email{lei.liu@@wustl.edu}
 #' 
 #' Maintainer: Yinan Zheng \email{y-zheng@@northwestern.edu}
 #' 
@@ -29,7 +28,7 @@
 #' 
 #' @import ncvreg
 #' 
-#' @importFrom stats rnorm runif rbinom glm model.matrix BIC coef
+#' @importFrom stats p.adjust rnorm runif rbinom glm model.matrix BIC coef
 #' @importFrom iterators idiv nextElem
 #' @importFrom parallel detectCores
 #' @importFrom foreach foreach %dopar% registerDoSEQ getDoParWorkers
