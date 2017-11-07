@@ -60,8 +60,8 @@ A data.frame containing mediation testing results of selected mediators.
 \code{hima} is used to estimate and test high-dimensional mediation effects.
 }
 \examples{
-n <- 300  # sample size
-p <- 2000 # the dimension of covariates
+n <- 100  # sample size
+p <- 500 # the dimension of covariates
 
 # the regression coefficients alpha (exposure --> mediators)
 alpha <- rep(0, p) 
