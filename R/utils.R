@@ -66,6 +66,9 @@ scaleto <- function(dat) {
 }
 
 # Internal function: Sure Independent Screening
+# Global variables:
+globalVariables("n")
+globalVariables("M_chunk")
 
 himasis <- function(Y, M, X, COV, glm.family, modelstatement, 
                     parallel, ncore, verbose, tag) {

@@ -33,13 +33,13 @@
 #'     \item{gamma: }{coefficient estimates of exposure (X) --> outcome (Y) (total effect).}
 #'     \item{alpha*beta: }{mediation effect.}
 #'     \item{\% total effect: }{alpha*beta / gamma. Percentage of the mediation effect out of the total effect.}
-#'     \item{p-value: }{statistical significance of the mediator (Bonferroni method).}
-#'     \item{FDR: }{statistical significance of the mediator (Benjamini-Hochberg procedure).}
+#'     \item{adjusted.p: }{statistical significance of the mediator (Bonferroni procedure).}
+#'     \item{BH.FDR: }{statistical significance of the mediator (Benjamini-Hochberg procedure).}
 #' }
 #'
 #' @examples
 #' n <- 300  # sample size
-#' p <- 10000 # the dimension of covariates
+#' p <- 2000 # the dimension of covariates
 #' 
 #' # the regression coefficients alpha (exposure --> mediators)
 #' alpha <- rep(0, p) 
@@ -193,7 +193,7 @@ hima <- function(X, Y, M, COV.XM = NULL, COV.MY = COV.XM,
     
     res <- summary(glm(Y ~ ., family = family, data = YMX))$coefficients
     est <- res[2:(length(ID_test) + 1), 1]  # the estimator for alpha
-    P_adjust_beta <- length(ID_test) * res[2:(length(ID_test) + 1), 4]  # the adjused p-value for beta
+    P_adjust_beta <- length(ID_test) * res[2:(length(ID_test) + 1), 4]  # the adjused p-value for beta (bonferroni)
     P_adjust_beta[P_adjust_beta > 1] <- 1
     P_fdr_beta <- p.adjust(res[2:(length(ID_test) + 1), 4], "fdr")  # the adjusted p-value for beta (FDR)
     
@@ -217,7 +217,7 @@ hima <- function(X, Y, M, COV.XM = NULL, COV.MY = COV.XM,
     
     results <- data.frame(alpha = alpha_est, beta = beta_est, gamma = gamma_est, 
                           `alpha*beta` = ab_est, `% total effect` = ab_est/gamma_est * 100, 
-                          `p-value` = P_value, `BH-FDR` = FDR, check.names = FALSE)
+                          `adjusted.p` = P_value, `BH.FDR` = FDR, check.names = FALSE)
     
     message("Done!", "     (", Sys.time(), ")")
     
