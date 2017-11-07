@@ -4,7 +4,7 @@ Title: High-Dimensional Mediation Analysis
 Version: 1.0.5
 Date: 2017-11-05
 Authors@R: c(person("Yinan","Zheng", role = c("aut","cre"), email = "y-zheng@northwestern.edu"), person("Haixiang","Zhang", role = c("aut"), email = "haixiang.zhang@tju.edu.cn"), person("Lifang","Hou", role = c("aut"), email = "l-hou@northwestern.edu"), person("Lei","Liu", role = c("aut","cph"), email = "lei.liu@wustl.edu"))
-Description: HIMA is used to estimate and test high-dimensional mediation effects.
+Description: Allows to estimate and test high-dimensional mediation effects based on sure independent screening and minimax concave penalty techniques. A joint significance test is used for mediation effect. Reference: Zhang H, Zheng Y, Zhang Z, Gao T, Joyce B, Yoon G, Zhang W, Schwartz J, Just A, Colicino E, Vokonas P, Zhao L, Lv J, Baccarelli A, Hou L, Liu L. Estimating and Testing High-dimensional Mediation Effects in Epigenetic Studies. Bioinformatics. 2016. DOI: http://dx.doi.org/10.1093/bioinformatics/btw351. PubMed PMID: 27357171.
 License: GPL-3
 Depends:
     R (>= 3.3),
