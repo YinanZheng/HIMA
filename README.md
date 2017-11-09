@@ -5,19 +5,10 @@
 
 ## Installation 
 
-In R console,
+HIMA is now available in R CRAN repository
 ```r
 ## Install REMP
-library(devtools)
-install_github("YinanZheng/HIMA",
-               dependencies=TRUE)
-               
-## If SSL cert verification failure
-library(RCurl)
-library(httr)
-set_config( config( ssl_verifypeer = 0L ) )
-install_github("YinanZheng/HIMA",
-               dependencies=TRUE)
+install.packages("HIMA")
 ```
 
 ##Citation:
