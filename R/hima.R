@@ -95,7 +95,7 @@ hima <- function(X, Y, M, COV.XM = NULL, COV.MY = COV.XM,
       d <- topN  # the number of top mediators that associated with exposure (X)
     }
   
-    d <- max(p, d) # if d > p select all mediators
+    d <- min(p, d) # if d > p select all mediators
     
     #########################################################################
     ################################ STEP 1 #################################
