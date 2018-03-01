@@ -49,7 +49,7 @@
 #' beta2 <- rep(0, p) # for binary outcome
 #' 
 #' # the first four markers are true mediators
-#' alpha[1:4] <- c(0.45,0.5,0.55,0.6)
+#' alpha[1:4] <- c(0.45,0.5,0.6,0.7)
 #' beta1[1:4] <- c(0.55,0.6,0.65,0.7)
 #' beta2[1:4] <- c(1.45,1.5,1.55,1.6)
 #'
@@ -107,20 +107,20 @@ hima <- function(X, Y, M, COV.XM = NULL, COV.MY = COV.XM,
       if(verbose) message("    Screening M using the association between X and M: ", appendLF = FALSE)
       alpha = SIS_alpha <- himasis(NA, M, X, COV.XM, glm.family = "gaussian", modelstatement = "Mone ~ X", 
                                parallel = parallel, ncore = ncore, verbose, tag = "Sure Independent Screening")
-      SIS_p <- SIS_alpha[2,]
+      SIS_estimate <- SIS_alpha[1,]
     } else if (family == "gaussian"){
       # Screen M using Y (continuous)
       if(verbose) message("    Screening M using the association between M and Y: ", appendLF = FALSE)
       SIS_beta <- himasis(Y, M, X, COV.MY, glm.family = family, modelstatement = "Y ~ Mone + X", 
                                parallel = parallel, ncore = ncore, verbose, tag = "Sure Independent Screening")
-      SIS_p <- SIS_beta[2,]
+      SIS_estimate <- SIS_beta[1,]
     } else {
       stop(paste0("Family ", family, " is not supported."))
     }
   
-    SIS_p_sort <- sort(SIS_p)
-    ID <- which(SIS_p <= SIS_p_sort[d])  # the index of top mediators
-    if(verbose) message("    Top ", length(ID), " mediators selected (from most significant to least significant): ", paste0(names(SIS_p_sort[seq_len(d)]), collapse = ","))
+    SIS_estimate_sort <- sort(abs(SIS_estimate), decreasing = TRUE)
+    ID <- which(abs(SIS_estimate) >= SIS_estimate_sort[d])  # the index of top mediators
+    if(verbose) message("    Top ", length(ID), " mediators selected: ", paste0(names(SIS_estimate_sort[seq_len(d)]), collapse = ","))
   
     M_SIS <- M[, ID]
     XM <- cbind(M_SIS, X)
@@ -192,7 +192,7 @@ hima <- function(X, Y, M, COV.XM = NULL, COV.MY = COV.XM,
     }
     
     res <- summary(glm(Y ~ ., family = family, data = YMX))$coefficients
-    est <- res[2:(length(ID_test) + 1), 1]  # the estimator for alpha
+    est <- res[2:(length(ID_test) + 1), 1]  # the estimator for beta
     P_adjust_beta <- length(ID_test) * res[2:(length(ID_test) + 1), 4]  # the adjused p-value for beta (bonferroni)
     P_adjust_beta[P_adjust_beta > 1] <- 1
     P_fdr_beta <- p.adjust(res[2:(length(ID_test) + 1), 4], "fdr")  # the adjusted p-value for beta (FDR)

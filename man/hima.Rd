@@ -71,7 +71,7 @@ beta1 <- rep(0, p) # for continuous outcome
 beta2 <- rep(0, p) # for binary outcome
 
 # the first four markers are true mediators
-alpha[1:4] <- c(0.45,0.5,0.55,0.6)
+alpha[1:4] <- c(0.45,0.5,0.6,0.7)
 beta1[1:4] <- c(0.55,0.6,0.65,0.7)
 beta2[1:4] <- c(1.45,1.5,1.55,1.6)
 

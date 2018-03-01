@@ -19,3 +19,7 @@
 # REMP 1.0.5 (2017-11-05)
 
 * Improvement: Two different sets of covariates are allowed for step 1 and step 2 separately.
+
+# REMP 1.0.6 (2017-11-05)
+
+* Bug fix: rank SIS results by absolute effect instead of significance.
