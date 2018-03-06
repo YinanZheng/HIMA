@@ -1,5 +1,5 @@
 ## HIMA: High-dimensional Mediation Analysis
-[![GitHub release](https://img.shields.io/badge/release-v1.0.6-blue.svg)](https://github.com/YinanZheng/HIMA/releases)
+[![GitHub release](https://img.shields.io/badge/release-v1.0.7-blue.svg)](https://github.com/YinanZheng/HIMA/releases)
 
 *HIMA* is an [R](http://en.wikipedia.org/wiki/R_%28programming_language%29) package for estimating and testing high-dimensional mediation effects in genomic/epigenomic studies.
 

@@ -33,7 +33,8 @@ Covariates specified here will not participate penalization. If not specified, t
 \item{topN}{an integer specifying the number of top markers from sure independent screening. 
 Default = \code{NULL}. If \code{NULL}, \code{topN} will be either \code{ceiling(n/log(n))} if 
 \code{family = 'gaussian'}, or \code{ceiling(n/(2*log(n)))} if \code{family = 'binomial'}, 
-where \code{n} is the sample size.}
+where \code{n} is the sample size. If the sample size is greater than topN (pre-specified or calculated), all 
+mediators will be included in the test (i.e. low-dimensional scenario).}
 
 \item{parallel}{logical. Enable parallel computing feature? Default = \code{TRUE}.}
 

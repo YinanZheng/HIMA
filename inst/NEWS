@@ -20,6 +20,6 @@
 
 * Improvement: Two different sets of covariates are allowed for step 1 and step 2 separately.
 
-# REMP 1.0.6 (2017-11-05)
+# REMP 1.0.7 (2018-03-06)
 
-* Bug fix: rank SIS results by absolute effect instead of significance.
+* Allow low-dimensional mediator selections.

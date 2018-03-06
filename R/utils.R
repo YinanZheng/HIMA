@@ -47,7 +47,7 @@ iblkcol_lag <- function(M, ...) {
   obj
 }
 
-## Internal function: scale data
+## Internal function: scale data (obsolete function)
 
 scaleto <- function(dat) {
   if (is.null(dat)) 
@@ -74,9 +74,6 @@ himasis <- function(Y, M, X, COV, glm.family, modelstatement,
                     parallel, ncore, verbose, tag) {
   L.M <- ncol(M)
   M.names <- colnames(M)
-  
-  # if (scale) 
-    # M_scale <- scaleto(M) else M_scale <- M
   
   X <- data.frame(X)
   X <- data.frame(model.matrix(~., X))[, -1]

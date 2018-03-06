@@ -19,7 +19,8 @@
 #' @param topN an integer specifying the number of top markers from sure independent screening. 
 #' Default = \code{NULL}. If \code{NULL}, \code{topN} will be either \code{ceiling(n/log(n))} if 
 #' \code{family = 'gaussian'}, or \code{ceiling(n/(2*log(n)))} if \code{family = 'binomial'}, 
-#' where \code{n} is the sample size. 
+#' where \code{n} is the sample size. If the sample size is greater than topN (pre-specified or calculated), all 
+#' mediators will be included in the test (i.e. low-dimensional scenario).
 #' @param parallel logical. Enable parallel computing feature? Default = \code{TRUE}.
 #' @param ncore number of cores to run parallel computing Valid when \code{parallel == TRUE}. 
 #' By default max number of cores available in the machine will be utilized.
@@ -107,22 +108,22 @@ hima <- function(X, Y, M, COV.XM = NULL, COV.MY = COV.XM,
       # Screen M using X given the limited information provided by Y (binary)
       # Therefore the family is still gaussian
       if(verbose) message("    Screening M using the association between X and M: ", appendLF = FALSE)
-      alpha = SIS_alpha <- himasis(NA, M, X, COV.XM, glm.family = "gaussian", modelstatement = "Mone ~ X", 
+      alpha = SIS_Results <- himasis(NA, M, X, COV.XM, glm.family = "gaussian", modelstatement = "Mone ~ X", 
                                parallel = parallel, ncore = ncore, verbose, tag = "Sure Independent Screening")
-      SIS_estimate <- SIS_alpha[1,]
+      SIS_Pvalue <- SIS_Results[2,]
     } else if (family == "gaussian"){
       # Screen M using Y (continuous)
       if(verbose) message("    Screening M using the association between M and Y: ", appendLF = FALSE)
-      SIS_beta <- himasis(Y, M, X, COV.MY, glm.family = family, modelstatement = "Y ~ Mone + X", 
+      SIS_Results <- himasis(Y, M, X, COV.MY, glm.family = family, modelstatement = "Y ~ Mone + X", 
                                parallel = parallel, ncore = ncore, verbose, tag = "Sure Independent Screening")
-      SIS_estimate <- SIS_beta[1,]
+      SIS_Pvalue <- SIS_Results[2,]
     } else {
       stop(paste0("Family ", family, " is not supported."))
     }
-  
-    SIS_estimate_sort <- sort(abs(SIS_estimate), decreasing = TRUE)
-    ID <- which(abs(SIS_estimate) >= SIS_estimate_sort[d])  # the index of top mediators
-    if(verbose) message("    Top ", length(ID), " mediators selected: ", paste0(names(SIS_estimate_sort[seq_len(d)]), collapse = ","))
+    # Note: ranking using p on un-standardized data is equivalent to ranking using beta on standardized data
+    SIS_Pvalue_sort <- sort(SIS_Pvalue)
+    ID <- which(SIS_Pvalue <= SIS_Pvalue_sort[d])  # the index of top mediators
+    if(verbose) message("    Top ", length(ID), " mediators are selected: ", paste0(names(SIS_Pvalue_sort[seq_len(d)]), collapse = ","))
   
     M_SIS <- M[, ID]
     XM <- cbind(M_SIS, X)
