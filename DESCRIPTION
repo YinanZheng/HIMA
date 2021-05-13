@@ -11,6 +11,7 @@ Depends:
     ncvreg,
     glmnet
 Imports:
+    utils,
     stats,
     MASS,
     survival,
@@ -24,6 +25,7 @@ Collate:
     simHIMA.R
     hima.R
     survHIMA.R
+    onAttach.R
     HIMA-package.R
 Encoding: UTF-8
 LazyData: false

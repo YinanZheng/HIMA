@@ -32,6 +32,7 @@
 #' @import ncvreg
 #' @import glmnet
 #' 
+#' @importFrom utils packageVersion
 #' @importFrom stats p.adjust rnorm runif rbinom glm model.matrix BIC coef ls.diag lsfit pnorm
 #' @importFrom iterators idiv nextElem
 #' @importFrom parallel detectCores
