@@ -43,8 +43,8 @@
 #' Bioinformatics. 2016. DOI: \url{http://dx.doi.org/10.1093/bioinformatics/btw351}. PubMed PMID: 27357171.
 #' 
 #' @examples
-#' n <- 100  # sample size
-#' p <- 500 # the dimension of covariates
+#' n <- 200  # sample size
+#' p <- 200 # the dimension of covariates
 #' 
 #' # the regression coefficients alpha (exposure --> mediators)
 #' alpha <- rep(0, p) 
@@ -70,12 +70,12 @@
 #' # Run HIMA with MCP penalty by default
 #' # When Y is continuous (default)
 #' hima.fit <- hima(simdat_cont$X, simdat_cont$Y, simdat_cont$M, verbose = TRUE) 
-#' head(hima.fit)
+#' hima.fit
 #' 
 #' # When Y is binary (should specify family)
 #' hima.logistic.fit <- hima(simdat_bin$X, simdat_bin$Y, simdat_bin$M, 
 #' family = "binomial", verbose = TRUE) 
-#' head(hima.logistic.fit)
+#' hima.logistic.fit
 #' 
 #' @export
 hima <- function(X, Y, M, COV.XM = NULL, COV.MY = COV.XM, 

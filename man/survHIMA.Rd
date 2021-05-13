@@ -4,12 +4,12 @@
 \alias{survHIMA}
 \title{High-dimensional mediation analysis for survival data}
 \usage{
-survHIMA(X, Z, M, OT, status, FDRcut = 0.05)
+survHIMA(X, Z, M, OT, status, FDRcut = 0.05, verbose = FALSE)
 }
 \arguments{
 \item{X}{a vector of exposure.}
 
-\item{Z}{a matrix of adjusting covariates. Rows represent samples, columns represent variables.}
+\item{Z}{a matrix of adjusting covariates. Rows represent samples, columns represent variables. Can be \code{NULL}.}
 
 \item{M}{a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns 
 represent variables.}
@@ -19,6 +19,8 @@ represent variables.}
 \item{status}{a vector of censoring indicator (\code{status = 1}: uncensored; \code{status = 0}: censored)}
 
 \item{FDRcut}{FDR cutoff applied to define and select significant mediators. Default = \code{0.05}.}
+
+\item{verbose}{logical. Should the function be verbose? Default = \code{FALSE}.}
 }
 \value{
 A data.frame containing mediation testing results of selected mediators (FDR <\code{0.05}). 
@@ -36,32 +38,25 @@ A data.frame containing mediation testing results of selected mediators (FDR <\c
 }
 \examples{
 ## Generate simulated survival data
-n <- 300  # sample size
-c_unif <- 150 # CR= 0.20
-
-##
+set.seed(100)
+n <- 100  # sample size
 p <- 100 # the dimension of mediators
-q <- 2   # the dimension of covariates
-##
+q <- 1   # the dimension of covariate(s)
 
 sigma_e <- matrix(0.25, p, p)
 diag(sigma_e) <- 1
 sigma_e[1, 3] <- 0.8
-sigma_e[3, 1] <- sigma_e[1, 3]
+sigma_e[3, 1] <- 0.8
 sigma_e[2, 4] <- 0.8
 sigma_e[4, 2] <- 0.8
 
 ##
 beta <- matrix(0, 1, p)
-beta[1]  <- 0.6
-beta[3]  <- 0.8
-beta[5]  <- 0.55
+beta[1:5] <- c(0.6, -0.5, 0.4, -0.3, 0.25)
 
 ##
 alpha <- matrix(0, 1, p)
-alpha[1]  <- 0.6
-alpha[3]  <- 0.8
-alpha[5]  <- 0.8
+alpha[1:5] <- c(0.6, -0.5, 0.4, -0.3, 0.25)
 
 ##
 gamma <- matrix(0.5, 1, q)
@@ -74,31 +69,26 @@ Z <- matrix(rnorm(n * q, mean = 0, sd = 2), n, q) # covariates
 mu <- matrix(0, p, 1)
 e <- MASS::mvrnorm(n, mu, sigma_e)  # the error terms
 
-M <- matrix(0, n, p)
 M <- X\%*\%(alpha) + Z\%*\%t(eta) + e
 MZ <- cbind(M, Z, X)
 
-beta_gamma <- cbind(beta,gamma,r)
+beta_gamma <- cbind(beta, gamma, r)
 
-## generate the filure time T 
+## generate the failure time T 
 u <- runif(n, 0, 1)
 T <- matrix(0, n, 1) 
-for (i in 1:n){
+for (i in 1:n)
   T[i] <- -log(1 - u[i])*exp(-sum(beta_gamma*MZ[i,]))
-}
 
 ## generate censoring time 0.45 censoring rate
-C <- runif(n, min = 0, max = c_unif)  
-
+C <- runif(n, min = 0, max = 150)  
 status <- as.integer(T < C)
 
 ## the observed failure time
-y <- apply(cbind(C,T), 1, min) 
+OT <- apply(cbind(C,T), 1, min) 
 
-fit <- survHIMA(X, Z, M, y, status)
-
-## ID = 1, 3, 5, are selected (FDR <0.05)
-fit
+survHIMA.fit <- survHIMA(X, Z, M, OT, status)
+survHIMA.fit
 
 }
 \references{
