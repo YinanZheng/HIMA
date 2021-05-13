@@ -4,9 +4,20 @@
 \alias{hima}
 \title{High-dimensional Mediation Analysis}
 \usage{
-hima(X, Y, M, COV.XM = NULL, COV.MY = COV.XM, family = c("gaussian",
-  "binomial"), penalty = c("MCP", "SCAD", "lasso"), topN = NULL,
-  parallel = FALSE, ncore = 1, verbose = FALSE, ...)
+hima(
+  X,
+  Y,
+  M,
+  COV.XM = NULL,
+  COV.MY = COV.XM,
+  family = c("gaussian", "binomial"),
+  penalty = c("MCP", "SCAD", "lasso"),
+  topN = NULL,
+  parallel = FALSE,
+  ncore = 1,
+  verbose = FALSE,
+  ...
+)
 }
 \arguments{
 \item{X}{a vector of exposure.}
@@ -53,7 +64,7 @@ A data.frame containing mediation testing results of selected mediators.
     \item{gamma: }{coefficient estimates of exposure (X) --> outcome (Y) (total effect).}
     \item{alpha*beta: }{mediation effect.}
     \item{\% total effect: }{alpha*beta / gamma. Percentage of the mediation effect out of the total effect.}
-    \item{adjusted.p: }{statistical significance of the mediator (Bonferroni procedure).}
+    \item{Bonferroni.p: }{statistical significance of the mediator (Bonferroni procedure).}
     \item{BH.FDR: }{statistical significance of the mediator (Benjamini-Hochberg procedure).}
 }
 }

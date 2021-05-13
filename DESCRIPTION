@@ -1,16 +1,20 @@
 Package: HIMA
 Type: Package
 Title: High-Dimensional Mediation Analysis
-Version: 1.0.7
-Date: 2018-03-06
+Version: 1.1.0
+Date: 2021-05-12
 Authors@R: c(person("Yinan","Zheng", role = c("aut","cre"), email = "y-zheng@northwestern.edu"), person("Haixiang","Zhang", role = c("aut"), email = "haixiang.zhang@tju.edu.cn"), person("Lifang","Hou", role = c("aut"), email = "l-hou@northwestern.edu"), person("Lei","Liu", role = c("aut","cph"), email = "lei.liu@wustl.edu"))
-Description: Allows to estimate and test high-dimensional mediation effects based on sure independent screening and minimax concave penalty techniques. A joint significance test is used for mediation effect. Haixiang Zhang, Yinan Zheng, Zhou Zhang, Tao Gao, Brian Joyce, Grace Yoon, Wei Zhang, Joel Schwartz, Allan Just, Elena Colicino, Pantel Vokonas, Lihui Zhao, Jinchi Lv, Andrea Baccarelli, Lifang Hou, Lei Liu (2016) <doi:10.1093/bioinformatics/btw351>.
+Description: Allows to estimate and test high-dimensional mediation effects based on advanced mediator screening and penalized regression techniques.
 License: GPL-3
 Depends:
-    R (>= 3.3),
-    ncvreg
+    R (>= 3.4.0),
+    ncvreg,
+    glmnet
 Imports:
     stats,
+    MASS,
+    survival,
+    HDMT,
     iterators,
     parallel,
     foreach,
@@ -19,8 +23,10 @@ Collate:
     utils.R
     simHIMA.R
     hima.R
+    survHIMA.R
     HIMA-package.R
+Encoding: UTF-8
 LazyData: false
 URL: https://github.com/YinanZheng/HIMA
 BugReports: https://github.com/YinanZheng/HIMA/issues
-RoxygenNote: 6.0.1
+RoxygenNote: 7.1.0

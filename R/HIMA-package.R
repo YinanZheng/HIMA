@@ -1,10 +1,10 @@
 #' @title High-dimensional Mediation Analysis
 #'
 #' @description
-#' HIMA is an R package for estimating and testing high-dimensional mediation effects in genomic/epigenomic studies.
+#' HIMA is an R package for estimating and testing high-dimensional mediation effects in omic studies.
 #' 
 #' \tabular{ll}{ Package: \tab HIMA\cr Type: \tab Package\cr
-#' Version: \tab 1.0.7\cr Date: \tab 2018-03-06\cr License: \tab GPL-3\cr }
+#' Version: \tab 1.1.0\cr Date: \tab 2021-05-12\cr License: \tab GPL-3\cr }
 #' 
 #' @name HIMA-package
 #' 
@@ -20,18 +20,25 @@
 #' 
 #' Maintainer: Yinan Zheng \email{y-zheng@@northwestern.edu}
 #' 
-#' @references Zhang H, Zheng Y, Zhang Z, Gao T, Joyce B, Yoon G, Zhang W, Schwartz J, Just A, Colicino E, Vokonas P, Zhao L, 
+#' @references 1. Zhang H, Zheng Y, Zhang Z, Gao T, Joyce B, Yoon G, Zhang W, Schwartz J, Just A, Colicino E, Vokonas P, Zhao L, 
 #' Lv J, Baccarelli A, Hou L, Liu L. Estimating and Testing High-dimensional Mediation Effects in Epigenetic Studies. 
 #' Bioinformatics. 2016. DOI: \url{http://dx.doi.org/10.1093/bioinformatics/btw351}. PubMed PMID: 27357171.
+#' 
+#' 2. Zhang H, Zheng Y, Hou L, Liu L. Mediation Analysis for Survival Data with High-Dimensional Mediators. 
+#' Bioinformatics. 2021 (under review).
 #' 
 #' @keywords package
 #' 
 #' @import ncvreg
+#' @import glmnet
 #' 
-#' @importFrom stats p.adjust rnorm runif rbinom glm model.matrix BIC coef
+#' @importFrom stats p.adjust rnorm runif rbinom glm model.matrix BIC coef ls.diag lsfit pnorm
 #' @importFrom iterators idiv nextElem
 #' @importFrom parallel detectCores
 #' @importFrom foreach foreach %dopar% registerDoSEQ getDoParWorkers
 #' @importFrom doParallel registerDoParallel
-
+#' @importFrom HDMT null_estimation fdr_est
+#' @importFrom survival Surv coxph
+#' @importFrom MASS mvrnorm
+#' 
 NULL

@@ -19,6 +19,8 @@ checkParallel <- function(program.name, parallel, ncore, verbose) {
   }
 }
 
+
+
 ## Internal function: doOne code generater
 
 doOneGen <- function(model.text, colind.text) {
@@ -29,6 +31,8 @@ doOneGen <- function(model.text, colind.text) {
                    "]};invisible(b)}")
   return(script)
 }
+
+
 
 ## Internal function: create iterator for bulk matrix by column
 
@@ -47,6 +51,8 @@ iblkcol_lag <- function(M, ...) {
   obj
 }
 
+
+
 ## Internal function: scale data (obsolete function)
 
 scaleto <- function(dat) {
@@ -64,6 +70,8 @@ scaleto <- function(dat) {
   dat_scale <- as.numeric(attributes(dat_scale)[["scaled:scale"]])
   return(list(dn = dat_names, d = dat, ds = dat_scale))
 }
+
+
 
 # Internal function: Sure Independent Screening
 # Global variables:
@@ -103,4 +111,99 @@ himasis <- function(Y, M, X, COV, glm.family, modelstatement,
 
   colnames(results) <- M.names
   return(results)
+}
+
+
+
+# Internal function: LDPE
+# the code of Liu han's JRSSB paper for high-dimensional Cox model
+# ID: the index of interested parameter
+# X: the covariates matrix with n by p
+# time: the observed time =  min(T,C)
+# status: the censoring indicator I(T <= C)
+
+LDPE_func <- function(ID, X, time, status){
+  coi <- ID
+  x <- X
+  d <- dim(x)[2]
+  n <- dim(x)[1]
+
+  ##Set of tuning parameters
+  PF <- matrix(1,1,d)
+  PF[ID] <- 1
+  fit <- glmnet(x, survival::Surv(time, status), family="cox", alpha = 1, standardize = FALSE,penalty.factor=PF)
+  cv.fit <- cv.glmnet(x, survival::Surv(time, status), family="cox", alpha = 1, standardize = FALSE,penalty.factor=PF)
+  betas   <-   coef(fit, s = cv.fit$lambda.min)[1:d]  # the semi-penalized initial estimator  # initial estimator
+  
+  stime = sort(time)          # Sorted survival/censored times
+  otime = order(time)         # Order of time
+  
+  Vs  = matrix(rep(0,d*d),nrow = d)
+  Hs  = Vs                                 # Hessian
+  ind = 0
+  
+  la  = rep(0,n)                           # Gradient w.r.t parameter of interest
+  lb  = matrix(rep(0,(d-1)*n),nrow = n)    # Gradient w.r.t nuisance parameter (theta)
+  i   = 1
+  
+  while( i<=n)
+  {
+    if (status[otime[i]]==1)
+    {
+      ind = which(time >= stime[i])
+      S0  = 0
+      S1  = rep(0,d)
+      S2  = matrix(rep(0,d*d),nrow = d)
+      
+      if (length(ind)>0)
+      {
+        for (j in 1:length(ind))
+        {
+          tmp = exp(x[ind[j],]%*%betas)
+          S0  = S0 + tmp
+          
+          S1  = S1 + tmp %*%t(x[ind[j],])
+          
+          tmp = apply(tmp,1,as.numeric)     
+          S2  = S2 + tmp*x[ind[j],]%*%t(x[ind[j],])
+        }
+      }
+      S0 = apply(S0,1,as.numeric)
+      
+      la[i]  = -(x[otime[i],coi] - S1[coi]/S0)
+      if (coi == 1)
+      {
+        lb[i,] = -(x[otime[i],c((coi+1):d)] - S1[c((coi+1):d)]/S0)
+      } else if (coi == d){
+        lb[i,] = -(x[otime[i],c(1:(coi-1))] - S1[c(1:(coi-1))]/S0)
+      } else {
+        lb[i,] = -(x[otime[i],c(1:(coi-1), (coi+1):d)] - S1[c(1:(coi-1), (coi+1):d)]/S0)
+      }
+      V   = S0*S2 - t(S1)%*%(S1)
+      Hs  = Hs + V/(n*S0^2)          
+    }
+    i = i + 1
+  }
+  
+  fit <- glmnet(lb,la,alpha = 1, standardize = FALSE,intercept = FALSE,lambda = sqrt(log(d)/n))
+  what <- as.numeric(coef(fit)[2:d])   
+  
+  if (coi == 1)
+  {
+    S = betas[coi] - (mean(la)  - t(what)%*%(colMeans(lb)))/(Hs[coi,coi] - t(what)%*%Hs[c((coi+1):d),coi])
+    var   = Hs[coi,coi] - t(what)%*%Hs[c((coi+1):d),coi]
+  } else if (coi == d){
+    S = betas[coi] - (mean(la)  - t(what)%*%(colMeans(lb)))/(Hs[coi,coi] - t(what)%*%Hs[c(1:(coi-1)),coi])
+    var   = Hs[coi,coi] - t(what)%*%Hs[c(1:(coi-1)),coi]
+  } else {
+    S = betas[coi] - (mean(la)  - t(what)%*%(colMeans(lb)))/(Hs[coi,coi] - t(what)%*%Hs[c(1:(coi-1),(coi+1):d),coi])
+    var   = Hs[coi,coi] - t(what)%*%Hs[c(1:(coi-1),(coi+1):d),coi]
+  }
+  
+  beta_est <- S
+  beta_SE  <- sqrt(1/(n*var))
+  
+  result <- c(beta_est,beta_SE)
+  
+  return(result)
 }

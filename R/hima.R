@@ -34,7 +34,7 @@
 #'     \item{gamma: }{coefficient estimates of exposure (X) --> outcome (Y) (total effect).}
 #'     \item{alpha*beta: }{mediation effect.}
 #'     \item{\% total effect: }{alpha*beta / gamma. Percentage of the mediation effect out of the total effect.}
-#'     \item{adjusted.p: }{statistical significance of the mediator (Bonferroni procedure).}
+#'     \item{Bonferroni.p: }{statistical significance of the mediator (Bonferroni procedure).}
 #'     \item{BH.FDR: }{statistical significance of the mediator (Benjamini-Hochberg procedure).}
 #' }
 #'
@@ -178,7 +178,7 @@ hima <- function(X, Y, M, COV.XM = NULL, COV.MY = COV.XM,
     #########################################################################
     ################################ STEP 3 #################################
     #########################################################################
-    if(verbose) message("Step 3: Joint significance test ...", "     (", Sys.time(), ")")
+    message("Step 3: Joint significance test ...", "     (", Sys.time(), ")")
     
     alpha_est_ID_test <- as.numeric(alpha[1, ])  #  the estimator for alpha
     P_adjust_alpha <- length(ID_test) * alpha[2, ]  # the adjusted p-value for alpha (bonferroni)
@@ -220,7 +220,7 @@ hima <- function(X, Y, M, COV.XM = NULL, COV.MY = COV.XM,
     
     results <- data.frame(alpha = alpha_est, beta = beta_est, gamma = gamma_est, 
                           `alpha*beta` = ab_est, `% total effect` = ab_est/gamma_est * 100, 
-                          `adjusted.p` = P_value, `BH.FDR` = FDR, check.names = FALSE)
+                          `Bonferroni.p` = P_value, `BH.FDR` = FDR, check.names = FALSE)
     
     message("Done!", "     (", Sys.time(), ")")
     
