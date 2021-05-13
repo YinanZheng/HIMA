@@ -23,3 +23,7 @@
 # REMP 1.0.7 (2018-03-06)
 
 * Allow low-dimensional mediator selections.
+
+# REMP 1.1.0 (2021-05-12)
+
+* Add new function 'survHIMA' to support survival data.
