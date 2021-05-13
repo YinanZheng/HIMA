@@ -7,7 +7,7 @@
 #' @param Z a matrix of adjusting covariates. Rows represent samples, columns represent variables.
 #' @param M a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns 
 #' represent variables.
-#' @param y a vector of observed failure times.
+#' @param OT a vector of observed failure times.
 #' @param status a vector of censoring indicator (\code{status = 1}: uncensored; \code{status = 0}: censored)
 #' @param FDRcut FDR cutoff applied to define and select significant mediators. Default = \code{0.05}. 
 #' 
@@ -20,7 +20,10 @@
 #'     \item{beta_se: }{standard error for beta}
 #'     \item{p.joint: }{joint p-value of selected significant mediator.}
 #' }
-#'
+#' 
+#' @references Zhang H, Zheng Y, Hou L, Liu L. Mediation Analysis for Survival Data with High-Dimensional Mediators. 
+#' Bioinformatics. 2021 (under review).
+#' 
 #' @examples
 #' ## Generate simulated survival data
 #' n <- 300  # sample size
@@ -88,7 +91,7 @@
 #' fit
 #' 
 #' @export
-survHIMA <- function(X, Z, M, y, status, FDRcut = 0.05){
+survHIMA <- function(X, Z, M, OT, status, FDRcut = 0.05){
 
   MZ <- cbind(M,Z,X)
   n <- length(X)
@@ -105,7 +108,7 @@ survHIMA <- function(X, Z, M, y, status, FDRcut = 0.05){
   for (i in 1:p){
     ID_S <- c(i, (p+1):(p+q+1))
     MZ_SIS <- MZ[,ID_S]
-    fit <- survival::coxph(survival::Surv(y, status) ~ MZ_SIS)
+    fit <- survival::coxph(survival::Surv(OT, status) ~ MZ_SIS)
     beta_SIS[i] <- fit$coefficients[1]
   }
 
@@ -137,7 +140,7 @@ survHIMA <- function(X, Z, M, y, status, FDRcut = 0.05){
     V <- MZ_SIS
     V[,1] <- V[,i]
     V[,i] <- MZ_SIS_1
-    LDPE_res <- LDPE_func(ID = 1, X = V, time = y, status = status)
+    LDPE_res <- LDPE_func(ID = 1, X = V, OT = OT, status = status)
     beta_LDPE_est <- LDPE_res[1]
     beta_LDPE_SE  <- LDPE_res[2]
     V1_P <- abs(beta_LDPE_est)/beta_LDPE_SE

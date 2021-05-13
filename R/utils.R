@@ -119,10 +119,10 @@ himasis <- function(Y, M, X, COV, glm.family, modelstatement,
 # the code of Liu han's JRSSB paper for high-dimensional Cox model
 # ID: the index of interested parameter
 # X: the covariates matrix with n by p
-# time: the observed time =  min(T,C)
+# OT: the observed time = min(T,C)
 # status: the censoring indicator I(T <= C)
 
-LDPE_func <- function(ID, X, time, status){
+LDPE_func <- function(ID, X, OT, status){
   coi <- ID
   x <- X
   d <- dim(x)[2]
@@ -131,12 +131,12 @@ LDPE_func <- function(ID, X, time, status){
   ##Set of tuning parameters
   PF <- matrix(1,1,d)
   PF[ID] <- 1
-  fit <- glmnet(x, survival::Surv(time, status), family="cox", alpha = 1, standardize = FALSE,penalty.factor=PF)
-  cv.fit <- cv.glmnet(x, survival::Surv(time, status), family="cox", alpha = 1, standardize = FALSE,penalty.factor=PF)
+  fit <- glmnet(x, survival::Surv(OT, status), family="cox", alpha = 1, standardize = FALSE,penalty.factor=PF)
+  cv.fit <- cv.glmnet(x, survival::Surv(OT, status), family="cox", alpha = 1, standardize = FALSE,penalty.factor=PF)
   betas   <-   coef(fit, s = cv.fit$lambda.min)[1:d]  # the semi-penalized initial estimator  # initial estimator
   
-  stime = sort(time)          # Sorted survival/censored times
-  otime = order(time)         # Order of time
+  stime = sort(OT)          # Sorted survival/censored times
+  otime = order(OT)         # Order of time
   
   Vs  = matrix(rep(0,d*d),nrow = d)
   Hs  = Vs                                 # Hessian
@@ -150,7 +150,7 @@ LDPE_func <- function(ID, X, time, status){
   {
     if (status[otime[i]]==1)
     {
-      ind = which(time >= stime[i])
+      ind = which(OT >= stime[i])
       S0  = 0
       S1  = rep(0,d)
       S2  = matrix(rep(0,d*d),nrow = d)

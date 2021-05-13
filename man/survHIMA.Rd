@@ -4,7 +4,7 @@
 \alias{survHIMA}
 \title{High-dimensional mediation analysis for survival data}
 \usage{
-survHIMA(X, Z, M, y, status, FDRcut = 0.05)
+survHIMA(X, Z, M, OT, status, FDRcut = 0.05)
 }
 \arguments{
 \item{X}{a vector of exposure.}
@@ -14,7 +14,7 @@ survHIMA(X, Z, M, y, status, FDRcut = 0.05)
 \item{M}{a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns 
 represent variables.}
 
-\item{y}{a vector of observed failure times.}
+\item{OT}{a vector of observed failure times.}
 
 \item{status}{a vector of censoring indicator (\code{status = 1}: uncensored; \code{status = 0}: censored)}
 
@@ -100,4 +100,8 @@ fit <- survHIMA(X, Z, M, y, status)
 ## ID = 1, 3, 5, are selected (FDR <0.05)
 fit
 
+}
+\references{
+Zhang H, Zheng Y, Hou L, Liu L. Mediation Analysis for Survival Data with High-Dimensional Mediators. 
+Bioinformatics. 2021 (under review).
 }
