@@ -76,8 +76,10 @@
 #' ## the observed failure time
 #' OT <- apply(cbind(C,T), 1, min) 
 #' 
+#' \dontrun{
 #' survHIMA.fit <- survHIMA(X, Z, M, OT, status)
 #' survHIMA.fit
+#' }
 #' 
 #' @export
 survHIMA <- function(X, Z, M, OT, status, FDRcut = 0.05, verbose = FALSE){

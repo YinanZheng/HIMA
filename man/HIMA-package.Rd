@@ -14,7 +14,7 @@ Version: \tab 1.1.0\cr Date: \tab 2021-05-12\cr License: \tab GPL-3\cr }
 \references{
 1. Zhang H, Zheng Y, Zhang Z, Gao T, Joyce B, Yoon G, Zhang W, Schwartz J, Just A, Colicino E, Vokonas P, Zhao L, 
 Lv J, Baccarelli A, Hou L, Liu L. Estimating and Testing High-dimensional Mediation Effects in Epigenetic Studies. 
-Bioinformatics. 2016. DOI: \url{http://dx.doi.org/10.1093/bioinformatics/btw351}. PubMed PMID: 27357171.
+Bioinformatics. 2016. DOI: 10.1093/bioinformatics/btw351. PubMed PMID: 27357171.
 
 2. Zhang H, Zheng Y, Hou L, Liu L. Mediation Analysis for Survival Data with High-Dimensional Mediators. 
 Bioinformatics. 2021 (under review).

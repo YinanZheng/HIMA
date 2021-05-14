@@ -14,7 +14,6 @@
                      "     Estimating and Testing High-dimensional Mediation Effects in Epigenetic Studies.\n",
                      "     Bioinformatics. 2016;32(20):3150-3154.\n",
                      "     PubMed PMID: 27357171; PMCID: PMC5048064.\n",
-                     "     http://dx.doi.org/10.1093/bioinformatics/btw351\n",
                      "\n",
                      "  2. Zhang H, Zheng Y, Hou L, Liu L.\n",
                      "     Mediation Analysis for Survival Data with High-Dimensional Mediators.\n",
