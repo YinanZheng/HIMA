@@ -13,11 +13,12 @@
                      "     Just A, Colicino E, Vokonas P, Zhao L, Lv J, Baccarelli A, Hou L, Liu L.\n",
                      "     Estimating and Testing High-dimensional Mediation Effects in Epigenetic Studies.\n",
                      "     Bioinformatics. 2016;32(20):3150-3154.\n",
-                     "     PubMed PMID: 27357171; PMCID: PMC5048064.\n",
+                     "     PMID: 27357171; PMCID: PMC5048064.\n",
                      "\n",
-                     "  2. Zhang H, Zheng Y, Hou L, Liu L.\n",
+                     "  2. Zhang H, Zheng Y, Hou L, Zheng C, Liu L.\n",
                      "     Mediation Analysis for Survival Data with High-Dimensional Mediators.\n",
-                     "     Bioinformatics. 2021 (under review)")
+                     "     Bioinformatics. 2021;37(21):3815-3821.\n",
+                     "     PMID: 34343267. PMCID: PMC8570823.")
   
   packageStartupMessage(citation)
   

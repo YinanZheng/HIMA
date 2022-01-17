@@ -22,13 +22,13 @@
 #'     \item{p.joint: }{joint p-value of selected significant mediator.}
 #' }
 #' 
-#' @references Zhang H, Zheng Y, Hou L, Liu L. Mediation Analysis for Survival Data with High-Dimensional Mediators. 
-#' Bioinformatics. 2021 (under review).
+#' @references Zhang H, Zheng Y, Hou L, Zheng C, Liu L. Mediation Analysis for Survival Data with High-Dimensional Mediators. 
+#' Bioinformatics. 2021. DOI: 10.1093/bioinformatics/btab564. PMID: 34343267. PMCID: PMC8570823
 #' 
 #' @examples
 #' ## Generate simulated survival data
 #' set.seed(100)
-#' n <- 100  # sample size
+#' n <- 300  # sample size
 #' p <- 100 # the dimension of mediators
 #' q <- 1   # the dimension of covariate(s)
 #' 
@@ -174,7 +174,7 @@ survHIMA <- function(X, Z, M, OT, status, FDRcut = 0.05, verbose = FALSE){
   N0 <- dim(PA)[1]*dim(PA)[2]
   
   input_pvalues <- PA + matrix(runif(N0,0,10^{-10}),dim(PA)[1],2)
-  nullprop <- HDMT::null_estimation(input_pvalues,lambda=0.5)
+  nullprop <- null_estimation(input_pvalues,lambda=0.5)
   fdrcut  <- HDMT::fdr_est(nullprop$alpha00,nullprop$alpha01,nullprop$alpha10, nullprop$alpha1,nullprop$alpha2,input_pvalues,exact=0)
   
   ID_fdr <- which(fdrcut <= FDRcut)
