@@ -4,20 +4,23 @@
 \name{HIMA-package}
 \alias{HIMA-package}
 \alias{HIMA}
-\title{High-dimensional Mediation Analysis}
+\title{High-Dimensional Mediation Analysis for 'Omic' Data}
 \description{
 HIMA is an R package for estimating and testing high-dimensional mediation effects in omic studies.
+HIMA can perform high-dimensional mediation analysis on a wide range of omic data types as
+potential mediators, including epigenetics, transcriptomics, proteomics, and metabolomics using function \code{hima} and 
+microbiome data (function \code{microHIMA}). HIMA can also handle survival data (function \code{survHIMA}).
 
 \tabular{ll}{ Package: \tab HIMA\cr Type: \tab Package\cr
-Version: \tab 1.1.0\cr Date: \tab 2021-05-12\cr License: \tab GPL-3\cr }
+Version: \tab 2.0.0\cr Date: \tab 2022-02-02\cr License: \tab GPL-3\cr }
 }
 \references{
 1. Zhang H, Zheng Y, Zhang Z, Gao T, Joyce B, Yoon G, Zhang W, Schwartz J, Just A, Colicino E, Vokonas P, Zhao L, 
 Lv J, Baccarelli A, Hou L, Liu L. Estimating and Testing High-dimensional Mediation Effects in Epigenetic Studies. 
-Bioinformatics. 2016. DOI: 10.1093/bioinformatics/btw351. PubMed PMID: 27357171.
+Bioinformatics. 2016. DOI: 10.1093/bioinformatics/btw351. PMID: 27357171. PMCID: PMC5048064
 
-2. Zhang H, Zheng Y, Hou L, Liu L. Mediation Analysis for Survival Data with High-Dimensional Mediators. 
-Bioinformatics. 2021 (under review).
+2. Zhang H, Zheng Y, Hou L, Zheng C, Liu L. Mediation Analysis for Survival Data with High-Dimensional Mediators. 
+Bioinformatics. 2021. DOI: 10.1093/bioinformatics/btab564. PMID: 34343267. PMCID: PMC8570823
 }
 \author{
 Yinan Zheng \email{y-zheng@northwestern.edu},

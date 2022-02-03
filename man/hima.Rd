@@ -11,6 +11,7 @@ hima(
   COV.XM = NULL,
   COV.MY = COV.XM,
   family = c("gaussian", "binomial"),
+  screen.family = c("gaussian", "negbin"),
   penalty = c("MCP", "SCAD", "lasso"),
   topN = NULL,
   parallel = FALSE,
@@ -37,6 +38,11 @@ Covariates specified here will not participate penalization. If not specified, t
 
 \item{family}{either 'gaussian' or 'binomial', depending on the data type of outcome (\code{Y}). See 
 \code{\link{ncvreg}}}
+
+\item{screen.family}{either 'gaussian' (default) or 'negbin' (i.e., negative binomial). This parameter is 
+taking effect only when parameter \code{family = 'binomial'}. When \code{family = 'binomial'}, the screening step
+is based on X (exposure, independent variable) and the omic mediator (dependent variable). This is useful when
+handling RNA sequencing count data as mediators.}
 
 \item{penalty}{the penalty to be applied to the model. Either 'MCP' (the default), 'SCAD', or 
 'lasso'. See \code{\link{ncvreg}}.}
@@ -110,5 +116,5 @@ hima.logistic.fit
 \references{
 Zhang H, Zheng Y, Zhang Z, Gao T, Joyce B, Yoon G, Zhang W, Schwartz J, Just A, Colicino E, Vokonas P, Zhao L, 
 Lv J, Baccarelli A, Hou L, Liu L. Estimating and Testing High-dimensional Mediation Effects in Epigenetic Studies. 
-Bioinformatics. 2016. DOI: 10.1093/bioinformatics/btw351. PubMed PMID: 27357171.
+Bioinformatics. 2016. DOI: 10.1093/bioinformatics/btw351. PMID: 27357171. PMCID: PMC5048064
 }

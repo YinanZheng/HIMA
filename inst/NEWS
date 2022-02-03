@@ -26,8 +26,9 @@
 
 # HIMA 1.1.0 (2021-05-12)
 
-* Add new function 'survHIMA' to support survival data.
+* Add new function 'survHIMA' to handle survival data.
 
-# HIMA 1.1.1 (2022-01-07)
-
-* Keep old version of "null_estimation" in package HDMT (< 1.0.4)
+# HIMA 2.0.0 (2022-02-02)
+* Keep older version of "null_estimation" in package HDMT (< 1.0.4).
+* Allows negative binomial regression in funcion 'hima' when outcome is binary.
+* Add new function 'microHIMA' to handle compositional microbiome data.

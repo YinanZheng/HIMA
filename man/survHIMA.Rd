@@ -12,7 +12,7 @@ survHIMA(X, Z, M, OT, status, FDRcut = 0.05, verbose = FALSE)
 \item{Z}{a matrix of adjusting covariates. Rows represent samples, columns represent variables. Can be \code{NULL}.}
 
 \item{M}{a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns 
-represent variables.}
+represent mediator variables.}
 
 \item{OT}{a vector of observed failure times.}
 
@@ -23,7 +23,7 @@ represent variables.}
 \item{verbose}{logical. Should the function be verbose? Default = \code{FALSE}.}
 }
 \value{
-A data.frame containing mediation testing results of selected mediators (FDR <\code{0.05}). 
+A data.frame containing mediation testing results of selected mediators (FDR <\code{FDPcut}). 
 \itemize{
     \item{ID: }{index of selected significant mediator.}
     \item{alpha: }{coefficient estimates of exposure (X) --> mediators (M).}
@@ -39,7 +39,7 @@ A data.frame containing mediation testing results of selected mediators (FDR <\c
 \examples{
 ## Generate simulated survival data
 set.seed(100)
-n <- 100  # sample size
+n <- 300  # sample size
 p <- 100 # the dimension of mediators
 q <- 1   # the dimension of covariate(s)
 
@@ -94,6 +94,6 @@ survHIMA.fit
 
 }
 \references{
-Zhang H, Zheng Y, Hou L, Liu L. Mediation Analysis for Survival Data with High-Dimensional Mediators. 
-Bioinformatics. 2021 (under review).
+Zhang H, Zheng Y, Hou L, Zheng C, Liu L. Mediation Analysis for Survival Data with High-Dimensional Mediators. 
+Bioinformatics. 2021. DOI: 10.1093/bioinformatics/btab564. PMID: 34343267. PMCID: PMC8570823
 }

@@ -1,10 +1,13 @@
-#' @title High-dimensional Mediation Analysis
+#' @title High-Dimensional Mediation Analysis for 'Omic' Data
 #'
 #' @description
 #' HIMA is an R package for estimating and testing high-dimensional mediation effects in omic studies.
+#' HIMA can perform high-dimensional mediation analysis on a wide range of omic data types as
+#' potential mediators, including epigenetics, transcriptomics, proteomics, and metabolomics using function \code{hima} and 
+#' microbiome data (function \code{microHIMA}). HIMA can also handle survival data (function \code{survHIMA}).
 #' 
 #' \tabular{ll}{ Package: \tab HIMA\cr Type: \tab Package\cr
-#' Version: \tab 1.1.1\cr Date: \tab 2022-01-07\cr License: \tab GPL-3\cr }
+#' Version: \tab 2.0.0\cr Date: \tab 2022-02-02\cr License: \tab GPL-3\cr }
 #' 
 #' @name HIMA-package
 #' 
@@ -33,13 +36,14 @@
 #' @import glmnet
 #' 
 #' @importFrom utils packageVersion
-#' @importFrom stats p.adjust rnorm runif rbinom glm model.matrix BIC coef ls.diag lsfit pnorm
+#' @importFrom stats p.adjust rnorm runif rbinom lm glm model.matrix BIC coef ls.diag lsfit pnorm complete.cases rgamma
 #' @importFrom iterators idiv nextElem
 #' @importFrom parallel detectCores
 #' @importFrom foreach foreach %dopar% registerDoSEQ getDoParWorkers
 #' @importFrom doParallel registerDoParallel
 #' @importFrom HDMT fdr_est
 #' @importFrom survival Surv coxph
-#' @importFrom MASS mvrnorm
+#' @importFrom MASS mvrnorm glm.nb
+#' @importFrom hommel hommel discoveries
 #' 
 NULL

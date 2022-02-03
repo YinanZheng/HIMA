@@ -1,4 +1,4 @@
-# This is the main function for our proposed method in Cox mediation analysis
+# This is the main function for our proposed method for high-dimensional Cox mediation analysis
 #' High-dimensional mediation analysis for survival data
 #' 
 #' \code{survHIMA} is used to estimate and test high-dimensional mediation effects for survival data.
@@ -6,13 +6,13 @@
 #' @param X a vector of exposure. 
 #' @param Z a matrix of adjusting covariates. Rows represent samples, columns represent variables. Can be \code{NULL}.
 #' @param M a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns 
-#' represent variables.
+#' represent mediator variables.
 #' @param OT a vector of observed failure times.
 #' @param status a vector of censoring indicator (\code{status = 1}: uncensored; \code{status = 0}: censored)
 #' @param FDRcut FDR cutoff applied to define and select significant mediators. Default = \code{0.05}. 
 #' @param verbose logical. Should the function be verbose? Default = \code{FALSE}.
 #' 
-#' @return A data.frame containing mediation testing results of selected mediators (FDR <\code{0.05}). 
+#' @return A data.frame containing mediation testing results of selected mediators (FDR <\code{FDPcut}). 
 #' \itemize{
 #'     \item{ID: }{index of selected significant mediator.}
 #'     \item{alpha: }{coefficient estimates of exposure (X) --> mediators (M).}
@@ -194,6 +194,8 @@ survHIMA <- function(X, Z, M, OT, status, FDRcut = 0.05, verbose = FALSE){
                            beta = beta_hat, 
                            beta_set = beta_est,
                            pvalue = P_max)
+  
+  message("Done!", "     (", Sys.time(), ")")
   
   return(out_result)
 }
