@@ -36,11 +36,30 @@ c(bibentry(bibtype = "Article",
                       person(given = "Lei", family = "Liu")
                       ),
            journal = "Bioinformatics",
-           year = "2021(Under Review)",
-           volume = "",
-           number = "",
-           pages = "",
-           doi = "",
-           pubmed = "",
-           header = "The survHIMA function is described in:")
-)
+           year = "2021",
+           volume = "37",
+           number = "21",
+           pages = "3815-3821",
+           doi = "10.1093/bioinformatics/btab564",
+           pubmed = "34343267",
+           header = "The survHIMA function is described in:"),
+           
+  bibentry(bibtype = "Article",
+           key = "microHIMA",
+           title = "{Mediation Analysis for Survival Data with High-Dimensional Mediators}",
+           author = c(person(given = "Haixiang", family = "Zhang"),
+                      person(given = "Jun", family = "Chen"),
+                      person(given = "Yang", family = "Feng"),
+                      person(given = "Chan", family = "Wang"),
+                      person(given = "Huilin", family = "Li"),
+                      person(given = "Lei", family = "Liu")
+                      ),
+           journal = "Statistics in medicine",
+           year = "2021",
+           volume = "40",
+           number = "4",
+           pages = "885-896",
+           doi = "10.1002/sim.8808",
+           pubmed = "33205470",
+           header = "The microHIMA function is described in:")
+ )

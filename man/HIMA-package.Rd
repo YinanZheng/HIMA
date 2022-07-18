@@ -12,15 +12,22 @@ potential mediators, including epigenetics, transcriptomics, proteomics, and met
 microbiome data (function \code{microHIMA}). HIMA can also handle survival data (function \code{survHIMA}).
 
 \tabular{ll}{ Package: \tab HIMA\cr Type: \tab Package\cr
-Version: \tab 2.0.0\cr Date: \tab 2022-02-02\cr License: \tab GPL-3\cr }
+Version: \tab 2.0.1\cr Date: \tab 2022-07-13\cr License: \tab GPL-3\cr }
 }
 \references{
-1. Zhang H, Zheng Y, Zhang Z, Gao T, Joyce B, Yoon G, Zhang W, Schwartz J, Just A, Colicino E, Vokonas P, Zhao L, 
-Lv J, Baccarelli A, Hou L, Liu L. Estimating and Testing High-dimensional Mediation Effects in Epigenetic Studies. 
-Bioinformatics. 2016. DOI: 10.1093/bioinformatics/btw351. PMID: 27357171. PMCID: PMC5048064
+1. Zhang H, Zheng Y, Zhang Z, Gao T, Joyce B, Yoon G, Zhang W, Schwartz J, 
+Just A, Colicino E, Vokonas P, Zhao L, Lv J, Baccarelli A, Hou L, Liu L. Estimating and 
+Testing High-dimensional Mediation Effects in Epigenetic Studies. Bioinformatics. 
+2016;32(20):3150-4. DOI: 10.1093/bioinformatics/btw351. PubMed PMID: 27357171; 
+PMCID: PMC5048064.
 
-2. Zhang H, Zheng Y, Hou L, Zheng C, Liu L. Mediation Analysis for Survival Data with High-Dimensional Mediators. 
-Bioinformatics. 2021. DOI: 10.1093/bioinformatics/btab564. PMID: 34343267. PMCID: PMC8570823
+2. Zhang H, Zheng Y, Hou L, Liu L. Mediation Analysis for Survival Data with High-Dimensional 
+Mediators. Bioinformatics. 2021;37(21):3815-21. DOI: 10.1093/bioinformatics/btab564. 
+PubMed PMID: 34343267; PMCID: PMC8570823.
+
+3. Zhang H, Chen J, Feng Y, Wang C, Li H, Liu L. Mediation effect selection in high-dimensional 
+and compositional microbiome data. Stat Med. 2021;40(4):885-96. DOI: 10.1002/sim.8808. 
+PubMed PMID: 33205470; PMCID: PMC7855955.
 }
 \author{
 Yinan Zheng \email{y-zheng@northwestern.edu},

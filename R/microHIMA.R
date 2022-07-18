@@ -145,7 +145,7 @@ microHIMA <- function(X, Y, OTU, COV = NULL, FDPcut = 0.05){
                            alpha = alpha_EST[ID_FDR], 
                            alpha_se = alpha_SE[ID_FDR], 
                            beta = beta_EST[ID_FDR], 
-                           beta_set = beta_SE[ID_FDR],
+                           beta_se = beta_SE[ID_FDR],
                            p_FDP = P_adj_DLASSO[ID_FDR])
   
   message("Done!", "     (", Sys.time(), ")")

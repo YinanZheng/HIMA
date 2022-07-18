@@ -192,7 +192,7 @@ survHIMA <- function(X, Z, M, OT, status, FDRcut = 0.05, verbose = FALSE){
                            alpha = alpha_hat, 
                            alpha_se = alpha_est, 
                            beta = beta_hat, 
-                           beta_set = beta_est,
+                           beta_se = beta_est,
                            pvalue = P_max)
   
   message("Done!", "     (", Sys.time(), ")")

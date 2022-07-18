@@ -10,8 +10,8 @@ hima(
   M,
   COV.XM = NULL,
   COV.MY = COV.XM,
-  family = c("gaussian", "binomial"),
-  screen.family = c("gaussian", "negbin"),
+  Y.family = c("gaussian", "binomial"),
+  M.family = c("gaussian", "negbin"),
   penalty = c("MCP", "SCAD", "lasso"),
   topN = NULL,
   parallel = FALSE,
@@ -21,9 +21,9 @@ hima(
 )
 }
 \arguments{
-\item{X}{a vector of exposure.}
+\item{X}{a vector of exposure. Do not use data.frame or matrix.}
 
-\item{Y}{a vector of outcome. Can be either continuous or binary (0-1).}
+\item{Y}{a vector of outcome. Can be either continuous or binary (0-1). Do not use data.frame or matrix.}
 
 \item{M}{a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns 
 represent variables.}
@@ -36,20 +36,18 @@ contain mixed data types, please make sure all categorical variables are properl
 Covariates specified here will not participate penalization. If not specified, the same set of covariates for 
 \code{M ~ X} will be applied. Using different sets of covariates is allowed but this needs to be handled carefully.}
 
-\item{family}{either 'gaussian' or 'binomial', depending on the data type of outcome (\code{Y}). See 
+\item{Y.family}{either 'gaussian' (default) or 'binomial', depending on the data type of outcome (\code{Y}). See 
 \code{\link{ncvreg}}}
 
-\item{screen.family}{either 'gaussian' (default) or 'negbin' (i.e., negative binomial). This parameter is 
-taking effect only when parameter \code{family = 'binomial'}. When \code{family = 'binomial'}, the screening step
-is based on X (exposure, independent variable) and the omic mediator (dependent variable). This is useful when
-handling RNA sequencing count data as mediators.}
+\item{M.family}{either 'gaussian' (default) or 'negbin' (i.e., negative binomial), depending on the data type of
+mediator (\code{M}).}
 
 \item{penalty}{the penalty to be applied to the model. Either 'MCP' (the default), 'SCAD', or 
 'lasso'. See \code{\link{ncvreg}}.}
 
 \item{topN}{an integer specifying the number of top markers from sure independent screening. 
 Default = \code{NULL}. If \code{NULL}, \code{topN} will be either \code{ceiling(n/log(n))} if 
-\code{family = 'gaussian'}, or \code{ceiling(n/(2*log(n)))} if \code{family = 'binomial'}, 
+\code{Y.family = 'gaussian'}, or \code{ceiling(n/(2*log(n)))} if \code{Y.family = 'binomial'}, 
 where \code{n} is the sample size. If the sample size is greater than topN (pre-specified or calculated), all 
 mediators will be included in the test (i.e. low-dimensional scenario).}
 
@@ -78,7 +76,7 @@ A data.frame containing mediation testing results of selected mediators.
 \code{hima} is used to estimate and test high-dimensional mediation effects.
 }
 \examples{
-n <- 200  # sample size
+n <- 200 # sample size
 p <- 200 # the dimension of covariates
 
 # the regression coefficients alpha (exposure --> mediators)
@@ -107,9 +105,9 @@ simdat_bin = simHIMA(n, p, alpha, beta2, binaryOutcome = TRUE, seed=1029)
 hima.fit <- hima(simdat_cont$X, simdat_cont$Y, simdat_cont$M, verbose = TRUE) 
 hima.fit
 
-# When Y is binary (should specify family)
+# When Y is binary (should specify Y.family)
 hima.logistic.fit <- hima(simdat_bin$X, simdat_bin$Y, simdat_bin$M, 
-family = "binomial", verbose = TRUE) 
+Y.family = "binomial", verbose = TRUE) 
 hima.logistic.fit
 
 }

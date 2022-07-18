@@ -32,3 +32,8 @@
 * Keep older version of "null_estimation" in package HDMT (< 1.0.4).
 * Allows negative binomial regression in funcion 'hima' when outcome is binary.
 * Add new function 'microHIMA' to handle compositional microbiome data.
+
+# HIMA 2.0.1 (2022-07-17)
+* Rename "family" option in "hima" function to "Y.family".
+* Rename "screen.family" option in "hima" function to "M.family"
+* Improve verbose messages.
