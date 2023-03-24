@@ -1,6 +1,6 @@
 ## HIMA: High-dimensional Mediation Analysis
 
-![GitHub release](https://img.shields.io/badge/release-v2.0.1-blue.svg)
+![GitHub release](https://img.shields.io/badge/release-v2.2.0-blue.svg)
 
 *HIMA* is an R package for estimating and testing high-dimensional mediation effects in omic studies.
 
@@ -11,7 +11,20 @@ HIMA is now available in R CRAN repository
 ## Install HIMA
 install.packages("HIMA")
 ```
+
+To install from GitHub
+```r
+## Install HIMA from GitHub
+library(devtools)
+install_github("yinanzheng/HIMA")
+```
+
 If package "qvalue" is not found, please first install "qvalue" package through Bioconductor: https://www.bioconductor.org/packages/release/bioc/html/qvalue.html
+```r
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("qvalue")
+```r
 
 ## Citation:
 
