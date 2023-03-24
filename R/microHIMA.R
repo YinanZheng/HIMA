@@ -69,8 +69,18 @@
 #' @export
 microHIMA <- function(X, Y, OTU, COV = NULL, FDPcut = 0.05){
   
-  M_raw <- OTU
-  X <- cbind(X, COV)
+  X <- matrix(X, ncol = 1)
+  
+  M_raw <- as.matrix(OTU)
+  
+  M_ID_name <- colnames(M_raw)
+  if(is.null(M_ID_name)) M_ID_name <- seq_len(ncol(M_raw))
+  
+  if(!is.null(COV))
+    {COV <- as.matrix(COV); X <- cbind(X, COV)}
+  
+  X <- scale(X)
+  
   Y <- Y - mean(Y)
 
   M <- M_raw
@@ -86,8 +96,6 @@ microHIMA <- function(X, Y, OTU, COV = NULL, FDPcut = 0.05){
   P_raw_DLASSO <- matrix(0,1,d)
   M1 <- t(t(M_raw[,1]))
   
-  message("Running debiased Lasso...", "     (", Sys.time(), ")")
-  
   for (k in 1:d){
     M <- M_raw
     M[,1] <- M[,k]
@@ -101,8 +109,8 @@ microHIMA <- function(X, Y, OTU, COV = NULL, FDPcut = 0.05){
       }
     }
     
-    MT <- matrix(as.numeric(scale(MT)), nrow(scale(MT)), ncol(scale(MT)))
-    X <- matrix(as.numeric(scale(X)), nrow(scale(X)), ncol(scale(X)))
+    MT <- scale(MT)
+    MT <- matrix(as.numeric(MT), nrow(MT))
     MX <- cbind(MT, X)
 
     fit.dlasso  <- DLASSO_fun(MX, Y)
@@ -141,7 +149,7 @@ microHIMA <- function(X, Y, OTU, COV = NULL, FDPcut = 0.05){
   
   ID_FDR <- set[which(N0 > 0)]
 
-  out_result <- data.frame(ID = ID_FDR, 
+  out_result <- data.frame(ID = M_ID_name[ID_FDR], 
                            alpha = alpha_EST[ID_FDR], 
                            alpha_se = alpha_SE[ID_FDR], 
                            beta = beta_EST[ID_FDR], 

@@ -1,8 +1,8 @@
 Package: HIMA
 Type: Package
 Title: High-Dimensional Mediation Analysis
-Version: 2.0.1
-Date: 2022-07-13
+Version: 2.2.0
+Date: 2023-03-25
 Authors@R: c(person("Yinan","Zheng", role = c("aut","cre"), email = "y-zheng@northwestern.edu"), person("Haixiang","Zhang", role = c("aut"), email = "haixiang.zhang@tju.edu.cn"), person("Lifang","Hou", role = c("aut"), email = "l-hou@northwestern.edu"), person("Lei","Liu", role = c("aut","cph"), email = "lei.liu@wustl.edu"))
 Description: Allows to estimate and test high-dimensional mediation effects based on advanced mediator screening and penalized regression techniques. Methods used in the package refer to Zhang H, Zheng Y, Zhang Z, Gao T, Joyce B, Yoon G, Zhang W, Schwartz J, Just A, Colicino E, Vokonas P, Zhao L, Lv J, Baccarelli A, Hou L, Liu L. Estimating and Testing High-dimensional Mediation Effects in Epigenetic Studies. Bioinformatics. (2016) <doi:10.1093/bioinformatics/btw351>. PMID: 27357171.
 License: GPL-3
@@ -27,10 +27,11 @@ Collate:
     hima.R
     survHIMA.R
     microHIMA.R
+    hima2.R
     onAttach.R
     HIMA-package.R
 Encoding: UTF-8
 LazyData: false
 URL: https://github.com/YinanZheng/HIMA/
 BugReports: https://github.com/YinanZheng/HIMA/issues/
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1

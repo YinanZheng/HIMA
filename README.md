@@ -11,6 +11,7 @@ HIMA is now available in R CRAN repository
 ## Install HIMA
 install.packages("HIMA")
 ```
+If package "qvalue" is not found, please first install "qvalue" package through Bioconductor: https://www.bioconductor.org/packages/release/bioc/html/qvalue.html
 
 ## Citation:
 

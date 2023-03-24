@@ -53,11 +53,26 @@ iblkcol_lag <- function(M, ...) {
 
 
 
-## Internal function: scale data (obsolete function)
+## Internal function: check data and scale 
 
-scaleto <- function(dat) {
+dat <- data.frame(y = 1:12, x = c(rep("A",3), rep("B", 3), rep("C", 3), rep("D", 3)))
+dat
+f <- y~x
+
+formula <- f
+model.matrix(f, dat)
+
+model.matrix(update(f, .~.-1), dat)
+
+
+checkscale <- function(formula, dat) {
   if (is.null(dat)) 
     return(list(dn = NULL, d = NULL, ds = NULL))
+  if(sum(is.na(dat))>0)
+    return("Missing")
+  
+  
+  
   dat_scale <- scale(dat)
   dat_names <- names(dat)
   if (any(class(dat) %in% c("matrix", "data.frame", "data.table"))) {

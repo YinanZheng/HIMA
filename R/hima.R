@@ -99,6 +99,9 @@ hima <- function(X, Y, M, COV.XM = NULL, COV.MY = COV.XM,
     n <- nrow(M)
     p <- ncol(M)
     
+    X <- scale(X)
+    M <- scale(M)
+    
     if(is.null(topN)) {
       if(Y.family == "binomial") d <- ceiling(n/(2*log(n))) else d <- ceiling(2 * n/log(n)) 
     } else {

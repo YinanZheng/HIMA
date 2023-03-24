@@ -84,19 +84,27 @@
 #' @export
 survHIMA <- function(X, Z, M, OT, status, FDRcut = 0.05, verbose = FALSE){
 
+  X <- matrix(X, ncol = 1)
+  M <- as.matrix(M)
+  
+  M_ID_name <- colnames(M)
+  if(is.null(M_ID_name)) M_ID_name <- seq_len(ncol(M))
+    
   MZ <- cbind(M,Z,X)
   n <- length(X)
   p <- dim(M)[2]
   
   if(is.null(Z))
-    q <- 0
+    {q <- 0; MZ <- cbind(M,X)}
   else
-    q <- dim(Z)[2]
+    {Z <- as.matrix(Z); q <- dim(Z)[2]; MZ <- cbind(M,Z,X)}
+  
+  MZ <- scale(MZ)
   
   #########################################################################
   ################################ STEP 1 #################################
   #########################################################################
-  message("Step 1: Mediators screening ...", "     (", Sys.time(), ")")
+  message("Step 1: Sure Independent Screening ...", "     (", Sys.time(), ")")
   
   d_0 <- 1*round(n/log(n))
   beta_SIS <- matrix(0,1,p)
@@ -175,7 +183,13 @@ survHIMA <- function(X, Z, M, OT, status, FDRcut = 0.05, verbose = FALSE){
   
   input_pvalues <- PA + matrix(runif(N0,0,10^{-10}),dim(PA)[1],2)
   nullprop <- null_estimation(input_pvalues,lambda=0.5)
-  fdrcut  <- HDMT::fdr_est(nullprop$alpha00,nullprop$alpha01,nullprop$alpha10, nullprop$alpha1,nullprop$alpha2,input_pvalues,exact=0)
+  fdrcut  <- HDMT::fdr_est(nullprop$alpha00,
+                           nullprop$alpha01,
+                           nullprop$alpha10, 
+                           nullprop$alpha1,
+                           nullprop$alpha2,
+                           input_pvalues,
+                           exact=0)
   
   ID_fdr <- which(fdrcut <= FDRcut)
 
@@ -188,7 +202,7 @@ survHIMA <- function(X, Z, M, OT, status, FDRcut = 0.05, verbose = FALSE){
     P_max <- P_value[ID_fdr]
   }
   
-  out_result <- data.frame(ID = ID, 
+  out_result <- data.frame(ID = M_ID_name[ID], 
                            alpha = alpha_hat, 
                            alpha_se = alpha_est, 
                            beta = beta_hat, 
