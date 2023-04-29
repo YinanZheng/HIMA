@@ -5,14 +5,6 @@
 \alias{HIMA-package}
 \alias{HIMA}
 \title{High-Dimensional Mediation Analysis for 'Omic' Data}
-\usage{
-# To install the latest release version from CRAN:
-
-install.packages("HIMA")
-
-# If package "qvalue" is not found, please first install "qvalue" package
-through Bioconductor: https://www.bioconductor.org/packages/release/bioc/html/qvalue.html
-}
 \description{
 HIMA is an R package for estimating and testing high-dimensional mediation effects in omic studies.
 HIMA can perform high-dimensional mediation analysis on a wide range of omic data types as
@@ -20,7 +12,11 @@ potential mediators, including epigenetics, transcriptomics, proteomics, and met
 microbiome data (function \code{microHIMA}). HIMA can also handle survival data (function \code{survHIMA}).
 
 \tabular{ll}{ Package: \tab HIMA\cr Type: \tab Package\cr
-Version: \tab 2.2.0\cr Date: \tab 2023-03-25\cr License: \tab GPL-3\cr }
+Version: \tab 2.2.0\cr Date: \tab 2023-04-27\cr License: \tab GPL-3\cr }
+}
+\details{
+# If package "qvalue" is not found during installation, please first install "qvalue" package
+# through Bioconductor: https://www.bioconductor.org/packages/release/bioc/html/qvalue.html
 }
 \references{
 1. Zhang H, Zheng Y, Zhang Z, Gao T, Joyce B, Yoon G, Zhang W, Schwartz J, 

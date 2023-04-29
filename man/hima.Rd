@@ -16,6 +16,7 @@ hima(
   topN = NULL,
   parallel = FALSE,
   ncore = 1,
+  scale = TRUE,
   verbose = FALSE,
   ...
 )
@@ -51,10 +52,12 @@ Default = \code{NULL}. If \code{NULL}, \code{topN} will be either \code{ceiling(
 where \code{n} is the sample size. If the sample size is greater than topN (pre-specified or calculated), all 
 mediators will be included in the test (i.e. low-dimensional scenario).}
 
-\item{parallel}{logical. Enable parallel computing feature? Default = \code{TRUE}.}
+\item{parallel}{logical. Enable parallel computing feature? Default = \code{FALSE}.}
 
 \item{ncore}{number of cores to run parallel computing Valid when \code{parallel == TRUE}. 
 By default max number of cores available in the machine will be utilized.}
+
+\item{scale}{logical. Should the function scale the data? Default = \code{TRUE}.}
 
 \item{verbose}{logical. Should the function be verbose? Default = \code{FALSE}.}
 
@@ -76,39 +79,34 @@ A data.frame containing mediation testing results of selected mediators.
 \code{hima} is used to estimate and test high-dimensional mediation effects.
 }
 \examples{
-n <- 200 # sample size
-p <- 200 # the dimension of covariates
+\dontrun{
+# When Y is continuous and normally distributed
+# Example 1 (continuous outcome): 
+data(Example1)
+head(Example1$PhenoData)
 
-# the regression coefficients alpha (exposure --> mediators)
-alpha <- rep(0, p) 
-
-# the regression coefficients beta (mediators --> outcome)
-beta1 <- rep(0, p) # for continuous outcome
-beta2 <- rep(0, p) # for binary outcome
-
-# the first four markers are true mediators
-alpha[1:4] <- c(0.45,0.5,0.6,0.7)
-beta1[1:4] <- c(0.55,0.6,0.65,0.7)
-beta2[1:4] <- c(1.45,1.5,1.55,1.6)
-
-# these are not true mediators
-alpha[7:8] <- 0.5
-beta1[5:6] <- 0.8
-beta2[5:6] <- 1.7
-
-# Generate simulation data
-simdat_cont = simHIMA(n, p, alpha, beta1, seed=1029) 
-simdat_bin = simHIMA(n, p, alpha, beta2, binaryOutcome = TRUE, seed=1029) 
-
-# Run HIMA with MCP penalty by default
-# When Y is continuous (default)
-hima.fit <- hima(simdat_cont$X, simdat_cont$Y, simdat_cont$M, verbose = TRUE) 
+hima.fit <- hima(X = Example1$PhenoData$Treatment, 
+                 Y = Example1$PhenoData$Outcome, 
+                 M = Example1$Mediator,
+                 COV.XM = Example1$PhenoData[, c("Sex", "Age")],
+                 scale = FALSE,
+                 verbose = TRUE) 
 hima.fit
 
 # When Y is binary (should specify Y.family)
-hima.logistic.fit <- hima(simdat_bin$X, simdat_bin$Y, simdat_bin$M, 
-Y.family = "binomial", verbose = TRUE) 
+# Example 2 (binary outcome): 
+data(Example2)
+head(Example2$PhenoData)
+
+hima.logistic.fit <- hima(X = Example2$PhenoData$Treatment,
+                          Y = Example2$PhenoData$Disease,
+                          M = Example2$Mediator,
+                          COV.XM = Example2$PhenoData[, c("Sex", "Age")],
+                          Y.family = 'binomial',
+                          scale = FALSE,
+                          verbose = TRUE)
 hima.logistic.fit
+}
 
 }
 \references{

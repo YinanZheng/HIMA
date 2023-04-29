@@ -4,7 +4,7 @@
 \alias{microHIMA}
 \title{High-dimensional mediation analysis for compositional microbiome data}
 \usage{
-microHIMA(X, Y, OTU, COV = NULL, FDPcut = 0.05)
+microHIMA(X, Y, OTU, COV = NULL, FDPcut = 0.05, scale = TRUE)
 }
 \arguments{
 \item{X}{a vector of exposure.}
@@ -18,6 +18,8 @@ columns represent variables.}
 Can be \code{NULL}.}
 
 \item{FDPcut}{FDP (false discovery proportions) cutoff applied to define and select significant mediators. Default = \code{0.05}.}
+
+\item{scale}{logical. Should the function scale the data? Default = \code{TRUE}.}
 }
 \value{
 A data.frame containing mediation testing results of selected mediators (FDP < \code{FDPcut}). 
@@ -34,40 +36,15 @@ A data.frame containing mediation testing results of selected mediators (FDP < \
 \code{microHIMA} is used to estimate and test high-dimensional mediation effects for compositional microbiome data.
 }
 \examples{
-## Generate simulated survival data
-n <- 200 # Sample size
-p <- 25 # Number of microbiome
-Treatment = rbinom(n, 1, 0.2) # binary outcome
-
-## Generate two covariates, one binary, one continuous
-covariates = cbind(sample(c(1,0), n, replace = TRUE), rnorm(n))
-
-## parameters
-beta0 = as.numeric(matrix(0, 1, p))
-betaT = rep(0, p)
-betaT[c(1, 2, 3)] = c(1, 1.2, 1.5) # let the first three are non-zero
-betaX = matrix(0, p, 2)
-
-alpha0 = 0
-alphaT = 1
-alphaZ = alphaC = rep(0, p)
-alphaZ[c(1, 2, 3)] = c(1.3, -0.7, -0.6) # let the first three are non-zero for response
-alphaX = c(0.5, 0.5)
-
-## Generate microbiome data
-X = cbind(rep(1, n), covariates, Treatment) # n * (1 + q + p)
-b = cbind(beta0, betaX, betaT) # p * (1 + q + p)
-gamma.simu = exp(X \%*\% t(b)) # n * p
-otu.com = t(apply(gamma.simu, 1, HIMA:::rdirichlet, n = 1)) # Dirichlet distribution
-
-## Generate outcome data
-X = cbind(rep(1, n),Treatment, covariates, log(otu.com), log(otu.com) * Treatment)
-b = c(alpha0, alphaT, alphaX, alphaZ, alphaC)
-outcome = c(b \%*\% t(X) + rnorm(n, mean = 0, sd = 1))
-exposure = t(t(Treatment))
-
 \dontrun{
-microHIMA.fit <- microHIMA(X = exposure, Y = outcome, OTU = otu.com, COV = covariates)
+data(Example4)
+head(Example4$PhenoData)
+
+microHIMA.fit <- microHIMA(X = Example4$PhenoData$Treatment, 
+                           Y = Example4$PhenoData$Outcome, 
+                           OTU = Example4$Mediator, 
+                           COV = Example4$PhenoData[, c("Sex", "Age")],
+                           scale = FALSE)
 microHIMA.fit
 }
 

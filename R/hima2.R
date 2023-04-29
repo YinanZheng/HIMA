@@ -22,6 +22,7 @@
 #' \code{outcome.family = 'gaussian'}, or \code{ceiling(n/(2*log(n)))} if \code{outcome.family = 'binomial'}, 
 #' where \code{n} is the sample size. If the sample size is greater than topN (pre-specified or calculated), all 
 #' mediators will be included in the test (i.e. low-dimensional scenario).
+#' @param scale logical. Should the function scale the data? Default = \code{TRUE}.
 #' @param verbose logical. Should the function be verbose and shows the progression? Default = \code{FALSE}.
 #' 
 #' @return A data.frame containing mediation testing results of selected mediators. 
@@ -44,7 +45,7 @@
 #' Stat Biosci. 2021. DOI: 10.1007/s12561-019-09253-3. PMID: 34093887; PMCID: PMC8177450.
 #' 
 #' @examples
-#' 
+#' \dontrun{
 #' # Example 1 (continous outcome): 
 #' data(Example1)
 #' head(Example1$PhenoData)
@@ -54,7 +55,8 @@
 #'       data.M = Example1$Mediator,
 #'       outcome.family = "gaussian",
 #'       mediator.family = "gaussian",
-#'       penalty = "MCP")
+#'       penalty = "MCP",
+#'       scale = FALSE)
 #' e1
 #' attributes(e1)$variable.labels
 #' 
@@ -67,7 +69,8 @@
 #'       data.M = Example2$Mediator,
 #'       outcome.family = "binomial",
 #'       mediator.family = "gaussian",
-#'       penalty = "MCP")
+#'       penalty = "MCP",
+#'       scale = FALSE)
 #' e2
 #' attributes(e2)$variable.labels
 #' 
@@ -75,12 +78,13 @@
 #' data(Example3)
 #' head(Example3$PhenoData)
 #' 
-#' e3 <- hima2(Surv(Disease, Time) ~ Treatment + Sex + Age, 
+#' e3 <- hima2(Surv(Status, Time) ~ Treatment + Sex + Age, 
 #'       data.pheno = Example3$PhenoData, 
 #'       data.M = Example3$Mediator,
 #'       outcome.family = "survival",
 #'       mediator.family = "gaussian",
-#'       penalty = "DBlasso")
+#'       penalty = "DBlasso",
+#'       scale = FALSE)
 #' e3
 #' attributes(e3)$variable.labels
 #' 
@@ -93,9 +97,11 @@
 #'       data.M = Example4$Mediator,
 #'       outcome.family = "gaussian",
 #'       mediator.family = "compositional",
-#'       penalty = "DBlasso")
+#'       penalty = "DBlasso",
+#'       scale = FALSE)
 #' e4
 #' attributes(e4)$variable.labels
+#' }
 #'                   
 #' @export
 hima2 <- function(formula, 
@@ -105,6 +111,7 @@ hima2 <- function(formula,
                   mediator.family = c("gaussian", "negbin", "compositional"), 
                   penalty = c("DBlasso", "MCP", "SCAD", "lasso"), 
                   topN = NULL, 
+                  scale = TRUE,
                   verbose = FALSE) 
 {
   outcome.family <- match.arg(outcome.family)
@@ -126,7 +133,7 @@ hima2 <- function(formula,
       
       results <- hima(X = X, Y = Y, M = data.M, COV.XM = COV, 
                       Y.family = outcome.family, penalty = penalty, topN = topN,
-                      parallel = FALSE, ncore = 1, verbose = verbose)
+                      parallel = FALSE, ncore = 1, scale = scale, verbose = verbose)
       
       attr(results, "variable.labels") <- c("Effect of exposure on mediator", 
                                             "Effect of mediator on outcome",
@@ -148,7 +155,7 @@ hima2 <- function(formula,
       if(length(ind_vars) > 1)
         COV <- data.pheno[,ind_vars[-1]] else COV <- NULL
       
-      res <- microHIMA(X = X, Y = Y, OTU = data.M, COV = COV, FDPcut = 0.05)
+      res <- microHIMA(X = X, Y = Y, OTU = data.M, COV = COV, FDPcut = 0.05, scale)
       results <- data.frame(alpha = res$alpha, alpha_se = res$alpha_se, 
                             beta = res$beta, beta_se = res$beta_se,
                             p = res$p_FDP, check.names = FALSE)
@@ -172,7 +179,7 @@ hima2 <- function(formula,
     if(length(ind_vars) > 1)
       COV <- data.pheno[,ind_vars[-1]] else COV <- NULL
     
-    res <- survHIMA(X, COV, data.M, OT, status, FDRcut = 0.05, verbose)
+    res <- survHIMA(X, COV, data.M, OT, status, FDRcut = 0.05, scale, verbose)
     
     results <- data.frame(alpha = res$alpha, alpha_se = res$alpha_se, 
                           beta = res$beta, beta_se = res$beta_se,

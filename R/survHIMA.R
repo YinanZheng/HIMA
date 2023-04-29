@@ -10,6 +10,7 @@
 #' @param OT a vector of observed failure times.
 #' @param status a vector of censoring indicator (\code{status = 1}: uncensored; \code{status = 0}: censored)
 #' @param FDRcut FDR cutoff applied to define and select significant mediators. Default = \code{0.05}. 
+#' @param scale logical. Should the function scale the data? Default = \code{TRUE}.
 #' @param verbose logical. Should the function be verbose? Default = \code{FALSE}.
 #' 
 #' @return A data.frame containing mediation testing results of selected mediators (FDR <\code{FDPcut}). 
@@ -26,63 +27,23 @@
 #' Bioinformatics. 2021. DOI: 10.1093/bioinformatics/btab564. PMID: 34343267. PMCID: PMC8570823
 #' 
 #' @examples
-#' ## Generate simulated survival data
-#' set.seed(100)
-#' n <- 300  # sample size
-#' p <- 100 # the dimension of mediators
-#' q <- 1   # the dimension of covariate(s)
-#' 
-#' sigma_e <- matrix(0.25, p, p)
-#' diag(sigma_e) <- 1
-#' sigma_e[1, 3] <- 0.8
-#' sigma_e[3, 1] <- 0.8
-#' sigma_e[2, 4] <- 0.8
-#' sigma_e[4, 2] <- 0.8
-#' 
-#' ##
-#' beta <- matrix(0, 1, p)
-#' beta[1:5] <- c(0.6, -0.5, 0.4, -0.3, 0.25)
-#' 
-#' ##
-#' alpha <- matrix(0, 1, p)
-#' alpha[1:5] <- c(0.6, -0.5, 0.4, -0.3, 0.25)
-#' 
-#' ##
-#' gamma <- matrix(0.5, 1, q)
-#' eta <- matrix(0.3, p, q)
-#' r <- matrix(0.5, 1, 1)
-#' 
-#' ##
-#' X <- matrix(rnorm(n, mean = 0, sd = 2), n, 1) # expoure
-#' Z <- matrix(rnorm(n * q, mean = 0, sd = 2), n, q) # covariates
-#' mu <- matrix(0, p, 1)
-#' e <- MASS::mvrnorm(n, mu, sigma_e)  # the error terms
-#' 
-#' M <- X%*%(alpha) + Z%*%t(eta) + e
-#' MZ <- cbind(M, Z, X)
-#' 
-#' beta_gamma <- cbind(beta, gamma, r)
-#' 
-#' ## generate the failure time T 
-#' u <- runif(n, 0, 1)
-#' T <- matrix(0, n, 1) 
-#' for (i in 1:n)
-#'   T[i] <- -log(1 - u[i])*exp(-sum(beta_gamma*MZ[i,]))
-#'
-#' ## generate censoring time 0.45 censoring rate
-#' C <- runif(n, min = 0, max = 150)  
-#' status <- as.integer(T < C)
-#' 
-#' ## the observed failure time
-#' OT <- apply(cbind(C,T), 1, min) 
-#' 
 #' \dontrun{
-#' survHIMA.fit <- survHIMA(X, Z, M, OT, status)
+#' data(Example3)
+#' head(Example3$PhenoData)
+#' 
+#' survHIMA.fit <- survHIMA(X = Example3$PhenoData$Treatment,
+#'                 Z = Example3$PhenoData[, c("Sex", "Age")], 
+#'                 M = Example3$Mediator, 
+#'                 OT = Example3$PhenoData$Time, 
+#'                 status = Example3$PhenoData$Status, 
+#'                 FDRcut = 0.05,
+#'                 scale = FALSE, 
+#'                 verbose = TRUE)
 #' survHIMA.fit
 #' }
 #' 
 #' @export
-survHIMA <- function(X, Z, M, OT, status, FDRcut = 0.05, verbose = FALSE){
+survHIMA <- function(X, Z, M, OT, status, FDRcut = 0.05, scale = TRUE, verbose = FALSE){
 
   X <- matrix(X, ncol = 1)
   M <- as.matrix(M)
@@ -99,7 +60,7 @@ survHIMA <- function(X, Z, M, OT, status, FDRcut = 0.05, verbose = FALSE){
   else
     {Z <- as.matrix(Z); q <- dim(Z)[2]; MZ <- cbind(M,Z,X)}
   
-  MZ <- scale(MZ)
+  if(scale) MZ <- scale(MZ)
   
   #########################################################################
   ################################ STEP 1 #################################

@@ -7,7 +7,7 @@
 #' microbiome data (function \code{microHIMA}). HIMA can also handle survival data (function \code{survHIMA}).
 #' 
 #' \tabular{ll}{ Package: \tab HIMA\cr Type: \tab Package\cr
-#' Version: \tab 2.2.0\cr Date: \tab 2023-03-25\cr License: \tab GPL-3\cr }
+#' Version: \tab 2.2.0\cr Date: \tab 2023-04-27\cr License: \tab GPL-3\cr }
 #' 
 #' @name HIMA-package
 #' 
@@ -15,13 +15,9 @@
 #' 
 #' @docType package
 #' 
-#' @usage 
-#' # To install the latest release version from CRAN:
-#' 
-#' install.packages("HIMA")
-#' 
-#' # If package "qvalue" is not found, please first install "qvalue" package
-#' through Bioconductor: https://www.bioconductor.org/packages/release/bioc/html/qvalue.html
+#' @details 
+#' # If package "qvalue" is not found during installation, please first install "qvalue" package
+#' # through Bioconductor: https://www.bioconductor.org/packages/release/bioc/html/qvalue.html
 #' 
 #' @author 
 #' Yinan Zheng \email{y-zheng@@northwestern.edu},

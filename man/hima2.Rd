@@ -12,6 +12,7 @@ hima2(
   mediator.family = c("gaussian", "negbin", "compositional"),
   penalty = c("DBlasso", "MCP", "SCAD", "lasso"),
   topN = NULL,
+  scale = TRUE,
   verbose = FALSE
 )
 }
@@ -43,6 +44,8 @@ Default = \code{NULL}. If \code{NULL}, \code{topN} will be either \code{ceiling(
 where \code{n} is the sample size. If the sample size is greater than topN (pre-specified or calculated), all 
 mediators will be included in the test (i.e. low-dimensional scenario).}
 
+\item{scale}{logical. Should the function scale the data? Default = \code{TRUE}.}
+
 \item{verbose}{logical. Should the function be verbose and shows the progression? Default = \code{FALSE}.}
 }
 \value{
@@ -52,7 +55,7 @@ A data.frame containing mediation testing results of selected mediators.
 \code{hima2} is an upgraded version of hima for estimating and testing high-dimensional mediation effects.
 }
 \examples{
-
+\dontrun{
 # Example 1 (continous outcome): 
 data(Example1)
 head(Example1$PhenoData)
@@ -62,7 +65,8 @@ e1 <- hima2(Outcome ~ Treatment + Sex + Age,
       data.M = Example1$Mediator,
       outcome.family = "gaussian",
       mediator.family = "gaussian",
-      penalty = "MCP")
+      penalty = "MCP",
+      scale = FALSE)
 e1
 attributes(e1)$variable.labels
 
@@ -75,7 +79,8 @@ e2 <- hima2(Disease ~ Treatment + Sex + Age,
       data.M = Example2$Mediator,
       outcome.family = "binomial",
       mediator.family = "gaussian",
-      penalty = "MCP")
+      penalty = "MCP",
+      scale = FALSE)
 e2
 attributes(e2)$variable.labels
 
@@ -83,12 +88,13 @@ attributes(e2)$variable.labels
 data(Example3)
 head(Example3$PhenoData)
 
-e3 <- hima2(Surv(Disease, Time) ~ Treatment + Sex + Age, 
+e3 <- hima2(Surv(Status, Time) ~ Treatment + Sex + Age, 
       data.pheno = Example3$PhenoData, 
       data.M = Example3$Mediator,
       outcome.family = "survival",
       mediator.family = "gaussian",
-      penalty = "DBlasso")
+      penalty = "DBlasso",
+      scale = FALSE)
 e3
 attributes(e3)$variable.labels
 
@@ -101,9 +107,11 @@ e4 <- hima2(Outcome ~ Treatment + Sex + Age,
       data.M = Example4$Mediator,
       outcome.family = "gaussian",
       mediator.family = "compositional",
-      penalty = "DBlasso")
+      penalty = "DBlasso",
+      scale = FALSE)
 e4
 attributes(e4)$variable.labels
+}
                   
 }
 \references{

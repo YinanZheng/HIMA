@@ -24,7 +24,7 @@ If package "qvalue" is not found, please first install "qvalue" package through 
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 BiocManager::install("qvalue")
-```r
+```
 
 ## Citation:
 

@@ -38,4 +38,5 @@
 * Rename "screen.family" option in "hima" function to "M.family"
 * Improve verbose messages.
 
-# HIMA 2.1.1 (2022-02-11)
+# HIMA 2.2.0 (2023-04-27)
+* Add hima2 wrapper function for one-stop solution of different HIMA analysis.
