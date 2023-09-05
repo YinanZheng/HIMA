@@ -40,3 +40,6 @@
 
 # HIMA 2.2.0 (2023-04-27)
 * Add hima2 wrapper function for one-stop solution of different HIMA analysis.
+
+# HIMA 2.2.0 (2023-04-27)
+* Add quantile HIMA function "qhima".

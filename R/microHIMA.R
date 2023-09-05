@@ -1,5 +1,4 @@
 # This is the main function for our proposed method for high-dimensional compositional microbiome mediation analysis
-
 #' High-dimensional mediation analysis for compositional microbiome data
 #' 
 #' \code{microHIMA} is used to estimate and test high-dimensional mediation effects for compositional microbiome data.
