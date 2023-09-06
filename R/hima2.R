@@ -153,13 +153,13 @@ hima2 <- function(formula,
                       Y.family = outcome.family, penalty = penalty, topN = topN,
                       parallel = FALSE, ncore = 1, scale = scale, verbose = verbose)
       
-      attr(results, "variable.labels") <- c("Effect of exposure on mediator", 
-                                            "Effect of mediator on outcome",
-                                            "Total effect of exposure on outcome",
-                                            "Mediation effect",
-                                            "Percent of mediation effect out of the total effect",
-                                            "Bonferroni adjusted p value",
-                                            "Benjamini-Hochberg False Discovery Rate")
+      attr(results, "variable.labels") <- c("alpha: Effect of exposure on mediator", 
+                                            "beta: Effect of mediator on outcome",
+                                            "gamma: Total effect of exposure on outcome",
+                                            "alpha*beta: Mediation effect",
+                                            "% total effect: Percent of mediation effect out of the total effect",
+                                            "Bonferroni.p: Bonferroni adjusted p value",
+                                            "BH.FDR: Benjamini-Hochberg False Discovery Rate")
     }
     
     if(mediator.family == "compositional")
@@ -178,11 +178,11 @@ hima2 <- function(formula,
                             beta = res$beta, beta_se = res$beta_se,
                             p = res$p_FDP, check.names = FALSE)
       rownames(results) <- res$ID
-      attr(results, "variable.labels") <- c("Effect of exposure on mediator", 
-                                            "Standard error of the effect of exposure on mediator",
-                                            "Effect of mediator on outcome",
-                                            "Standard error of the effect of mediator on outcome",
-                                            "p value")
+      attr(results, "variable.labels") <- c("alpha: Effect of exposure on mediator", 
+                                            "alpha_se: Standard error of the effect of exposure on mediator",
+                                            "beta: Effect of mediator on outcome",
+                                            "beta_se: Standard error of the effect of mediator on outcome",
+                                            "p: p value")
     }
     
     
@@ -203,11 +203,11 @@ hima2 <- function(formula,
                           beta = res$beta, beta_se = res$beta_se,
                           p = res$pvalue, check.names = FALSE)
     rownames(results) <- res$ID
-    attr(results, "variable.labels") <- c("Effect of exposure on mediator", 
-                                          "Standard error of the effect of exposure on mediator",
-                                          "Effect of mediator on outcome",
-                                          "Standard error of the effect of mediator on outcome",
-                                          "p value")
+    attr(results, "variable.labels") <- c("alpha: Effect of exposure on mediator", 
+                                          "alpha_se: Standard error of the effect of exposure on mediator",
+                                          "beta: Effect of mediator on outcome",
+                                          "beta_se: Standard error of the effect of mediator on outcome",
+                                          "p: p value")
   } else if (outcome.family == "quantile") {
     tau <- readline(prompt = "Enter quantile level(s) (between 0-1, multiple values accepted): ")
     tau <- eval(parse(text = paste0("c(", tau, ")")))
@@ -226,16 +226,16 @@ hima2 <- function(formula,
     
     results <- data.frame(alpha = res$alpha, alpha_se = res$alpha_se, 
                           beta = res$beta, beta_se = res$beta_se,
-                          p = res$Bonferroni.p, tau = res$tau, 
+                          Bonferroni.p = res$Bonferroni.p, tau = res$tau, 
                           check.names = FALSE)
     rownames(results) <- paste0(res$ID, "-q", res$tau*100) 
     
-    attr(results, "variable.labels") <- c("Effect of exposure on mediator", 
-                                          "Standard error of the effect of exposure on mediator",
-                                          "Effect of mediator on outcome",
-                                          "Standard error of the effect of mediator on outcome",
-                                          "Bonferroni adjusted p value",
-                                          "Quantile level of the outcome")
+    attr(results, "variable.labels") <- c("alpha: Effect of exposure on mediator", 
+                                          "alpha_se: Standard error of the effect of exposure on mediator",
+                                          "beta: Effect of mediator on outcome",
+                                          "beta_se: Standard error of the effect of mediator on outcome",
+                                          "Bonferroni.p: Bonferroni adjusted p value",
+                                          "tau: Quantile level of the outcome")
   }
   
   return(results)

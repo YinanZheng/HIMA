@@ -4,18 +4,18 @@ library(quantreg)
 library(conquer)
 library(MASS)
 
-p <- 300 # the dimension of mediators
+p <- 500 # the dimension of mediators
 q <- 2    # the dimension of covariates
 n <- 300  # sample size
 alpha <- matrix(0,1,p) # the coefficients for X -> M
 beta <- matrix(0,1,p) # the coefficients for M -> Y
 
-alpha[1] <- 0.5
-alpha[3] <- 0.5
-alpha[5] <- 0.5
-beta[1] <- 0.5
-beta[3] <- 0.5
-beta[5] <- 0.5
+alpha[1] <- 0.7
+alpha[3] <- 0.8
+alpha[5] <- 0.9
+beta[1] <- 0.9
+beta[3] <- 0.8
+beta[5] <- 0.7
 
 sigma_e <- matrix(0,p,p)
 rou <- 0.25  # the correlation of  M
@@ -28,8 +28,8 @@ for (i in 1:p) {
 E <- matrix(rt(n, 3)) # E is t distribution
 
 zeta <- matrix(0.3,p,q) # the coefficients of covariates for X -> M
-eta <- matrix(0.5,1,q) # the coefficients of covariates for M -> Y
-gamma <- 0.5 # the direct effect
+eta <- matrix(0.3,1,q) # the coefficients of covariates for M -> Y
+gamma <- 1 # the direct effect
 gamma_total <- gamma + alpha%*%t(beta) # the total effect
 X <- matrix(rbinom(n, size=1, prob=0.6),n,1) # expoure: 1=treatment; 0=placebo
 Z <- matrix(0,n,q) # covariates

@@ -1,7 +1,7 @@
 #' Example dataset 5 for HIMA: Compositional mediator (e.g., microbiome)
 #'
 #' A \code{list} dataset containing a phenotype dataset and a compositional mediator
-#' dataset (n=300 participants, p=300 biomarkers). The variables in the phenotype are as follows:
+#' dataset (n=300 participants, p=500 biomarkers). The variables in the phenotype are as follows:
 #'
 #' \itemize{
 #'   \item Treatment: treated (value = 1) or not treated (value = 0)
