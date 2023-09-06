@@ -11,7 +11,7 @@
 #' @param data.M a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns 
 #' represent variables. \code{hima2} will scale \code{data.M}.
 #' @param outcome.family either \code{'gaussian'} (default, for normally distributed continuous outcome), \code{'binomial'} 
-#' (for binay outcome), or \code{'survival'} (for time-to-event outcome), depending on the data type of outcome.
+#' (for binay outcome), \code{'survival'} (for time-to-event outcome), or \code{'quantile'} (for quantile mediation analysis)
 #' @param mediator.family either \code{'gaussian'} (default, for continuous mediators), \code{'negbin'} (i.e., negative binomial, 
 #' for RNA-seq data as mediators), or \code{'compositional'} (for microbiome data as mediators), depending on the data type of 
 #' high-dimensional mediators (\code{data.M}).
@@ -43,6 +43,9 @@
 #' 
 #' Zhang H, Chen J, Li Z, Liu L. Testing for mediation effect with application to human microbiome data. 
 #' Stat Biosci. 2021. DOI: 10.1007/s12561-019-09253-3. PMID: 34093887; PMCID: PMC8177450.
+#' 
+#' Zhang H, Hong X, Zheng Y, Hou L, Zheng C, Wang X, Liu L. High-Dimensional Quantile Mediation Analysis with Application to a Birth 
+#' Cohort Study of Mother–Newborn Pairs. 2023. (In press)
 #' 
 #' @examples
 #' \dontrun{
@@ -101,13 +104,28 @@
 #'       scale = FALSE)
 #' e4
 #' attributes(e4)$variable.labels
+#' 
+#' #' # Example 5 (quantile mediation anlaysis): 
+#' data(Example5)
+#' head(Example5$PhenoData)
+#' 
+#' # Note that the function will prompt input for quantile level.
+#' e5 <- hima2(Outcome ~ Treatment + Sex + Age, 
+#'       data.pheno = Example5$PhenoData, 
+#'       data.M = Example5$Mediator,
+#'       outcome.family = "quantile",
+#'       mediator.family = "gaussian",
+#'       penalty = "MCP",
+#'       scale = FALSE)
+#' e5
+#' attributes(e5)$variable.labels
 #' }
 #'                   
 #' @export
 hima2 <- function(formula, 
                   data.pheno, 
                   data.M,  
-                  outcome.family = c("gaussian", "binomial", "survival"), 
+                  outcome.family = c("gaussian", "binomial", "survival", "quantile"), 
                   mediator.family = c("gaussian", "negbin", "compositional"), 
                   penalty = c("DBlasso", "MCP", "SCAD", "lasso"), 
                   topN = NULL, 
@@ -190,6 +208,34 @@ hima2 <- function(formula,
                                           "Effect of mediator on outcome",
                                           "Standard error of the effect of mediator on outcome",
                                           "p value")
+  } else if (outcome.family == "quantile") {
+    tau <- readline(prompt = "Enter quantile level(s) (between 0-1, multiple values accepted): ")
+    tau <- eval(parse(text = paste0("c(", tau, ")")))
+    
+    response_var <- as.character(formula[[2]]) 
+    ind_vars <- all.vars(formula)[-1]
+    
+    Y <- data.pheno[,response_var]
+    X <- data.pheno[,ind_vars[1]]
+    
+    if(length(ind_vars) > 1)
+      COV <- data.pheno[,ind_vars[-1]] else COV <- NULL
+    
+    res <- qHIMA(X = X, M = data.M, Y = Y, Z = COV,
+                    cutoff = 0.05, tau = tau, penalty = penalty, scale = scale, verbose = verbose)
+    
+    results <- data.frame(alpha = res$alpha, alpha_se = res$alpha_se, 
+                          beta = res$beta, beta_se = res$beta_se,
+                          p = res$Bonferroni.p, tau = res$tau, 
+                          check.names = FALSE)
+    rownames(results) <- paste0(res$ID, "-q", res$tau*100) 
+    
+    attr(results, "variable.labels") <- c("Effect of exposure on mediator", 
+                                          "Standard error of the effect of exposure on mediator",
+                                          "Effect of mediator on outcome",
+                                          "Standard error of the effect of mediator on outcome",
+                                          "Bonferroni adjusted p value",
+                                          "Quantile level of the outcome")
   }
   
   return(results)

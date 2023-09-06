@@ -44,7 +44,7 @@ Covariates specified here will not participate penalization. If not specified, t
 mediator (\code{M}).}
 
 \item{penalty}{the penalty to be applied to the model. Either 'MCP' (the default), 'SCAD', or 
-'lasso'. See \code{\link{ncvreg}}.}
+'lasso'.}
 
 \item{topN}{an integer specifying the number of top markers from sure independent screening. 
 Default = \code{NULL}. If \code{NULL}, \code{topN} will be either \code{ceiling(n/log(n))} if 

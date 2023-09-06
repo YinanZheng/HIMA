@@ -130,7 +130,7 @@ microHIMA <- function(X, Y, OTU, COV = NULL, FDPcut = 0.05, scale = TRUE){
                            beta_se = beta_SE[ID_FDR],
                            p_FDP = P_adj_DLASSO[ID_FDR])
   
-  message("Done!", "     (", Sys.time(), ")")
+  message("Done!", "     (", format(Sys.time(), "%X"), ")")
   
   return(out_result)
 }

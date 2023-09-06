@@ -12,7 +12,7 @@ potential mediators, including epigenetics, transcriptomics, proteomics, and met
 microbiome data (function \code{microHIMA}). HIMA can also handle survival data (function \code{survHIMA}).
 
 \tabular{ll}{ Package: \tab HIMA\cr Type: \tab Package\cr
-Version: \tab 2.2.0\cr Date: \tab 2023-04-27\cr License: \tab GPL-3\cr }
+Version: \tab 2.2.1\cr Date: \tab 2023-09-10\cr License: \tab GPL-3\cr }
 }
 \details{
 # If package "qvalue" is not found during installation, please first install "qvalue" package

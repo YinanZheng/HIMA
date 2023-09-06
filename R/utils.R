@@ -9,12 +9,12 @@ checkParallel <- function(program.name, parallel, ncore, verbose) {
     }
     if (verbose) 
       message("    Running ", program.name, " with ", ncore, " cores in parallel...   (", 
-              Sys.time(), ")")
+              format(Sys.time(), "%X"), ")")
       doParallel::registerDoParallel(ncore)
   } else {
     if (verbose) 
       message("    Running ", program.name, " with single core...   (", 
-              Sys.time(), ")")
+              format(Sys.time(), "%X"), ")")
     registerDoSEQ()
   }
 }

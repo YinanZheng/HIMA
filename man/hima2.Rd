@@ -8,7 +8,7 @@ hima2(
   formula,
   data.pheno,
   data.M,
-  outcome.family = c("gaussian", "binomial", "survival"),
+  outcome.family = c("gaussian", "binomial", "survival", "quantile"),
   mediator.family = c("gaussian", "negbin", "compositional"),
   penalty = c("DBlasso", "MCP", "SCAD", "lasso"),
   topN = NULL,
@@ -29,7 +29,7 @@ independent variable in the formula. The same covariates will be used in screeni
 represent variables. \code{hima2} will scale \code{data.M}.}
 
 \item{outcome.family}{either \code{'gaussian'} (default, for normally distributed continuous outcome), \code{'binomial'} 
-(for binay outcome), or \code{'survival'} (for time-to-event outcome), depending on the data type of outcome.}
+(for binay outcome), \code{'survival'} (for time-to-event outcome), or \code{'quantile'} (for quantile mediation analysis)}
 
 \item{mediator.family}{either \code{'gaussian'} (default, for continuous mediators), \code{'negbin'} (i.e., negative binomial, 
 for RNA-seq data as mediators), or \code{'compositional'} (for microbiome data as mediators), depending on the data type of 
@@ -111,6 +111,21 @@ e4 <- hima2(Outcome ~ Treatment + Sex + Age,
       scale = FALSE)
 e4
 attributes(e4)$variable.labels
+
+#' # Example 5 (quantile mediation anlaysis): 
+data(Example5)
+head(Example5$PhenoData)
+
+# Note that the function will prompt input for quantile level.
+e5 <- hima2(Outcome ~ Treatment + Sex + Age, 
+      data.pheno = Example5$PhenoData, 
+      data.M = Example5$Mediator,
+      outcome.family = "quantile",
+      mediator.family = "gaussian",
+      penalty = "MCP",
+      scale = FALSE)
+e5
+attributes(e5)$variable.labels
 }
                   
 }
@@ -131,4 +146,7 @@ Stat Med. 2021. DOI: 10.1002/sim.8808. PMID: 33205470; PMCID: PMC7855955.
 
 Zhang H, Chen J, Li Z, Liu L. Testing for mediation effect with application to human microbiome data. 
 Stat Biosci. 2021. DOI: 10.1007/s12561-019-09253-3. PMID: 34093887; PMCID: PMC8177450.
+
+Zhang H, Hong X, Zheng Y, Hou L, Zheng C, Wang X, Liu L. High-Dimensional Quantile Mediation Analysis with Application to a Birth 
+Cohort Study of Mother–Newborn Pairs. 2023. (In press)
 }

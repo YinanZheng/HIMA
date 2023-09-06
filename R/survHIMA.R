@@ -65,7 +65,7 @@ survHIMA <- function(X, Z, M, OT, status, FDRcut = 0.05, scale = TRUE, verbose =
   #########################################################################
   ################################ STEP 1 #################################
   #########################################################################
-  message("Step 1: Sure Independent Screening ...", "     (", Sys.time(), ")")
+  message("Step 1: Sure Independent Screening ...", "     (", format(Sys.time(), "%X"), ")")
   
   d_0 <- 1*round(n/log(n))
   beta_SIS <- matrix(0,1,p)
@@ -93,7 +93,7 @@ survHIMA <- function(X, Z, M, OT, status, FDRcut = 0.05, scale = TRUE, verbose =
   #########################################################################
   ################################ STEP 2 #################################
   #########################################################################
-  message("Step 2: De-biased Lasso estimates ...", "     (", Sys.time(), ")")
+  message("Step 2: De-biased Lasso estimates ...", "     (", format(Sys.time(), "%X"), ")")
   
   ## estimation of beta
   P_beta_SIS <- matrix(0,1,d)
@@ -134,7 +134,7 @@ survHIMA <- function(X, Z, M, OT, status, FDRcut = 0.05, scale = TRUE, verbose =
   #########################################################################
   ################################ STEP 3 #################################
   #########################################################################
-  message("Step 3: Multiple-testing procedure ...", "     (", Sys.time(), ")")
+  message("Step 3: Multiple-testing procedure ...", "     (", format(Sys.time(), "%X"), ")")
   
   PA <- cbind(t(P_alpha_SIS), t(P_beta_SIS))
   P_value <- apply(PA,1,max)  # the joint p-values for SIS variable
@@ -170,7 +170,7 @@ survHIMA <- function(X, Z, M, OT, status, FDRcut = 0.05, scale = TRUE, verbose =
                            beta_se = beta_est,
                            pvalue = P_max)
   
-  message("Done!", "     (", Sys.time(), ")")
+  message("Done!", "     (", format(Sys.time(), "%X"), ")")
   
   return(out_result)
 }
