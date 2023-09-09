@@ -261,7 +261,7 @@ hima2 <- function(formula,
         COV <- data.pheno[,ind_vars[-1]] else COV <- NULL
       
       res <- qHIMA(X = X, M = data.M, Y = Y, Z = COV,
-                   cutoff = 0.05, penalty = penalty, scale = scale, verbose = verbose, ...)
+                   Bonfcut = 0.05, penalty = penalty, scale = scale, verbose = verbose, ...)
       
       results <- data.frame(alpha = res$alpha, alpha_se = res$alpha_se, 
                             beta = res$beta, beta_se = res$beta_se,

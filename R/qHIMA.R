@@ -8,7 +8,6 @@
 #' represent mediator variables.
 #' @param Y a vector of continuous outcome. Do not use data.frame or matrix.
 #' @param Z a matrix of adjusting covariates. Rows represent samples, columns represent variables. Can be \code{NULL}.
-#' @param cutoff bonferroni adjusted p-value cutoff applied to define and select significant mediators. Default = \code{0.05}.
 #' @param penalty the penalty to be applied to the model (a parameter passed to function \code{conquer.cv.reg} in package \code{\link{conquer}}. 
 #' Either 'MCP' (the default), 'SCAD', or 'lasso'.
 #' @param topN an integer specifying the number of top markers from sure independent screening. 
@@ -42,7 +41,7 @@
 #'                 M = Example5$Mediator, 
 #'                 Y = Example5$PhenoData$Outcome, 
 #'                 Z = Example5$PhenoData[, c("Sex", "Age")], 
-#'                 cutoff = 0.05,
+#'                 Bonfcut = 0.05,
 #'                 tau = c(0.3, 0.5, 0.7),
 #'                 scale = FALSE, 
 #'                 verbose = TRUE)
@@ -50,7 +49,7 @@
 #' }
 #' 
 #' @export
-qHIMA <- function(X, M, Y, Z, cutoff = 0.05, penalty = c('MCP', "SCAD", "lasso"), 
+qHIMA <- function(X, M, Y, Z, penalty = c('MCP', "SCAD", "lasso"), 
                   topN = NULL, tau = 0.5, scale = TRUE, Bonfcut = 0.05, verbose = FALSE, ...){
   
   penalty <- match.arg(penalty)
@@ -141,7 +140,7 @@ qHIMA <- function(X, M, Y, Z, cutoff = 0.05, penalty = c('MCP', "SCAD", "lasso")
     
     #-- the Pmax method
     P_penalty_Pmax  <- P_max_k_penalty*length(ID_penalty)
-    sig_ind <- which(P_penalty_Pmax < cutoff)
+    sig_ind <- which(P_penalty_Pmax < Bonfcut)
     ID_Non_penalty_Pmax <- ID_penalty[sig_ind] # the ID of significant M by JS
     
     if(length(ID_Non_penalty_Pmax) > 0)

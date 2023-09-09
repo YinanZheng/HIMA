@@ -9,7 +9,6 @@ qHIMA(
   M,
   Y,
   Z,
-  cutoff = 0.05,
   penalty = c("MCP", "SCAD", "lasso"),
   topN = NULL,
   tau = 0.5,
@@ -28,8 +27,6 @@ represent mediator variables.}
 \item{Y}{a vector of continuous outcome. Do not use data.frame or matrix.}
 
 \item{Z}{a matrix of adjusting covariates. Rows represent samples, columns represent variables. Can be \code{NULL}.}
-
-\item{cutoff}{bonferroni adjusted p-value cutoff applied to define and select significant mediators. Default = \code{0.05}.}
 
 \item{penalty}{the penalty to be applied to the model (a parameter passed to function \code{conquer.cv.reg} in package \code{\link{conquer}}. 
 Either 'MCP' (the default), 'SCAD', or 'lasso'.}
@@ -71,7 +68,7 @@ qHIMA.fit <- qHIMA(X = Example5$PhenoData$Treatment,
                 M = Example5$Mediator, 
                 Y = Example5$PhenoData$Outcome, 
                 Z = Example5$PhenoData[, c("Sex", "Age")], 
-                cutoff = 0.05,
+                Bonfcut = 0.05,
                 tau = c(0.3, 0.5, 0.7),
                 scale = FALSE, 
                 verbose = TRUE)

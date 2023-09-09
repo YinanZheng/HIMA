@@ -12,7 +12,7 @@
 #' @param scale logical. Should the function scale the data? Default = \code{TRUE}.
 #' @param FDRcut FDR cutoff applied to define and select significant mediators. Default = \code{0.05}. 
 #' 
-#' @return A data.frame containing mediation testing results of selected mediators (FDP < \code{FDPcut}). 
+#' @return A data.frame containing mediation testing results of selected mediators (FDR < \code{FDRcut}). 
 #' \itemize{
 #'     \item{ID: }{index of selected significant mediator.}
 #'     \item{alpha: }{coefficient estimates of exposure (X) --> mediators (M).}
@@ -112,7 +112,7 @@ microHIMA <- function(X, Y, OTU, COV = NULL, FDRcut = 0.05, scale = TRUE){
   
   message("Step 2: Joint significance test ...", "     (", format(Sys.time(), "%X"), ")")
   
-  ## The FDP method
+  ## The FDR method
   set <- which(P_adj_DLASSO < FDRcut)
   hom <- hommel::hommel(P_adj_DLASSO, simes = FALSE)
   N1 <- hommel::discoveries(hom, set, incremental = TRUE, alpha=0.05)

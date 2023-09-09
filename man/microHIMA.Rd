@@ -22,7 +22,7 @@ Can be \code{NULL}.}
 \item{scale}{logical. Should the function scale the data? Default = \code{TRUE}.}
 }
 \value{
-A data.frame containing mediation testing results of selected mediators (FDP < \code{FDPcut}). 
+A data.frame containing mediation testing results of selected mediators (FDR < \code{FDRcut}). 
 \itemize{
     \item{ID: }{index of selected significant mediator.}
     \item{alpha: }{coefficient estimates of exposure (X) --> mediators (M).}
