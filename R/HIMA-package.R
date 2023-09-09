@@ -33,11 +33,15 @@
 #' 2016;32(20):3150-4. DOI: 10.1093/bioinformatics/btw351. PubMed PMID: 27357171; 
 #' PMCID: PMC5048064.
 #' 
-#' 2. Zhang H, Zheng Y, Hou L, Liu L. Mediation Analysis for Survival Data with High-Dimensional 
+#' 2. Perera C, Zhang H, Zheng Y, Hou L, Qu A, Zheng C, Xie K, Liu L. 
+#' HIMA2: high-dimensional mediation analysis and its application in epigenome-wide DNA methylation data. 
+#' BMC Bioinformatics. 2022. DOI: 10.1186/s12859-022-04748-1. PMID: 35879655. PMCID: PMC9310002.
+#' 
+#' 3. Zhang H, Zheng Y, Hou L, Liu L. Mediation Analysis for Survival Data with High-Dimensional 
 #' Mediators. Bioinformatics. 2021;37(21):3815-21. DOI: 10.1093/bioinformatics/btab564. 
 #' PubMed PMID: 34343267; PMCID: PMC8570823.
 #' 
-#' 3. Zhang H, Chen J, Feng Y, Wang C, Li H, Liu L. Mediation effect selection in high-dimensional 
+#' 4. Zhang H, Chen J, Feng Y, Wang C, Li H, Liu L. Mediation effect selection in high-dimensional 
 #' and compositional microbiome data. Stat Med. 2021;40(4):885-96. DOI: 10.1002/sim.8808. 
 #' PubMed PMID: 33205470; PMCID: PMC7855955.
 #' 
@@ -53,6 +57,7 @@
 #' @importFrom foreach foreach %dopar% registerDoSEQ getDoParWorkers
 #' @importFrom doParallel registerDoParallel
 #' @importFrom HDMT fdr_est
+#' @importFrom hdi lasso.proj
 #' @importFrom conquer conquer.cv.reg
 #' @importFrom quantreg rq
 #' @importFrom survival Surv coxph

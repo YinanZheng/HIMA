@@ -36,7 +36,8 @@ for RNA-seq data as mediators), or \code{'compositional'} (for microbiome data a
 high-dimensional mediators (\code{data.M}).}
 
 \item{penalty}{the penalty to be applied to the model. Either \code{'DBlasso'} (De-biased LASSO, default), 
-\code{'MCP'}, \code{'SCAD'}, or \code{'lasso'}.}
+\code{'MCP'}, \code{'SCAD'}, or \code{'lasso'}. Survival HIMA and microbiome HIMA can be only performed with \code{'DBlasso'}. 
+Quantile HIMA cannot be performed with \code{'DBlasso'} (instead, \code{'MCP'} as default).}
 
 \item{topN}{an integer specifying the number of top markers from sure independent screening. 
 Default = \code{NULL}. If \code{NULL}, \code{topN} will be either \code{ceiling(n/log(n))} if 
@@ -65,7 +66,7 @@ e1 <- hima2(Outcome ~ Treatment + Sex + Age,
       data.M = Example1$Mediator,
       outcome.family = "gaussian",
       mediator.family = "gaussian",
-      penalty = "MCP",
+      penalty = "DBlasso",
       scale = FALSE)
 e1
 attributes(e1)$variable.labels
@@ -79,7 +80,7 @@ e2 <- hima2(Disease ~ Treatment + Sex + Age,
       data.M = Example2$Mediator,
       outcome.family = "binomial",
       mediator.family = "gaussian",
-      penalty = "MCP",
+      penalty = "DBlasso",
       scale = FALSE)
 e2
 attributes(e2)$variable.labels
@@ -94,7 +95,7 @@ e3 <- hima2(Surv(Status, Time) ~ Treatment + Sex + Age,
       outcome.family = "survival",
       mediator.family = "gaussian",
       penalty = "DBlasso",
-      scale = FALSE)
+      scale = TRUE)
 e3
 attributes(e3)$variable.labels
 
@@ -108,7 +109,7 @@ e4 <- hima2(Outcome ~ Treatment + Sex + Age,
       outcome.family = "gaussian",
       mediator.family = "compositional",
       penalty = "DBlasso",
-      scale = FALSE)
+      scale = TRUE)
 e4
 attributes(e4)$variable.labels
 
@@ -122,8 +123,8 @@ e5 <- hima2(Outcome ~ Treatment + Sex + Age,
       data.M = Example5$Mediator,
       outcome.family = "quantile",
       mediator.family = "gaussian",
-      penalty = "MCP",
-      scale = FALSE)
+      penalty = "MCP", # Quantile HIMA does not support DBlasso
+      scale = TRUE)
 e5
 attributes(e5)$variable.labels
 }
@@ -145,8 +146,8 @@ Zhang H, Chen J, Feng Y, Wang C, Li H, Liu L. Mediation effect selection in high
 Stat Med. 2021. DOI: 10.1002/sim.8808. PMID: 33205470; PMCID: PMC7855955.
 
 Zhang H, Chen J, Li Z, Liu L. Testing for mediation effect with application to human microbiome data. 
-Stat Biosci. 2021. DOI: 10.1007/s12561-019-09253-3. PMID: 34093887; PMCID: PMC8177450.
+Stat Biosci. 2021. DOI: 10.1007/s12561-019-09253-3. PMID: 34093887; PMCID: PMC8177450
 
 Zhang H, Hong X, Zheng Y, Hou L, Zheng C, Wang X, Liu L. High-Dimensional Quantile Mediation Analysis with Application to a Birth 
-Cohort Study of Mother–Newborn Pairs. 2023. (In press)
+Cohort Study of Mother–Newborn Pairs. Bioinformatics. 2023. (In press)
 }

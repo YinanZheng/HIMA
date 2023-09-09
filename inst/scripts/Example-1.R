@@ -1,16 +1,16 @@
 # Generate HIMA example based on real-world dataset - 1 (linear outcome)
 
 set.seed(1029)
-p <- 300 # the dimension of mediators
+p <- 500 # the dimension of mediators
 q <- 2    # the dimension of covariates
 n <- 300  # sample size
 alpha <- matrix(0,1,p) # the coefficients for X -> M
 beta <- matrix(0,1,p) # the coefficients for M -> Y
-alpha[1:5] <- 0.5
+alpha[1:5] <- 0.7
 beta[1:5] <- 0.5
 zeta <- matrix(0.01,p,q) # the coefficients of covariates for X -> M
 eta <- matrix(0.01,1,q) # the coefficients of covariates for M -> Y
-gamma <- 0.5 # the direct effect
+gamma <- 1 # the direct effect
 gamma_total <- gamma + alpha%*%t(beta) # the total effect
 X <- matrix(rbinom(n, size=1, prob=0.6),n,1) # expoure: 1=treatment; 0=placebo
 Z <- matrix(0,n,2) # covariates

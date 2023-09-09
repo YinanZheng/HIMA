@@ -10,7 +10,7 @@
 #' @param COV a \code{data.frame} or \code{matrix} of adjusting covariates. Rows represent samples, columns represent microbiome variables. 
 #' Can be \code{NULL}.
 #' @param scale logical. Should the function scale the data? Default = \code{TRUE}.
-#' @param FDPcut FDP (false discovery proportions) cutoff applied to define and select significant mediators. Default = \code{0.05}. 
+#' @param FDRcut FDR cutoff applied to define and select significant mediators. Default = \code{0.05}. 
 #' 
 #' @return A data.frame containing mediation testing results of selected mediators (FDP < \code{FDPcut}). 
 #' \itemize{
@@ -19,7 +19,7 @@
 #'     \item{alpha_se: }{standard error for alpha.}
 #'     \item{beta: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
 #'     \item{beta_se: }{standard error for beta}
-#'     \item{p_FDP: }{false discovery proportions of selected significant mediator.}
+#'     \item{FDR: }{false discovery rate of selected significant mediator.}
 #' }
 #' 
 #' @references Zhang H, Chen J, Feng Y, Wang C, Li H, Liu L. Mediation effect selection in high-dimensional and compositional microbiome data. 
@@ -42,7 +42,7 @@
 #' }
 #' 
 #' @export
-microHIMA <- function(X, Y, OTU, COV = NULL, FDPcut = 0.05, scale = TRUE){
+microHIMA <- function(X, Y, OTU, COV = NULL, FDRcut = 0.05, scale = TRUE){
   
   X <- matrix(X, ncol = 1)
   
@@ -69,6 +69,8 @@ microHIMA <- function(X, Y, OTU, COV = NULL, FDPcut = 0.05, scale = TRUE){
   P_raw_DLASSO <- matrix(0,1,d)
   M1 <- t(t(M_raw[,1]))
   
+  message("Step 1: Isometric Log-ratio Transformation and De-biased Lasso estimates ...", "  (", format(Sys.time(), "%X"), ")")
+
   for (k in 1:d){
     M <- M_raw
     M[,1] <- M[,k]
@@ -108,8 +110,10 @@ microHIMA <- function(X, Y, OTU, COV = NULL, FDPcut = 0.05, scale = TRUE){
   
   P_adj_DLASSO <- as.numeric(P_raw_DLASSO)
   
+  message("Step 2: Joint significance test ...", "     (", format(Sys.time(), "%X"), ")")
+  
   ## The FDP method
-  set <- which(P_adj_DLASSO < FDPcut)
+  set <- which(P_adj_DLASSO < FDRcut)
   hom <- hommel::hommel(P_adj_DLASSO, simes = FALSE)
   N1 <- hommel::discoveries(hom, set, incremental = TRUE, alpha=0.05)
   
@@ -128,7 +132,7 @@ microHIMA <- function(X, Y, OTU, COV = NULL, FDPcut = 0.05, scale = TRUE){
                            alpha_se = alpha_SE[ID_FDR], 
                            beta = beta_EST[ID_FDR], 
                            beta_se = beta_SE[ID_FDR],
-                           p_FDP = P_adj_DLASSO[ID_FDR])
+                           FDR = P_adj_DLASSO[ID_FDR])
   
   message("Done!", "     (", format(Sys.time(), "%X"), ")")
   

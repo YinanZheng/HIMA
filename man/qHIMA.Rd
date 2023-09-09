@@ -14,6 +14,7 @@ qHIMA(
   topN = NULL,
   tau = 0.5,
   scale = TRUE,
+  Bonfcut = 0.05,
   verbose = FALSE
 )
 }
@@ -40,10 +41,12 @@ If the sample size is greater than topN (pre-specified or calculated), all media
 
 \item{scale}{logical. Should the function scale the data? Default = \code{TRUE}.}
 
+\item{Bonfcut}{Bonferroni-corrected p value cutoff applied to define and select significant mediators. Default = \code{0.05}.}
+
 \item{verbose}{logical. Should the function be verbose? Default = \code{FALSE}.}
 }
 \value{
-A data.frame containing mediation testing results of selected mediators (FDR <\code{FDPcut}). 
+A data.frame containing mediation testing results of selected mediators (Bonferroni-adjusted p value <\code{Bonfcut}). 
 \itemize{
     \item{ID: }{index of selected significant mediator.}
     \item{alpha: }{coefficient estimates of exposure (X) --> mediators (M).}
@@ -75,5 +78,5 @@ qHIMA.fit
 }
 \references{
 Zhang H, Hong X, Zheng Y, Hou L, Zheng C, Wang X, Liu L. High-Dimensional Quantile Mediation Analysis with Application to a Birth 
-Cohort Study of Mother–Newborn Pairs. 2023. (In press)
+Cohort Study of Mother–Newborn Pairs. Bioinformatics. 2023. (In press)
 }

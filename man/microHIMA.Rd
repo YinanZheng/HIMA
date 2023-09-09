@@ -4,7 +4,7 @@
 \alias{microHIMA}
 \title{High-dimensional mediation analysis for compositional microbiome data}
 \usage{
-microHIMA(X, Y, OTU, COV = NULL, FDPcut = 0.05, scale = TRUE)
+microHIMA(X, Y, OTU, COV = NULL, FDRcut = 0.05, scale = TRUE)
 }
 \arguments{
 \item{X}{a vector of exposure.}
@@ -17,7 +17,7 @@ columns represent variables.}
 \item{COV}{a \code{data.frame} or \code{matrix} of adjusting covariates. Rows represent samples, columns represent microbiome variables. 
 Can be \code{NULL}.}
 
-\item{FDPcut}{FDP (false discovery proportions) cutoff applied to define and select significant mediators. Default = \code{0.05}.}
+\item{FDRcut}{FDR cutoff applied to define and select significant mediators. Default = \code{0.05}.}
 
 \item{scale}{logical. Should the function scale the data? Default = \code{TRUE}.}
 }
@@ -29,7 +29,7 @@ A data.frame containing mediation testing results of selected mediators (FDP < \
     \item{alpha_se: }{standard error for alpha.}
     \item{beta: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
     \item{beta_se: }{standard error for beta}
-    \item{p_FDP: }{false discovery proportions of selected significant mediator.}
+    \item{FDR: }{false discovery rate of selected significant mediator.}
 }
 }
 \description{

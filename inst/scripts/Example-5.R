@@ -1,9 +1,6 @@
 # Generate HIMA example based on real-world dataset - 5 (quantile mediation analysis)
 
-library(quantreg)
-library(conquer)
-library(MASS)
-
+set.seed(1029)
 p <- 500 # the dimension of mediators
 q <- 2    # the dimension of covariates
 n <- 300  # sample size

@@ -89,6 +89,7 @@ hima.fit <- hima(X = Example1$PhenoData$Treatment,
                  Y = Example1$PhenoData$Outcome, 
                  M = Example1$Mediator,
                  COV.XM = Example1$PhenoData[, c("Sex", "Age")],
+                 Y.family = 'gaussian',
                  scale = FALSE,
                  verbose = TRUE) 
 hima.fit

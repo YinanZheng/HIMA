@@ -1,0 +1,211 @@
+#' This is the function for high-dimensional mediation analysis using de-biased lasso
+
+#' HIMA with de-biased lasso
+#' 
+#' \code{dblassoHIMA} is used to estimate and test high-dimensional mediation effects using de-biased lasso penalty.
+#' 
+#' @param X a vector of exposure. 
+#' @param Y a vector of outcome. Can be either continuous or binary (0-1).
+#' @param M a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns represent variables.
+#' @param Z a \code{data.frame} or \code{matrix} of covariates dataset for testing the association M ~ X and Y ~ M.
+#' @param Y.family either 'gaussian' (default) or 'binomial', depending on the data type of outcome (\code{Y}). This parameter is passed 
+#' to function \code{lasso.proj} in R package \code{\link{hdi}} for de-biased lasso penalization.
+#' @param topN an integer specifying the number of top markers from sure independent screening. 
+#' Default = \code{NULL}. If \code{NULL}, \code{topN} will be either \code{ceiling(n/log(n))} if 
+#' \code{Y.family = 'gaussian'}, or \code{ceiling(n/(2*log(n)))} if \code{Y.family = 'binomial'}, 
+#' where \code{n} is the sample size. If the sample size is greater than topN (pre-specified or calculated), all 
+#' mediators will be included in the test (i.e. low-dimensional scenario).
+#' @param scale logical. Should the function scale the data? Default = \code{TRUE}.
+#' @param FDRcut FDR cutoff applied to define and select significant mediators. Default = \code{0.05}. 
+#' @param verbose logical. Should the function be verbose? Default = \code{FALSE}.
+#' 
+#' @return A data.frame containing mediation testing results of selected mediators (FDR <\code{FDPcut}). 
+#' \itemize{
+#'     \item{alpha: }{coefficient estimates of exposure (X) --> mediators (M).}
+#'     \item{beta: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
+#'     \item{gamma: }{coefficient estimates of exposure (X) --> outcome (Y) (total effect).}
+#'     \item{alpha*beta: }{mediation effect.}
+#'     \item{\% total effect: }{alpha*beta / gamma. Percentage of the mediation effect out of the total effect.}
+#'     \item{p.joint: }{joint p-value of selected significant mediator.}
+#' }
+#' 
+#' #' @references Perera C, Zhang H, Zheng Y, Hou L, Qu A, Zheng C, Xie K, Liu L. 
+#' HIMA2: high-dimensional mediation analysis and its application in epigenome-wide DNA methylation data. 
+#' BMC Bioinformatics. 2022. DOI: 10.1186/s12859-022-04748-1. PMID: 35879655. PMCID: PMC9310002
+#' 
+#' @examples
+#' \dontrun{
+#' # When Y is continuous and normally distributed
+#' # Example 1 (continuous outcome): 
+#' data(Example1)
+#' head(Example1$PhenoData)
+#' 
+#' dblassohima.fit <- dblassoHIMA(X = Example1$PhenoData$Treatment, 
+#'                                Y = Example1$PhenoData$Outcome, 
+#'                                M = Example1$Mediator,
+#'                                Z = Example1$PhenoData[, c("Sex", "Age")],
+#'                                Y.family = 'gaussian',
+#'                                scale = FALSE,
+#'                                verbose = TRUE) 
+#' dblassohima.fit
+#' 
+#' # When Y is binary (should specify Y.family)
+#' # Example 2 (binary outcome): 
+#' data(Example2)
+#' head(Example2$PhenoData)
+#' 
+#' dblassohima.logistic.fit <- dblassoHIMA(X = Example2$PhenoData$Treatment,
+#'                                         Y = Example2$PhenoData$Disease,
+#'                                         M = Example2$Mediator,
+#'                                         Z = Example2$PhenoData[, c("Sex", "Age")],
+#'                                         Y.family = 'binomial',
+#'                                         scale = FALSE,
+#'                                         verbose = TRUE)
+#' dblassohima.logistic.fit
+#' }
+#' 
+#' @export
+dblassoHIMA<-function(X,Y,M,Z, 
+                      Y.family = c("gaussian", "binomial"),
+                      topN = NULL, 
+                      scale = TRUE,
+                      FDRcut = 0.05,
+                      verbose = FALSE)
+{
+  Y.family <- match.arg(Y.family)
+  
+  if(scale)
+  {
+    X <- scale(X)
+    M <- scale(M)
+    Z <- scale(Z)
+  } else {
+    X <- as.matrix(X)
+    M <- as.matrix(M)
+    Z <- as.matrix(Z)
+  }
+  
+  n <- nrow(M)
+  p <- ncol(M)
+  q <- ncol(Z)  # number of covariates
+  
+  MZX<-cbind(M,Z,X)
+  
+  #########################################################################
+  ########################### (Step 1) SIS step ########################### 
+  #########################################################################
+  message("Step 1: Sure Independent Screening ...", "  (", format(Sys.time(), "%X"), ")")
+  
+  # the number of top mediators that associated with exposure (X)
+  if(is.null(topN)) d_0 <- ceiling(2 * n/log(n)) else d_0 <- topN  
+  
+  d_0 <- min(p, d_0) # if d > p select all mediators
+  
+  beta_SIS <- matrix(0,1,p) 
+  
+  # Estimate the regression coefficients beta (mediators --> outcome)
+  for (i in 1:p){
+    ID_S <- c(i, (p+1):(p+q+1))
+    MZX_SIS <- MZX[,ID_S]
+    fit <- lsfit(MZX_SIS,Y,intercept = TRUE)
+    beta_SIS[i] <- fit$coefficients[2]
+  }
+  
+  # Estimate the regression coefficients alpha (exposure --> mediators)
+  alpha_SIS <- matrix(0,1,p)
+  XZ <- cbind(X,Z)
+  for (i in 1:p){
+    fit_a  <- lsfit(XZ,M[,i],intercept = TRUE)
+    est_a <- matrix(coef(fit_a))[2]
+    alpha_SIS[i] <- est_a
+  }
+  
+  # Select the d_0 number of mediators with top largest effect 
+  ab_SIS <- alpha_SIS*beta_SIS
+  ID_SIS  <- which(-abs(ab_SIS) <= sort(-abs(ab_SIS))[d_0])
+  d <- length(ID_SIS)
+  
+  #########################################################################
+  ################### (Step 2) De-biased Lasso Estimates ##################
+  #########################################################################
+  message("Step 2: De-biased Lasso Estimates ...", "   (", format(Sys.time(), "%X"), ")")
+  
+  P_beta_SIS <- matrix(0,1,d)
+  beta_DLASSO_SIS_est <- matrix(0,1,d)
+  beta_DLASSO_SIS_SE <- matrix(0,1,d)
+  MZX_SIS <- MZX[,c(ID_SIS, (p+1):(p+q+1))]
+  
+  DLASSO_fit <- hdi::lasso.proj(x=MZX_SIS, y=Y, family = "gaussian",Z = NULL)
+  beta_DLASSO_SIS_est <- DLASSO_fit$bhat[1:d]
+  beta_DLASSO_SIS_SE <- DLASSO_fit$se
+  P_beta_SIS <- t(DLASSO_fit$pval[1:d])
+  
+  ################### Estimate alpha ################
+  alpha_SIS_est <- matrix(0,1,d)
+  alpha_SIS_SE <- matrix(0,1,d)
+  P_alpha_SIS <- matrix(0,1,d)
+  
+  XZ <- cbind(X,Z)
+  for (i in 1:d){
+    fit_a  <- lsfit(XZ,M[,ID_SIS[i]],intercept = TRUE)
+    est_a <- matrix(coef(fit_a))[2]
+    se_a <- ls.diag(fit_a)$std.err[2]
+    sd_1 <- abs(est_a)/se_a
+    P_alpha_SIS[i] <- 2*(1-pnorm(sd_1,0,1))  ## the SIS for alpha
+    alpha_SIS_est[i] <- est_a
+    alpha_SIS_SE[i] <- se_a
+  }
+  
+  #########################################################################
+  ################ (step 3) The multiple-testing  procedure ###############
+  #########################################################################
+  message("Step 3: Joint significance test ...", "     (", format(Sys.time(), "%X"), ")")
+  
+  PA <- cbind(t(P_alpha_SIS),(t(P_beta_SIS)))
+  P_value <- apply(PA,1,max)  #The joint p-values for SIS variable
+  
+  N0 <- dim(PA)[1]*dim(PA)[2]
+  input_pvalues <- PA + matrix(runif(N0,0,10^{-10}),dim(PA)[1],2)
+  
+  # Estimate the proportions of the three component nulls
+  nullprop <- null_estimation(input_pvalues)
+  
+  # Compute the estimated pointwise FDR for every observed p-max
+  fdrcut  <- HDMT::fdr_est(nullprop$alpha00,
+                           nullprop$alpha01,
+                           nullprop$alpha10, 
+                           nullprop$alpha1,
+                           nullprop$alpha2,
+                           input_pvalues,exact=0)
+  
+  ID_fdr <- which(fdrcut <= FDRcut)
+  
+  # Following codes extract the estimates for mediators with fdrcut<=0.05
+  beta_hat_est <- beta_DLASSO_SIS_est[ID_fdr]
+  beta_hat_SE  <- beta_DLASSO_SIS_SE[ID_fdr]
+  
+  alpha_hat_est <-  alpha_SIS_est[ID_fdr]
+  alpha_hat_SE  <-  alpha_SIS_SE[ID_fdr]
+  
+  P.value_raw <- P_value[ID_fdr]
+  
+  # Indirect effect
+  IDE <- beta_hat_est*alpha_hat_est # mediation(indirect) effect
+  
+  # Total effect
+  if(is.null(Z)) {
+    YX <- data.frame(Y = Y, X = X)
+  } else {
+    YX <- data.frame(Y = Y, X = X, Z)
+  }
+  
+  gamma_est <- coef(glm(Y ~ ., family = Y.family, data = YX))[2]
+  
+  results <- data.frame(alpha = alpha_hat_est, beta = beta_hat_est, gamma = gamma_est, 
+                        `alpha*beta` = IDE, `% total effect` = IDE/gamma_est * 100, 
+                        `p.joint` = P.value_raw, check.names = FALSE)
+  
+  message("Done!", "     (", format(Sys.time(), "%X"), ")")
+  
+  return(results)
+}

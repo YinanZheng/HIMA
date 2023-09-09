@@ -16,6 +16,7 @@ Imports:
     MASS,
     survival,
     HDMT,
+    hdi,
     conquer,
     quantreg,
     hommel,
@@ -28,6 +29,8 @@ Collate:
     hima.R
     survHIMA.R
     microHIMA.R
+    dblassoHIMA.R
+    qHIMA.R
     hima2.R
     example1.R
     example2.R

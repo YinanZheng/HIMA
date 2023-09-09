@@ -56,6 +56,7 @@
 #'                  Y = Example1$PhenoData$Outcome, 
 #'                  M = Example1$Mediator,
 #'                  COV.XM = Example1$PhenoData[, c("Sex", "Age")],
+#'                  Y.family = 'gaussian',
 #'                  scale = FALSE,
 #'                  verbose = TRUE) 
 #' hima.fit
@@ -100,7 +101,13 @@ hima <- function(X, Y, M, COV.XM = NULL, COV.MY = COV.XM,
     {
       X <- scale(X)
       M <- scale(M)
-      COV.XM<- scale(COV.XM)
+      COV.XM <- scale(COV.XM)
+      COV.MY <- scale(COV.MY)
+    } else {
+      X <- as.matrix(X)
+      M <- as.matrix(M)
+      COV.XM <- as.matrix(COV.XM)
+      COV.MY <- as.matrix(COV.MY)
     }
  
     if(is.null(topN)) {
