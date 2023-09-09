@@ -38,7 +38,7 @@ Either 'MCP' (the default), 'SCAD', or 'lasso'.}
 Default = \code{NULL}. If \code{NULL}, \code{topN} will be \code{2*ceiling(n/log(n))}, where \code{n} is the sample size.
 If the sample size is greater than topN (pre-specified or calculated), all mediators will be included in the test (i.e. low-dimensional scenario).}
 
-\item{tau}{quantile level of outcome. Default = 0.5. A vector of tau is accepted}
+\item{tau}{quantile level of outcome. Default = 0.5. A vector of tau is accepted.}
 
 \item{scale}{logical. Should the function scale the data? Default = \code{TRUE}.}
 

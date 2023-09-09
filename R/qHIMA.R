@@ -14,7 +14,7 @@
 #' @param topN an integer specifying the number of top markers from sure independent screening. 
 #' Default = \code{NULL}. If \code{NULL}, \code{topN} will be \code{2*ceiling(n/log(n))}, where \code{n} is the sample size.
 #' If the sample size is greater than topN (pre-specified or calculated), all mediators will be included in the test (i.e. low-dimensional scenario).
-#' @param tau quantile level of outcome. Default = 0.5. A vector of tau is accepted
+#' @param tau quantile level of outcome. Default = 0.5. A vector of tau is accepted.
 #' @param scale logical. Should the function scale the data? Default = \code{TRUE}.
 #' @param Bonfcut Bonferroni-corrected p value cutoff applied to define and select significant mediators. Default = \code{0.05}. 
 #' @param verbose logical. Should the function be verbose? Default = \code{FALSE}.
