@@ -40,10 +40,9 @@ high-dimensional mediators (\code{data.M}).}
 Quantile HIMA cannot be performed with \code{'DBlasso'} (instead, \code{'MCP'} as default).}
 
 \item{topN}{an integer specifying the number of top markers from sure independent screening. 
-Default = \code{NULL}. If \code{NULL}, \code{topN} will be either \code{ceiling(n/log(n))} if 
-\code{outcome.family = 'gaussian'}, or \code{ceiling(n/(2*log(n)))} if \code{outcome.family = 'binomial'}, 
-where \code{n} is the sample size. If the sample size is greater than topN (pre-specified or calculated), all 
-mediators will be included in the test (i.e. low-dimensional scenario).}
+Default = \code{NULL}. If \code{NULL}, \code{topN} will be \code{ceiling(2 * n/log(n))}, where \code{n} is the sample size. 
+If the sample size is greater than topN (pre-specified or calculated), all mediators will be included in the test 
+(i.e. a low-dimensional scenario).}
 
 \item{scale}{logical. Should the function scale the data? Default = \code{TRUE}.}
 

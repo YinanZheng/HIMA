@@ -15,7 +15,7 @@ A list containing two objects: \code{PhenoData} and \code{Mediator}
 }
 \description{
 A \code{list} dataset containing a phenotype dataset and a high-dimension mediator
-dataset (n=300 participants, p=300 biomarkers). The variables in the phenotype are as follows:
+dataset (n=300 participants, p=500 biomarkers). The variables in the phenotype are as follows:
 }
 \details{
 \itemize{
