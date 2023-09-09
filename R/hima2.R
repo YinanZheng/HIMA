@@ -60,7 +60,7 @@
 #'       outcome.family = "gaussian",
 #'       mediator.family = "gaussian",
 #'       penalty = "DBlasso",
-#'       scale = FALSE)
+#'       scale = FALSE) # Example data have been scaled
 #' e1
 #' attributes(e1)$variable.labels
 #' 
@@ -74,7 +74,7 @@
 #'       outcome.family = "binomial",
 #'       mediator.family = "gaussian",
 #'       penalty = "DBlasso",
-#'       scale = FALSE)
+#'       scale = FALSE) # Example data have been scaled
 #' e2
 #' attributes(e2)$variable.labels
 #' 
@@ -142,13 +142,13 @@ hima2 <- function(formula,
   # Penalty check
   if (penalty == "DBlasso" & outcome.family == "quantile")
   {
-    stop("Quantile HIMA does not support De-biased Lasso penalty. Switing to 'MCP' (default) ...")
+    message("Note: Quantile HIMA does not support De-biased Lasso penalty. Switing to 'MCP' (default) ...")
     penalty = "MCP"
   }
   
-  if (penalty != "DBlasso" & (outcome.family == "survial" | mediator.family == "compositional"))
+  if (penalty != "DBlasso" & (outcome.family == "survival" | mediator.family == "compositional"))
   {
-    stop("Survival HIMA and Compositional HIMA can be only performed using De-biased Lasso. Switing to 'DBlasso' ...")
+    message("Note: Survival HIMA and Compositional HIMA can be only performed using De-biased Lasso. Switing to 'DBlasso' ...")
     penalty = "DBlasso"
   }
   

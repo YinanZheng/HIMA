@@ -69,7 +69,7 @@ e1 <- hima2(Outcome ~ Treatment + Sex + Age,
       outcome.family = "gaussian",
       mediator.family = "gaussian",
       penalty = "DBlasso",
-      scale = FALSE)
+      scale = FALSE) # Example data have been scaled
 e1
 attributes(e1)$variable.labels
 
@@ -83,7 +83,7 @@ e2 <- hima2(Disease ~ Treatment + Sex + Age,
       outcome.family = "binomial",
       mediator.family = "gaussian",
       penalty = "DBlasso",
-      scale = FALSE)
+      scale = FALSE) # Example data have been scaled
 e2
 attributes(e2)$variable.labels
 
