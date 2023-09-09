@@ -26,7 +26,7 @@
 #'     \item{gamma: }{coefficient estimates of exposure (X) --> outcome (Y) (total effect).}
 #'     \item{alpha*beta: }{mediation effect.}
 #'     \item{\% total effect: }{alpha*beta / gamma. Percentage of the mediation effect out of the total effect.}
-#'     \item{p.joint: }{joint p-value of selected significant mediator.}
+#'     \item{p.joint: }{joint raw p-value of selected significant mediator (based on FDR).}
 #' }
 #' 
 #' #' @references Perera C, Zhang H, Zheng Y, Hou L, Qu A, Zheng C, Xie K, Liu L. 

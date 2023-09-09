@@ -41,5 +41,6 @@
 # HIMA 2.2.0 (2023-04-27)
 * Add hima2 wrapper function for one-stop solution of different HIMA analysis.
 
-# HIMA 2.2.0 (2023-04-27)
+# HIMA 2.2.1 (2023-09-10)
 * Add quantile HIMA function "qhima".
+* Enable de-biased lasso penalty for regular hima in function "hima2"

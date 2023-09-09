@@ -15,7 +15,8 @@ qHIMA(
   tau = 0.5,
   scale = TRUE,
   Bonfcut = 0.05,
-  verbose = FALSE
+  verbose = FALSE,
+  ...
 )
 }
 \arguments{
@@ -44,6 +45,8 @@ If the sample size is greater than topN (pre-specified or calculated), all media
 \item{Bonfcut}{Bonferroni-corrected p value cutoff applied to define and select significant mediators. Default = \code{0.05}.}
 
 \item{verbose}{logical. Should the function be verbose? Default = \code{FALSE}.}
+
+\item{...}{other arguments.}
 }
 \value{
 A data.frame containing mediation testing results of selected mediators (Bonferroni-adjusted p value <\code{Bonfcut}). 
@@ -53,7 +56,7 @@ A data.frame containing mediation testing results of selected mediators (Bonferr
     \item{alpha_se: }{standard error for alpha.}
     \item{beta: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
     \item{beta_se: }{standard error for beta}
-    \item{Bonferroni.p: }{statistical significance of the mediator (Bonferroni procedure).}
+    \item{Bonferroni.p: }{statistical significance of the mediator (Bonferroni-corrected p value).}
 }
 }
 \description{

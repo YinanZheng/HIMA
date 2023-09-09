@@ -18,6 +18,7 @@
 #' @param scale logical. Should the function scale the data? Default = \code{TRUE}.
 #' @param Bonfcut Bonferroni-corrected p value cutoff applied to define and select significant mediators. Default = \code{0.05}. 
 #' @param verbose logical. Should the function be verbose? Default = \code{FALSE}.
+#' @param ... other arguments.
 #' 
 #' @return A data.frame containing mediation testing results of selected mediators (Bonferroni-adjusted p value <\code{Bonfcut}). 
 #' \itemize{
@@ -26,7 +27,7 @@
 #'     \item{alpha_se: }{standard error for alpha.}
 #'     \item{beta: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
 #'     \item{beta_se: }{standard error for beta}
-#'     \item{Bonferroni.p: }{statistical significance of the mediator (Bonferroni procedure).}
+#'     \item{Bonferroni.p: }{statistical significance of the mediator (Bonferroni-corrected p value).}
 #' }
 #' 
 #' @references Zhang H, Hong X, Zheng Y, Hou L, Zheng C, Wang X, Liu L. High-Dimensional Quantile Mediation Analysis with Application to a Birth 
@@ -50,7 +51,7 @@
 #' 
 #' @export
 qHIMA <- function(X, M, Y, Z, cutoff = 0.05, penalty = c('MCP', "SCAD", "lasso"), 
-                  topN = NULL, tau = 0.5, scale = TRUE, Bonfcut = 0.05, verbose = FALSE){
+                  topN = NULL, tau = 0.5, scale = TRUE, Bonfcut = 0.05, verbose = FALSE, ...){
   
   penalty <- match.arg(penalty)
   

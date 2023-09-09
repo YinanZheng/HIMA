@@ -20,7 +20,7 @@
 #'     \item{alpha_se: }{standard error for alpha.}
 #'     \item{beta: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
 #'     \item{beta_se: }{standard error for beta}
-#'     \item{p.joint: }{joint p-value of selected significant mediator.}
+#'     \item{p.joint: }{joint raw p-value of selected significant mediator (based on FDR).}
 #' }
 #' 
 #' @references Zhang H, Zheng Y, Hou L, Zheng C, Liu L. Mediation Analysis for Survival Data with High-Dimensional Mediators. 

@@ -71,8 +71,8 @@ A data.frame containing mediation testing results of selected mediators.
     \item{gamma: }{coefficient estimates of exposure (X) --> outcome (Y) (total effect).}
     \item{alpha*beta: }{mediation effect.}
     \item{\% total effect: }{alpha*beta / gamma. Percentage of the mediation effect out of the total effect.}
-    \item{Bonferroni.p: }{statistical significance of the mediator (Bonferroni procedure).}
-    \item{BH.FDR: }{statistical significance of the mediator (Benjamini-Hochberg procedure).}
+    \item{Bonferroni.p: }{statistical significance of the mediator (Bonferroni-corrected p value).}
+    \item{BH.FDR: }{statistical significance of the mediator (Benjamini-Hochberg FDR).}
 }
 }
 \description{

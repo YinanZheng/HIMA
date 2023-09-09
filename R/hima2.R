@@ -24,6 +24,7 @@
 #' (i.e. a low-dimensional scenario).
 #' @param scale logical. Should the function scale the data? Default = \code{TRUE}.
 #' @param verbose logical. Should the function be verbose and shows the progression? Default = \code{FALSE}.
+#' @param ... other arguments.
 #' 
 #' @return A data.frame containing mediation testing results of selected mediators. 
 #' 
@@ -116,7 +117,8 @@
 #'       outcome.family = "quantile",
 #'       mediator.family = "gaussian",
 #'       penalty = "MCP", # Quantile HIMA does not support DBlasso
-#'       scale = TRUE)
+#'       scale = TRUE, 
+#'       tau = c(0.2, 0.5, 0.8)) # specify multiple quantile level
 #' e5
 #' attributes(e5)$variable.labels
 #' }
@@ -130,7 +132,8 @@ hima2 <- function(formula,
                   penalty = c("DBlasso", "MCP", "SCAD", "lasso"), 
                   topN = NULL, 
                   scale = TRUE,
-                  verbose = FALSE) 
+                  verbose = FALSE,
+                  ...) 
 {
   outcome.family <- match.arg(outcome.family)
   mediator.family <- match.arg(mediator.family)
@@ -175,7 +178,7 @@ hima2 <- function(formula,
                                               "gamma: Total effect of exposure on outcome",
                                               "alpha*beta: Mediation effect",
                                               "% total effect: Percent of mediation effect out of the total effect",
-                                              "p.joint: Joint p-value of selected significant mediator")
+                                              "p.joint: Joint raw p-value of selected significant mediator (based on FDR)")
       } else if (mediator.family == "compositional") {
         response_var <- as.character(formula[[2]]) 
         ind_vars <- all.vars(formula)[-1]
@@ -218,7 +221,7 @@ hima2 <- function(formula,
                                             "alpha_se: Standard error of the effect of exposure on mediator",
                                             "beta: Effect of mediator on outcome",
                                             "beta_se: Standard error of the effect of mediator on outcome",
-                                            "p.joint: Joint p-value of selected significant mediator")
+                                            "p.joint: Joint raw p-value of selected significant mediator (based on FDR)")
     }
   } else { # If penalty is not DBlasso
     if (outcome.family %in% c("gaussian", "binomial"))
@@ -245,8 +248,8 @@ hima2 <- function(formula,
                                             "Bonferroni.p: Bonferroni adjusted p value",
                                             "BH.FDR: Benjamini-Hochberg False Discovery Rate")
     } else if (outcome.family == "quantile") {
-      tau <- readline(prompt = "Enter quantile level(s) (between 0-1, multiple values accepted): ")
-      tau <- eval(parse(text = paste0("c(", tau, ")")))
+      # tau <- readline(prompt = "Enter quantile level(s) (between 0-1, multiple values accepted): ")
+      # tau <- eval(parse(text = paste0("c(", tau, ")")))
       
       response_var <- as.character(formula[[2]]) 
       ind_vars <- all.vars(formula)[-1]
@@ -258,7 +261,7 @@ hima2 <- function(formula,
         COV <- data.pheno[,ind_vars[-1]] else COV <- NULL
       
       res <- qHIMA(X = X, M = data.M, Y = Y, Z = COV,
-                   cutoff = 0.05, tau = tau, penalty = penalty, scale = scale, verbose = verbose)
+                   cutoff = 0.05, penalty = penalty, scale = scale, verbose = verbose, ...)
       
       results <- data.frame(alpha = res$alpha, alpha_se = res$alpha_se, 
                             beta = res$beta, beta_se = res$beta_se,

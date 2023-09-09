@@ -13,7 +13,8 @@ hima2(
   penalty = c("DBlasso", "MCP", "SCAD", "lasso"),
   topN = NULL,
   scale = TRUE,
-  verbose = FALSE
+  verbose = FALSE,
+  ...
 )
 }
 \arguments{
@@ -47,6 +48,8 @@ If the sample size is greater than topN (pre-specified or calculated), all media
 \item{scale}{logical. Should the function scale the data? Default = \code{TRUE}.}
 
 \item{verbose}{logical. Should the function be verbose and shows the progression? Default = \code{FALSE}.}
+
+\item{...}{other arguments.}
 }
 \value{
 A data.frame containing mediation testing results of selected mediators.
@@ -123,7 +126,8 @@ e5 <- hima2(Outcome ~ Treatment + Sex + Age,
       outcome.family = "quantile",
       mediator.family = "gaussian",
       penalty = "MCP", # Quantile HIMA does not support DBlasso
-      scale = TRUE)
+      scale = TRUE, 
+      tau = c(0.2, 0.5, 0.8)) # specify multiple quantile level
 e5
 attributes(e5)$variable.labels
 }
