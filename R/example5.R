@@ -1,4 +1,4 @@
-#' Example dataset 5 for HIMA: Compositional mediator (e.g., microbiome)
+#' Example dataset 5 for HIMA: High-dimensional quantile mediation analysis
 #'
 #' A \code{list} dataset containing a phenotype dataset and a compositional mediator
 #' dataset (n=300 participants, p=500 biomarkers). The variables in the phenotype are as follows:

@@ -3,7 +3,7 @@
 \docType{data}
 \name{Example5}
 \alias{Example5}
-\title{Example dataset 5 for HIMA: Compositional mediator (e.g., microbiome)}
+\title{Example dataset 5 for HIMA: High-dimensional quantile mediation analysis}
 \format{
 An object of class \code{list} of length 2.
 }
