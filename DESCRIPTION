@@ -32,11 +32,7 @@ Collate:
     dblassoHIMA.R
     qHIMA.R
     hima2.R
-    example1.R
-    example2.R
-    example3.R
-    example4.R
-    example5.R
+    himaDat.R
     onAttach.R
     HIMA-package.R
 Encoding: UTF-8

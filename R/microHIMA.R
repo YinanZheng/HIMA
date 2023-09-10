@@ -11,6 +11,7 @@
 #' Can be \code{NULL}.
 #' @param scale logical. Should the function scale the data? Default = \code{TRUE}.
 #' @param FDRcut FDR cutoff applied to define and select significant mediators. Default = \code{0.05}. 
+#' @param verbose logical. Should the function be verbose? Default = \code{FALSE}.
 #' 
 #' @return A data.frame containing mediation testing results of selected mediators (FDR < \code{FDRcut}). 
 #' \itemize{
@@ -18,7 +19,7 @@
 #'     \item{alpha: }{coefficient estimates of exposure (X) --> mediators (M).}
 #'     \item{alpha_se: }{standard error for alpha.}
 #'     \item{beta: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
-#'     \item{beta_se: }{standard error for beta}
+#'     \item{beta_se: }{standard error for beta.}
 #'     \item{FDR: }{false discovery rate of selected significant mediator.}
 #' }
 #' 
@@ -30,19 +31,21 @@
 #' 
 #' @examples
 #' \dontrun{
-#' data(Example4)
-#' head(Example4$PhenoData)
+#' # Note: In the following example, M1, M2, and M3 are true mediators.
+#' data(himaDat)
 #' 
-#' microHIMA.fit <- microHIMA(X = Example4$PhenoData$Treatment, 
-#'                            Y = Example4$PhenoData$Outcome, 
-#'                            OTU = Example4$Mediator, 
-#'                            COV = Example4$PhenoData[, c("Sex", "Age")],
+#' head(himaDat$Example4$PhenoData)
+#' 
+#' microHIMA.fit <- microHIMA(X = himaDat$Example4$PhenoData$Treatment, 
+#'                            Y = himaDat$Example4$PhenoData$Outcome, 
+#'                            OTU = himaDat$Example4$Mediator, 
+#'                            COV = himaDat$Example4$PhenoData[, c("Sex", "Age")],
 #'                            scale = FALSE)
 #' microHIMA.fit
 #' }
 #' 
 #' @export
-microHIMA <- function(X, Y, OTU, COV = NULL, FDRcut = 0.05, scale = TRUE){
+microHIMA <- function(X, Y, OTU, COV = NULL, FDRcut = 0.05, scale = TRUE, verbose = FALSE){
   
   X <- matrix(X, ncol = 1)
   

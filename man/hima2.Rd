@@ -23,11 +23,11 @@ hima2(
 must be listed as the first variable in the right hand side of the formula.
 independent variable in the formula. The same covariates will be used in screening and penalized regression.}
 
-\item{data.pheno}{a data frame containing all the variables listed in the right hand side of the \code{formula}.
-\code{hima2} will scale \code{data.pheno}.}
+\item{data.pheno}{a data frame containing exposure and covariates that are listed in the right hand side of the \code{formula}.
+The variable names must match those listed in \code{formula}. By default \code{hima2} will scale \code{data.pheno}.}
 
 \item{data.M}{a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns 
-represent variables. \code{hima2} will scale \code{data.M}.}
+represent variables. By default \code{hima2} will scale \code{data.M}.}
 
 \item{outcome.family}{either \code{'gaussian'} (default, for normally distributed continuous outcome), \code{'binomial'} 
 (for binay outcome), \code{'survival'} (for time-to-event outcome), or \code{'quantile'} (for quantile mediation analysis)}
@@ -37,15 +37,15 @@ for RNA-seq data as mediators), or \code{'compositional'} (for microbiome data a
 high-dimensional mediators (\code{data.M}).}
 
 \item{penalty}{the penalty to be applied to the model. Either \code{'DBlasso'} (De-biased LASSO, default), 
-\code{'MCP'}, \code{'SCAD'}, or \code{'lasso'}. Survival HIMA and microbiome HIMA can be only performed with \code{'DBlasso'}. 
-Quantile HIMA cannot be performed with \code{'DBlasso'} (instead, \code{'MCP'} as default).}
+\code{'MCP'}, \code{'SCAD'}, or \code{'lasso'}. Please note, survival HIMA and microbiome HIMA can be only performed with \code{'DBlasso'}; 
+Quantile HIMA cannot be performed with \code{'DBlasso'}.}
 
 \item{topN}{an integer specifying the number of top markers from sure independent screening. 
 Default = \code{NULL}. If \code{NULL}, \code{topN} will be \code{ceiling(2 * n/log(n))}, where \code{n} is the sample size. 
 If the sample size is greater than topN (pre-specified or calculated), all mediators will be included in the test 
 (i.e. a low-dimensional scenario).}
 
-\item{scale}{logical. Should the function scale the data? Default = \code{TRUE}.}
+\item{scale}{logical. Should the function scale the data (exposure, mediators, and covariates)? Default = \code{TRUE}.}
 
 \item{verbose}{logical. Should the function be verbose and shows the progression? Default = \code{FALSE}.}
 
@@ -59,75 +59,73 @@ A data.frame containing mediation testing results of selected mediators.
 }
 \examples{
 \dontrun{
+# Note: In the following examples, M1, M2, and M3 are true mediators.
+data(himaDat)
+
 # Example 1 (continous outcome): 
-data(Example1)
-head(Example1$PhenoData)
+head(himaDat$Example1$PhenoData)
 
 e1 <- hima2(Outcome ~ Treatment + Sex + Age, 
-      data.pheno = Example1$PhenoData, 
-      data.M = Example1$Mediator,
+      data.pheno = himaDat$Example1$PhenoData, 
+      data.M = himaDat$Example1$Mediator,
       outcome.family = "gaussian",
       mediator.family = "gaussian",
       penalty = "DBlasso",
-      scale = FALSE) # Example data have been scaled
+      scale = FALSE) # Disabled only for example data
 e1
 attributes(e1)$variable.labels
 
 # Example 2 (binary outcome): 
-data(Example2)
-head(Example2$PhenoData)
+head(himaDat$Example2$PhenoData)
 
 e2 <- hima2(Disease ~ Treatment + Sex + Age, 
-      data.pheno = Example2$PhenoData, 
-      data.M = Example2$Mediator,
+      data.pheno = himaDat$Example2$PhenoData, 
+      data.M = himaDat$Example2$Mediator,
       outcome.family = "binomial",
       mediator.family = "gaussian",
       penalty = "DBlasso",
-      scale = FALSE) # Example data have been scaled
+      scale = FALSE) # Disabled only for example data
 e2
 attributes(e2)$variable.labels
 
 # Example 3 (time-to-event outcome): 
-data(Example3)
-head(Example3$PhenoData)
+head(himaDat$Example3$PhenoData)
 
 e3 <- hima2(Surv(Status, Time) ~ Treatment + Sex + Age, 
-      data.pheno = Example3$PhenoData, 
-      data.M = Example3$Mediator,
+      data.pheno = himaDat$Example3$PhenoData, 
+      data.M = himaDat$Example3$Mediator,
       outcome.family = "survival",
       mediator.family = "gaussian",
       penalty = "DBlasso",
-      scale = TRUE)
+      scale = FALSE) # Disabled only for example data
 e3
 attributes(e3)$variable.labels
 
 # Example 4 (compositional data as mediator, e.g., microbiome): 
-data(Example4)
-head(Example4$PhenoData)
+head(himaDat$Example4$PhenoData)
 
 e4 <- hima2(Outcome ~ Treatment + Sex + Age, 
-      data.pheno = Example4$PhenoData, 
-      data.M = Example4$Mediator,
+      data.pheno = himaDat$Example4$PhenoData, 
+      data.M = himaDat$Example4$Mediator,
       outcome.family = "gaussian",
       mediator.family = "compositional",
       penalty = "DBlasso",
-      scale = TRUE)
+      scale = FALSE) # Disabled only for example data
 e4
 attributes(e4)$variable.labels
 
 #' # Example 5 (quantile mediation anlaysis): 
-data(Example5)
-head(Example5$PhenoData)
+head(himaDat$Example5$PhenoData)
 
 # Note that the function will prompt input for quantile level.
 e5 <- hima2(Outcome ~ Treatment + Sex + Age, 
-      data.pheno = Example5$PhenoData, 
-      data.M = Example5$Mediator,
+      data.pheno = himaDat$Example5$PhenoData, 
+      data.M = himaDat$Example5$Mediator,
       outcome.family = "quantile",
       mediator.family = "gaussian",
       penalty = "MCP", # Quantile HIMA does not support DBlasso
-      scale = TRUE, 
-      tau = c(0.2, 0.5, 0.8)) # specify multiple quantile level
+      scale = FALSE, # Disabled only for example data
+      tau = c(0.3, 0.5, 0.7)) # Specify multiple quantile level
 e5
 attributes(e5)$variable.labels
 }

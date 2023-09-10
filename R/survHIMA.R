@@ -19,7 +19,7 @@
 #'     \item{alpha: }{coefficient estimates of exposure (X) --> mediators (M).}
 #'     \item{alpha_se: }{standard error for alpha.}
 #'     \item{beta: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
-#'     \item{beta_se: }{standard error for beta}
+#'     \item{beta_se: }{standard error for beta.}
 #'     \item{p.joint: }{joint raw p-value of selected significant mediator (based on FDR).}
 #' }
 #' 
@@ -28,14 +28,16 @@
 #' 
 #' @examples
 #' \dontrun{
-#' data(Example3)
-#' head(Example3$PhenoData)
+#' # Note: In the following example, M1, M2, and M3 are true mediators.
+#' data(himaDat)
 #' 
-#' survHIMA.fit <- survHIMA(X = Example3$PhenoData$Treatment,
-#'                 Z = Example3$PhenoData[, c("Sex", "Age")], 
-#'                 M = Example3$Mediator, 
-#'                 OT = Example3$PhenoData$Time, 
-#'                 status = Example3$PhenoData$Status, 
+#' head(himaDat$Example3$PhenoData)
+#' 
+#' survHIMA.fit <- survHIMA(X = himaDat$Example3$PhenoData$Treatment,
+#'                 Z = himaDat$Example3$PhenoData[, c("Sex", "Age")], 
+#'                 M = himaDat$Example3$Mediator, 
+#'                 OT = himaDat$Example3$PhenoData$Time, 
+#'                 status = himaDat$Example3$PhenoData$Status, 
 #'                 FDRcut = 0.05,
 #'                 scale = FALSE, 
 #'                 verbose = TRUE)

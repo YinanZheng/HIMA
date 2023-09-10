@@ -29,21 +29,23 @@
 #'     \item{p.joint: }{joint raw p-value of selected significant mediator (based on FDR).}
 #' }
 #' 
-#' #' @references Perera C, Zhang H, Zheng Y, Hou L, Qu A, Zheng C, Xie K, Liu L. 
+#' @references Perera C, Zhang H, Zheng Y, Hou L, Qu A, Zheng C, Xie K, Liu L. 
 #' HIMA2: high-dimensional mediation analysis and its application in epigenome-wide DNA methylation data. 
 #' BMC Bioinformatics. 2022. DOI: 10.1186/s12859-022-04748-1. PMID: 35879655. PMCID: PMC9310002
 #' 
 #' @examples
 #' \dontrun{
+#' # Note: In the following examples, M1, M2, and M3 are true mediators.
+#' data(himaDat)
+#' 
 #' # When Y is continuous and normally distributed
 #' # Example 1 (continuous outcome): 
-#' data(Example1)
-#' head(Example1$PhenoData)
+#' head(himaDat$Example1$PhenoData)
 #' 
-#' dblassohima.fit <- dblassoHIMA(X = Example1$PhenoData$Treatment, 
-#'                                Y = Example1$PhenoData$Outcome, 
-#'                                M = Example1$Mediator,
-#'                                Z = Example1$PhenoData[, c("Sex", "Age")],
+#' dblassohima.fit <- dblassoHIMA(X = himaDat$Example1$PhenoData$Treatment, 
+#'                                Y = himaDat$Example1$PhenoData$Outcome, 
+#'                                M = himaDat$Example1$Mediator,
+#'                                Z = himaDat$Example1$PhenoData[, c("Sex", "Age")],
 #'                                Y.family = 'gaussian',
 #'                                scale = FALSE,
 #'                                verbose = TRUE) 
@@ -51,13 +53,12 @@
 #' 
 #' # When Y is binary (should specify Y.family)
 #' # Example 2 (binary outcome): 
-#' data(Example2)
-#' head(Example2$PhenoData)
+#' head(himaDat$Example2$PhenoData)
 #' 
-#' dblassohima.logistic.fit <- dblassoHIMA(X = Example2$PhenoData$Treatment,
-#'                                         Y = Example2$PhenoData$Disease,
-#'                                         M = Example2$Mediator,
-#'                                         Z = Example2$PhenoData[, c("Sex", "Age")],
+#' dblassohima.logistic.fit <- dblassoHIMA(X = himaDat$Example2$PhenoData$Treatment,
+#'                                         Y = himaDat$Example2$PhenoData$Disease,
+#'                                         M = himaDat$Example2$Mediator,
+#'                                         Z = himaDat$Example2$PhenoData[, c("Sex", "Age")],
 #'                                         Y.family = 'binomial',
 #'                                         scale = FALSE,
 #'                                         verbose = TRUE)

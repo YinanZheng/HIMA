@@ -25,7 +25,7 @@
 #'     \item{alpha: }{coefficient estimates of exposure (X) --> mediators (M).}
 #'     \item{alpha_se: }{standard error for alpha.}
 #'     \item{beta: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
-#'     \item{beta_se: }{standard error for beta}
+#'     \item{beta_se: }{standard error for beta.}
 #'     \item{Bonferroni.p: }{statistical significance of the mediator (Bonferroni-corrected p value).}
 #' }
 #' 
@@ -34,13 +34,15 @@
 #' 
 #' @examples
 #' \dontrun{
-#' data(Example5)
-#' head(Example5$PhenoData)
+#' # Note: In the following example, M1, M2, and M3 are true mediators.
+#' data(himaDat)
 #' 
-#' qHIMA.fit <- qHIMA(X = Example5$PhenoData$Treatment,
-#'                 M = Example5$Mediator, 
-#'                 Y = Example5$PhenoData$Outcome, 
-#'                 Z = Example5$PhenoData[, c("Sex", "Age")], 
+#' head(himaDat$Example5$PhenoData)
+#' 
+#' qHIMA.fit <- qHIMA(X = himaDat$Example5$PhenoData$Treatment,
+#'                 M = himaDat$Example5$Mediator, 
+#'                 Y = himaDat$Example5$PhenoData$Outcome, 
+#'                 Z = himaDat$Example5$PhenoData[, c("Sex", "Age")], 
 #'                 Bonfcut = 0.05,
 #'                 tau = c(0.3, 0.5, 0.7),
 #'                 scale = FALSE, 

@@ -1,0 +1,54 @@
+#' Example datasets for HIMA demo
+#'
+#' A \code{list} dataset containing datasets for various scenarios of HIMA. Each dataset contains a phenotype 
+#' data frame and a high-dimension mediator data matrix. The datasets are simulated using parameters generated 
+#' from real datasets. The code used to generate the data can be found in /inst/script folder of the package.
+#' 
+#' Example dataset 1 for HIMA: Continuous outcome 
+#'
+#' \itemize{
+#'   \item Treatment: treated (value = 1) or not treated (value = 0)
+#'   \item Outcome: outcome of the treatment- a normally distributed continuous variable
+#'   \item Sex: female (value = 1) or male (value = 0)
+#'   \item Age: Age of the participant
+#' }
+#'
+#' Example dataset 2 for HIMA: Binary outcome 
+#' 
+#' \itemize{
+#'   \item Treatment: treated (value = 1) or not treated (value = 0)
+#'   \item Disease: diseased (value = 1) or healthy (value = 0)
+#'   \item Sex: female (value = 1) or male (value = 0)
+#'   \item Age: Age of the participant
+#' }
+#' 
+#' Example dataset 3 for HIMA: Survival data outcome
+#'
+#' \itemize{
+#'   \item Treatment: treated (value = 1) or not treated (value = 0)
+#'   \item Status: Status indicator: dead (value = 1) or alive (value = 0)
+#'   \item Time: time to event
+#'   \item Sex: female (value = 1) or male (value = 0)
+#'   \item Age: Age of the participant
+#' }
+#' 
+#' Example dataset 4 for HIMA: Compositional mediator (e.g., microbiome)
+#'
+#' \itemize{
+#'   \item Treatment: treated (value = 1) or not treated (value = 0)
+#'   \item Outcome: outcome of the treatment- a normally distributed continuous variable
+#'   \item Sex: female (value = 1) or male (value = 0)
+#'   \item Age: Age of the participant
+#' }
+#' 
+#' Example dataset 5 for HIMA: High-dimensional quantile mediation analysis
+#'
+#' \itemize{
+#'   \item Treatment: treated (value = 1) or not treated (value = 0)
+#'   \item Outcome: outcome of the treatment- abnormally distributed continuous variable
+#'   \item Sex: female (value = 1) or male (value = 0)
+#'   \item Age: Age of the participant
+#' }
+#'
+#' @return A list of example datasets for HIMA demo and testing.
+"himaDat"
