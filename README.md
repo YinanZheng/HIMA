@@ -44,7 +44,7 @@ Bioinformatics. 2021. DOI: 10.1093/bioinformatics/btab564. PMID: 34343267. PMCID
 5. Zhang H, Chen J, Li Z, Liu L. Testing for mediation effect with application to human microbiome data. 
 Stat Biosci. 2021. DOI: 10.1007/s12561-019-09253-3. PMID: 34093887; PMCID: PMC8177450
  
-6. Zhang H, Hong X, Zheng Y, Hou L, Zheng C, Wang X, Liu L. High-Dimensional Quantile Mediation Analysis with Application to a Birth Cohort Study of Mother–Newborn Pairs. Bioinformatics. 2023. (In press)
+6. Zhang H, Hong X, Zheng Y, Hou L, Zheng C, Wang X, Liu L. High-Dimensional Quantile Mediation Analysis with Application to a Birth Cohort Study of Mother–Newborn Pairs. Bioinformatics. 2023. (Submitted)
 
 ## Contact package maintainer:
 
