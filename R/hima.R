@@ -43,7 +43,7 @@
 #' 
 #' @references Zhang H, Zheng Y, Zhang Z, Gao T, Joyce B, Yoon G, Zhang W, Schwartz J, Just A, Colicino E, Vokonas P, Zhao L, 
 #' Lv J, Baccarelli A, Hou L, Liu L. Estimating and Testing High-dimensional Mediation Effects in Epigenetic Studies. 
-#' Bioinformatics. 2016. DOI: 10.1093/bioinformatics/btw351. PMID: 27357171. PMCID: PMC5048064
+#' Bioinformatics. 2016. DOI: 10.1093/bioinformatics/btw351. PMID: 27357171; PMCID: PMC5048064
 #' 
 #' @examples
 #' \dontrun{
@@ -178,8 +178,9 @@ hima <- function(X, Y, M, COV.XM = NULL, COV.MY = COV.XM,
     ID_1_non <- which(est != 0)
     if(length(ID_1_non) == 0)
     {
-      if(verbose) message("    All ", penalty, " beta estimates of the ", length(ID), " mediators are zero. 
-                          Please check ncvreg package for more options (?ncvreg).")
+      if(verbose) message("    All ", penalty, " beta estimates of the ", length(ID), " mediators are zero.")
+      results <- NULL
+      return(results)
     } else {
     if(verbose) message("    Non-zero ", penalty, " beta estimate(s) of mediator(s) found: ", paste0(names(ID_1_non), collapse = ","))
     beta_est <- est[ID_1_non]  # The non-zero MCP estimators of beta

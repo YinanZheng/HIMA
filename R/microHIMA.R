@@ -23,11 +23,12 @@
 #'     \item{FDR: }{false discovery rate of selected significant mediator.}
 #' }
 #' 
-#' @references Zhang H, Chen J, Feng Y, Wang C, Li H, Liu L. Mediation effect selection in high-dimensional and compositional microbiome data. 
-#' Stat Med. 2021. DOI: 10.1002/sim.8808. PMID: 33205470; PMCID: PMC7855955.
+#' @references
+#' 1. Zhang H, Chen J, Feng Y, Wang C, Li H, Liu L. Mediation effect selection in high-dimensional and compositional microbiome data. 
+#' Stat Med. 2021. DOI: 10.1002/sim.8808. PMID: 33205470; PMCID: PMC7855955
 #' 
-#' Zhang H, Chen J, Li Z, Liu L. Testing for mediation effect with application to human microbiome data. 
-#' Stat Biosci. 2021. DOI: 10.1007/s12561-019-09253-3. PMID: 34093887; PMCID: PMC8177450.
+#' 2. Zhang H, Chen J, Li Z, Liu L. Testing for mediation effect with application to human microbiome data. 
+#' Stat Biosci. 2021. DOI: 10.1007/s12561-019-09253-3. PMID: 34093887; PMCID: PMC8177450
 #' 
 #' @examples
 #' \dontrun{
@@ -73,7 +74,15 @@ microHIMA <- function(X, Y, OTU, COV = NULL, FDRcut = 0.05, scale = TRUE, verbos
   M1 <- t(t(M_raw[,1]))
   
   message("Step 1: Isometric Log-ratio Transformation and De-biased Lasso estimates ...", "  (", format(Sys.time(), "%X"), ")")
-
+  
+  if(verbose)
+  {
+    if(is.null(COV)) 
+    {message("        No covariate was adjusted.")} 
+    else
+    {message("        Adjusting for covariate(s): ", paste0(colnames(COV), collapse = ", "))}
+  }
+  
   for (k in 1:d){
     M <- M_raw
     M[,1] <- M[,k]
@@ -130,12 +139,18 @@ microHIMA <- function(X, Y, OTU, COV = NULL, FDRcut = 0.05, scale = TRUE, verbos
   
   ID_FDR <- set[which(N0 > 0)]
 
-  out_result <- data.frame(ID = M_ID_name[ID_FDR], 
-                           alpha = alpha_EST[ID_FDR], 
-                           alpha_se = alpha_SE[ID_FDR], 
-                           beta = beta_EST[ID_FDR], 
-                           beta_se = beta_SE[ID_FDR],
-                           FDR = P_adj_DLASSO[ID_FDR])
+  if (length(ID_FDR) > 0){
+    out_result <- data.frame(ID = M_ID_name[ID_FDR], 
+                             alpha = alpha_EST[ID_FDR], 
+                             alpha_se = alpha_SE[ID_FDR], 
+                             beta = beta_EST[ID_FDR], 
+                             beta_se = beta_SE[ID_FDR],
+                             FDR = P_adj_DLASSO[ID_FDR])
+    if(verbose) message(paste0("        ", length(ID_FDR), " significant mediator(s) identified."))
+  } else {
+    if(verbose) message("        No significant mediator identified.")
+    out_result = NULL
+  }
   
   message("Done!", "     (", format(Sys.time(), "%X"), ")")
   

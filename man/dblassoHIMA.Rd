@@ -9,7 +9,7 @@ dblassoHIMA(
   X,
   Y,
   M,
-  Z,
+  COV = NULL,
   Y.family = c("gaussian", "binomial"),
   topN = NULL,
   scale = TRUE,
@@ -24,7 +24,7 @@ dblassoHIMA(
 
 \item{M}{a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns represent variables.}
 
-\item{Z}{a \code{data.frame} or \code{matrix} of covariates dataset for testing the association M ~ X and Y ~ M.}
+\item{COV}{a \code{data.frame} or \code{matrix} of covariates dataset for testing the association M ~ X and Y ~ M.}
 
 \item{Y.family}{either 'gaussian' (default) or 'binomial', depending on the data type of outcome (\code{Y}). This parameter is passed 
 to function \code{lasso.proj} in R package \code{\link{hdi}} for de-biased lasso penalization.}
@@ -51,10 +51,6 @@ A data.frame containing mediation testing results of selected mediators (FDR <\c
     \item{\% total effect: }{alpha*beta / gamma. Percentage of the mediation effect out of the total effect.}
     \item{p.joint: }{joint raw p-value of selected significant mediator (based on FDR).}
 }
-
-#' @references Perera C, Zhang H, Zheng Y, Hou L, Qu A, Zheng C, Xie K, Liu L. 
-HIMA2: high-dimensional mediation analysis and its application in epigenome-wide DNA methylation data. 
-BMC Bioinformatics. 2022. DOI: 10.1186/s12859-022-04748-1. PMID: 35879655. PMCID: PMC9310002
 }
 \description{
 \code{dblassoHIMA} is used to estimate and test high-dimensional mediation effects using de-biased lasso penalty.
@@ -71,7 +67,7 @@ head(himaDat$Example1$PhenoData)
 dblassohima.fit <- dblassoHIMA(X = himaDat$Example1$PhenoData$Treatment, 
                                Y = himaDat$Example1$PhenoData$Outcome, 
                                M = himaDat$Example1$Mediator,
-                               Z = himaDat$Example1$PhenoData[, c("Sex", "Age")],
+                               COV = himaDat$Example1$PhenoData[, c("Sex", "Age")],
                                Y.family = 'gaussian',
                                scale = FALSE,
                                verbose = TRUE) 
@@ -84,11 +80,16 @@ head(himaDat$Example2$PhenoData)
 dblassohima.logistic.fit <- dblassoHIMA(X = himaDat$Example2$PhenoData$Treatment,
                                         Y = himaDat$Example2$PhenoData$Disease,
                                         M = himaDat$Example2$Mediator,
-                                        Z = himaDat$Example2$PhenoData[, c("Sex", "Age")],
+                                        COV = himaDat$Example2$PhenoData[, c("Sex", "Age")],
                                         Y.family = 'binomial',
                                         scale = FALSE,
                                         verbose = TRUE)
 dblassohima.logistic.fit
 }
 
+}
+\references{
+Perera C, Zhang H, Zheng Y, Hou L, Qu A, Zheng C, Xie K, Liu L. 
+HIMA2: high-dimensional mediation analysis and its application in epigenome-wide DNA methylation data. 
+BMC Bioinformatics. 2022. DOI: 10.1186/s12859-022-04748-1. PMID: 35879655; PMCID: PMC9310002
 }

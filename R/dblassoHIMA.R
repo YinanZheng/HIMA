@@ -7,7 +7,7 @@
 #' @param X a vector of exposure. 
 #' @param Y a vector of outcome. Can be either continuous or binary (0-1).
 #' @param M a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns represent variables.
-#' @param Z a \code{data.frame} or \code{matrix} of covariates dataset for testing the association M ~ X and Y ~ M.
+#' @param COV a \code{data.frame} or \code{matrix} of covariates dataset for testing the association M ~ X and Y ~ M.
 #' @param Y.family either 'gaussian' (default) or 'binomial', depending on the data type of outcome (\code{Y}). This parameter is passed 
 #' to function \code{lasso.proj} in R package \code{\link{hdi}} for de-biased lasso penalization.
 #' @param topN an integer specifying the number of top markers from sure independent screening. 
@@ -31,7 +31,7 @@
 #' 
 #' @references Perera C, Zhang H, Zheng Y, Hou L, Qu A, Zheng C, Xie K, Liu L. 
 #' HIMA2: high-dimensional mediation analysis and its application in epigenome-wide DNA methylation data. 
-#' BMC Bioinformatics. 2022. DOI: 10.1186/s12859-022-04748-1. PMID: 35879655. PMCID: PMC9310002
+#' BMC Bioinformatics. 2022. DOI: 10.1186/s12859-022-04748-1. PMID: 35879655; PMCID: PMC9310002
 #' 
 #' @examples
 #' \dontrun{
@@ -45,7 +45,7 @@
 #' dblassohima.fit <- dblassoHIMA(X = himaDat$Example1$PhenoData$Treatment, 
 #'                                Y = himaDat$Example1$PhenoData$Outcome, 
 #'                                M = himaDat$Example1$Mediator,
-#'                                Z = himaDat$Example1$PhenoData[, c("Sex", "Age")],
+#'                                COV = himaDat$Example1$PhenoData[, c("Sex", "Age")],
 #'                                Y.family = 'gaussian',
 #'                                scale = FALSE,
 #'                                verbose = TRUE) 
@@ -58,7 +58,7 @@
 #' dblassohima.logistic.fit <- dblassoHIMA(X = himaDat$Example2$PhenoData$Treatment,
 #'                                         Y = himaDat$Example2$PhenoData$Disease,
 #'                                         M = himaDat$Example2$Mediator,
-#'                                         Z = himaDat$Example2$PhenoData[, c("Sex", "Age")],
+#'                                         COV = himaDat$Example2$PhenoData[, c("Sex", "Age")],
 #'                                         Y.family = 'binomial',
 #'                                         scale = FALSE,
 #'                                         verbose = TRUE)
@@ -66,7 +66,7 @@
 #' }
 #' 
 #' @export
-dblassoHIMA<-function(X,Y,M,Z, 
+dblassoHIMA<-function(X, Y, M, COV = NULL, 
                       Y.family = c("gaussian", "binomial"),
                       topN = NULL, 
                       scale = TRUE,
@@ -75,22 +75,32 @@ dblassoHIMA<-function(X,Y,M,Z,
 {
   Y.family <- match.arg(Y.family)
   
+  n <- nrow(M)
+  p <- ncol(M)
+  
   if(scale)
   {
     X <- scale(X)
     M <- scale(M)
-    Z <- scale(Z)
+    if(!is.null(COV)) COV <- scale(COV)
   } else {
     X <- as.matrix(X)
     M <- as.matrix(M)
-    Z <- as.matrix(Z)
+    if(!is.null(COV)) COV <- as.matrix(COV)
   }
   
-  n <- nrow(M)
-  p <- ncol(M)
-  q <- ncol(Z)  # number of covariates
+  if(is.null(COV)) {MZX <- cbind(M,X); XZ <- X; q <- 0} else {MZX <- cbind(M,COV,X); XZ <- cbind(X, COV); q <- ncol(COV)}
   
-  MZX<-cbind(M,Z,X)
+  if(is.null(topN)) {
+    d <- ceiling(2 * n/log(n)) 
+  } else {
+    d <- topN  # the number of top mediators that associated with exposure (X)
+  }
+  
+  d <- min(p, d) # if d > p select all mediators
+  
+  M_ID_name <- colnames(M)
+  if(is.null(M_ID_name)) M_ID_name <- seq_len(p)
   
   #########################################################################
   ########################### (Step 1) SIS step ########################### 
@@ -114,7 +124,6 @@ dblassoHIMA<-function(X,Y,M,Z,
   
   # Estimate the regression coefficients alpha (exposure --> mediators)
   alpha_SIS <- matrix(0,1,p)
-  XZ <- cbind(X,Z)
   for (i in 1:p){
     fit_a  <- lsfit(XZ,M[,i],intercept = TRUE)
     est_a <- matrix(coef(fit_a))[2]
@@ -126,17 +135,27 @@ dblassoHIMA<-function(X,Y,M,Z,
   ID_SIS  <- which(-abs(ab_SIS) <= sort(-abs(ab_SIS))[d_0])
   d <- length(ID_SIS)
   
+  if(verbose) message("        Top ", d, " mediators are selected: ", paste0(M_ID_name[ID_SIS], collapse = ", "))
+  
   #########################################################################
   ################### (Step 2) De-biased Lasso Estimates ##################
   #########################################################################
   message("Step 2: De-biased Lasso Estimates ...", "   (", format(Sys.time(), "%X"), ")")
+  
+  if(verbose)
+  {
+    if(is.null(COV)) 
+    {message("        No covariate was adjusted.")} 
+    else
+    {message("        Adjusting for covariate(s): ", paste0(colnames(COV), collapse = ", "))}
+  }
   
   P_beta_SIS <- matrix(0,1,d)
   beta_DLASSO_SIS_est <- matrix(0,1,d)
   beta_DLASSO_SIS_SE <- matrix(0,1,d)
   MZX_SIS <- MZX[,c(ID_SIS, (p+1):(p+q+1))]
   
-  DLASSO_fit <- hdi::lasso.proj(x=MZX_SIS, y=Y, family = "gaussian",Z = NULL)
+  DLASSO_fit <- suppressMessages(hdi::lasso.proj(x=MZX_SIS, y=Y, family = Y.family))
   beta_DLASSO_SIS_est <- DLASSO_fit$bhat[1:d]
   beta_DLASSO_SIS_SE <- DLASSO_fit$se
   P_beta_SIS <- t(DLASSO_fit$pval[1:d])
@@ -146,7 +165,6 @@ dblassoHIMA<-function(X,Y,M,Z,
   alpha_SIS_SE <- matrix(0,1,d)
   P_alpha_SIS <- matrix(0,1,d)
   
-  XZ <- cbind(X,Z)
   for (i in 1:d){
     fit_a  <- lsfit(XZ,M[,ID_SIS[i]],intercept = TRUE)
     est_a <- matrix(coef(fit_a))[2]
@@ -194,17 +212,25 @@ dblassoHIMA<-function(X,Y,M,Z,
   IDE <- beta_hat_est*alpha_hat_est # mediation(indirect) effect
   
   # Total effect
-  if(is.null(Z)) {
+  if(is.null(COV)) {
     YX <- data.frame(Y = Y, X = X)
   } else {
-    YX <- data.frame(Y = Y, X = X, Z)
+    YX <- data.frame(Y = Y, X = X, COV)
   }
   
   gamma_est <- coef(glm(Y ~ ., family = Y.family, data = YX))[2]
   
-  results <- data.frame(alpha = alpha_hat_est, beta = beta_hat_est, gamma = gamma_est, 
-                        `alpha*beta` = IDE, `% total effect` = IDE/gamma_est * 100, 
-                        `p.joint` = P.value_raw, check.names = FALSE)
+  if(length(ID_fdr) > 0)
+  {
+    results <- data.frame(ID = M_ID_name[ID_fdr], alpha = alpha_hat_est, beta = beta_hat_est, gamma = gamma_est, 
+                          `alpha*beta` = IDE, `% total effect` = IDE/gamma_est * 100, 
+                          `p.joint` = P.value_raw, check.names = FALSE)
+    
+    if(verbose) message(paste0("        ", length(ID_fdr), " significant mediator(s) identified."))
+  } else {
+    if(verbose) message("        No significant mediator identified.")
+    results = NULL
+  }
   
   message("Done!", "     (", format(Sys.time(), "%X"), ")")
   

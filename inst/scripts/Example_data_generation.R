@@ -186,9 +186,9 @@ Example4 <- list(PhenoData = pheno, Mediator = OTU)
 # Dataset - 5 (quantile mediation analysis)
 ######################################################
 
-p <- 200 # the dimension of mediators
+p <- 300 # the dimension of mediators
 q <- 2    # the dimension of covariates
-n <- 200  # sample size
+n <- 300  # sample size
 alpha <- matrix(0,1,p) # the coefficients for X -> M
 beta <- matrix(0,1,p) # the coefficients for M -> Y
 
@@ -210,10 +210,10 @@ for (i in 1:p) {
 E <- matrix(rt(n, 3)) # E is t distribution
 
 zeta <- matrix(0.3,p,q) # the coefficients of covariates for X -> M
-eta <- matrix(0.3,1,q) # the coefficients of covariates for M -> Y
-gamma <- 1 # the direct effect
+eta <- matrix(0.5,1,q) # the coefficients of covariates for M -> Y
+gamma <- 0.8 # the direct effect
 gamma_total <- gamma + alpha%*%t(beta) # the total effect
-X <- matrix(rbinom(n, size=1, prob=0.6),n,1) # expoure: 1=treatment; 0=placebo
+X <- matrix(rnorm(n, mean = 0, sd = 2),n,1) # expoure: 1=treatment; 0=placebo
 Z <- matrix(0,n,q) # covariates
 Z[,1] <- rbinom(n, size=1, prob=0.5) # sex:  male=1; female=0
 Z[,2] <- sample(18:65,n,replace=TRUE)   # age ranging from 18-65

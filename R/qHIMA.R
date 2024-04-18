@@ -7,7 +7,7 @@
 #' @param M a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns 
 #' represent mediator variables.
 #' @param Y a vector of continuous outcome. Do not use data.frame or matrix.
-#' @param Z a matrix of adjusting covariates. Rows represent samples, columns represent variables. Can be \code{NULL}.
+#' @param COV a matrix of adjusting covariates. Rows represent samples, columns represent variables. Can be \code{NULL}.
 #' @param penalty the penalty to be applied to the model (a parameter passed to function \code{conquer.cv.reg} in package \code{\link{conquer}}. 
 #' Either 'MCP' (the default), 'SCAD', or 'lasso'.
 #' @param topN an integer specifying the number of top markers from sure independent screening. 
@@ -30,7 +30,7 @@
 #' }
 #' 
 #' @references Zhang H, Hong X, Zheng Y, Hou L, Zheng C, Wang X, Liu L. High-Dimensional Quantile Mediation Analysis with Application to a Birth 
-#' Cohort Study of Mother–Newborn Pairs. Bioinformatics. 2023. (In press)
+#' Cohort Study of Mother–Newborn Pairs. Bioinformatics. 2024. DOI: 10.1093/bioinformatics/btae055. PMID: 38290773; PMCID: PMC10873903
 #' 
 #' @examples
 #' \dontrun{
@@ -42,7 +42,7 @@
 #' qHIMA.fit <- qHIMA(X = himaDat$Example5$PhenoData$Treatment,
 #'                 M = himaDat$Example5$Mediator, 
 #'                 Y = himaDat$Example5$PhenoData$Outcome, 
-#'                 Z = himaDat$Example5$PhenoData[, c("Sex", "Age")], 
+#'                 COV = himaDat$Example5$PhenoData[, c("Sex", "Age")], 
 #'                 Bonfcut = 0.05,
 #'                 tau = c(0.3, 0.5, 0.7),
 #'                 scale = FALSE, 
@@ -51,7 +51,7 @@
 #' }
 #' 
 #' @export
-qHIMA <- function(X, M, Y, Z, penalty = c('MCP', "SCAD", "lasso"), 
+qHIMA <- function(X, M, Y, COV = NULL, penalty = c('MCP', "SCAD", "lasso"), 
                   topN = NULL, tau = 0.5, scale = TRUE, Bonfcut = 0.05, verbose = FALSE, ...){
   
   penalty <- match.arg(penalty)
@@ -63,12 +63,14 @@ qHIMA <- function(X, M, Y, Z, penalty = c('MCP', "SCAD", "lasso"),
   {
     X <- scale(X)
     M <- scale(M)
-    Z <- scale(Z)
+    if(!is.null(COV)) COV <- scale(COV)
   } else {
     X <- as.matrix(X)
     M <- as.matrix(M)
-    Z <- as.matrix(Z)
+    if(!is.null(COV)) COV <- as.matrix(COV)
   }
+  
+  if(is.null(COV)) XZ <- X else XZ <- cbind(X,COV)
   
   if(is.null(topN)) {
     d <- ceiling(2 * n/log(n)) 
@@ -81,53 +83,59 @@ qHIMA <- function(X, M, Y, Z, penalty = c('MCP', "SCAD", "lasso"),
   M_ID_name <- colnames(M)
   if(is.null(M_ID_name)) M_ID_name <- seq_len(p)
   
-  #------------- Step 1: Mediator screening ---------------------------
-  message("Step 1: Sure Independent Screening ...", "     (", format(Sys.time(), "%X"), ")")
-  
-  alpha_est <- matrix(0,1,p) # the OLS estimator of alpha
-  alpha_SE  <- matrix(0,1,p) # the SE of alpha-OLS
-  beta_SIS_est <- matrix(0,1,p) # the screening based estimator of beta
-  beta_SIS_SE <- matrix(0,1,p) # the SE of beta_SIS_est
-  
-  XZ <- cbind(X,Z)
-  for (k in 1:p){
-    MXZ_k <- cbind(cbind(M[,k], X), Z)
-    fit_M <- lsfit(XZ,M[,k],intercept = TRUE) # screening in the path x-M
-    alpha_est[k] <- matrix(coef(fit_M))[2]
-    alpha_SE[k] <- ls.diag(fit_M)$std.err[2]
-  }
-  
-  T_sobel <- alpha_est
-  ID_SIS <- which(-abs(T_sobel) <= sort(-abs(T_sobel))[d]) # the index set in Step 1 after the screening
-
-  alpha_est_hat <- alpha_est
-  
-  if(verbose) message("    Top ", length(ID_SIS), " mediators are selected: ", paste0(M_ID_name[ID_SIS], collapse = ", "))
-  
-  
-  #----------- Step 2: Penalized estimate in Quantile Regression model
-  message("Step 2: Penalized estimate (", penalty, ") ...", "     (", format(Sys.time(), "%X"), ")")
-  
-  conf.names <- colnames(Z)
-  if(verbose) message("    Adjusting for covariate(s): ", paste0(conf.names, collapse = ", "))
-  
-  MXZ_ID_SIS <- cbind(M[,ID_SIS],XZ)
-  
   out_result <- NULL
   
   for (tau_temp in tau)
   {
-    message("    Running penalized quantile regression with tau = ", tau_temp, " ...", "     (", format(Sys.time(), "%X"), ")")
+    message("Running penalized quantile regression with tau = ", tau_temp, " ...", "     (", format(Sys.time(), "%X"), ")")
+    
+    #------------- Step 1: Mediator screening ---------------------------
+    message("Step 1: Sure Independent Screening ...", "     (", format(Sys.time(), "%X"), ")")
+    
+    alpha_est <- matrix(0,1,p) # the OLS estimator of alpha
+    alpha_SE  <- matrix(0,1,p) # the SE of alpha-OLS
+    beta_SIS_est <- matrix(0,1,p) # the screening based estimator of beta
+    beta_SIS_SE <- matrix(0,1,p) # the SE of beta_SIS_est
+    
+    for (k in 1:p){
+      MXZ_k <- cbind(M[,k], XZ)
+      fit_rq <- rq(Y ~ MXZ_k, tau = tau_temp, method="fn", model=TRUE) # screening in the path M-Y
+      beta_SIS_est[k] <- fit_rq$coefficients[2]
+      fit_M <- lsfit(XZ,M[,k],intercept = TRUE) # screening in the path x-M
+      alpha_est[k] <- matrix(coef(fit_M))[2]
+      alpha_SE[k] <- ls.diag(fit_M)$std.err[2]
+    }
+    
+    T_sobel <- beta_SIS_est
+    ID_SIS <- which(-abs(T_sobel) <= sort(-abs(T_sobel))[d]) # the index set in Step 1 after the screening
+    
+    alpha_est_hat <- alpha_est
+    
+    if(verbose) message("        Top ", length(ID_SIS), " mediators are selected: ", paste0(M_ID_name[ID_SIS], collapse = ", "))
+    
+    
+    #----------- Step 2: Penalized estimate in Quantile Regression model
+    message("Step 2: Penalized estimate (", penalty, ") ...", "     (", format(Sys.time(), "%X"), ")")
+    
+    if(verbose)
+    {
+      if(is.null(COV)) 
+      {message("        No covariate was adjusted.")} 
+      else
+      {message("        Adjusting for covariate(s): ", paste0(colnames(COV), collapse = ", "))}
+    }
+    
+    MXZ_ID_SIS <- cbind(M[,ID_SIS],XZ)
     
     fit.penalty= conquer::conquer.cv.reg(X=MXZ_ID_SIS, Y=Y, tau = tau_temp, penalty = tolower(penalty))
     beta.penalty = fit.penalty$coeff.min[2:(d+1)]
     
     #---------- Step 3: Mediator significance testing 
-    message("        Step 3: Joint significance test ...", "     (", format(Sys.time(), "%X"), ")")
+    message("Step 3: Joint significance test ...", "     (", format(Sys.time(), "%X"), ")")
     
     beta_fit_penalty <- matrix(0,1,p)
     ID_penalty <- ID_SIS[which(beta.penalty != 0)]     # the index of nonzero mediators
-    MXZ_penalty <- cbind(M[,ID_penalty],XZ)            # cbind M[ID_penalty], X, and Z
+    MXZ_penalty <- cbind(M[,ID_penalty],XZ)            # cbind M[ID_penalty], X, and COV
     
     fit_rq_penalty <- quantreg::rq(Y ~ MXZ_penalty, tau = tau_temp, method="fn", model=TRUE)
     rq_est_penalty <- summary(fit_rq_penalty, covariance = TRUE, se = "boot")$coefficients
@@ -159,6 +167,7 @@ qHIMA <- function(X, M, Y, Z, penalty = c('MCP', "SCAD", "lasso"),
     } else {
       if(verbose) message("        No significant mediator identified.")
     }
+    message("\t")
   }
   
   message("Done!", "     (", format(Sys.time(), "%X"), ")")

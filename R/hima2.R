@@ -28,25 +28,25 @@
 #' 
 #' @return A data.frame containing mediation testing results of selected mediators. 
 #' 
-#' @references Zhang H, Zheng Y, Zhang Z, Gao T, Joyce B, Yoon G, Zhang W, Schwartz J, Just A, Colicino E, Vokonas P, Zhao L, 
+#' @references 
+#' 1. Zhang H, Zheng Y, Zhang Z, Gao T, Joyce B, Yoon G, Zhang W, Schwartz J, Just A, Colicino E, Vokonas P, Zhao L, 
 #' Lv J, Baccarelli A, Hou L, Liu L. Estimating and Testing High-dimensional Mediation Effects in Epigenetic Studies. 
-#' Bioinformatics. 2016. DOI: 10.1093/bioinformatics/btw351. PMID: 27357171. PMCID: PMC5048064
+#' Bioinformatics. 2016. DOI: 10.1093/bioinformatics/btw351. PMID: 27357171; PMCID: PMC5048064
 #' 
-#' Perera C, Zhang H, Zheng Y, Hou L, Qu A, Zheng C, Xie K, Liu L. 
-#' HIMA2: high-dimensional mediation analysis and its application in epigenome-wide DNA methylation data. 
-#' BMC Bioinformatics. 2022. DOI: 10.1186/s12859-022-04748-1. PMID: 35879655. PMCID: PMC9310002
+#' 2. Zhang H, Zheng Y, Hou L, Zheng C, Liu L. Mediation Analysis for Survival Data with High-Dimensional Mediators. 
+#' Bioinformatics. 2021. DOI: 10.1093/bioinformatics/btab564. PMID: 34343267; PMCID: PMC8570823
 #' 
-#' Zhang H, Zheng Y, Hou L, Zheng C, Liu L. Mediation Analysis for Survival Data with High-Dimensional Mediators. 
-#' Bioinformatics. 2021. DOI: 10.1093/bioinformatics/btab564. PMID: 34343267. PMCID: PMC8570823
-#' 
-#' Zhang H, Chen J, Feng Y, Wang C, Li H, Liu L. Mediation effect selection in high-dimensional and compositional microbiome data. 
+#' 3. Zhang H, Chen J, Feng Y, Wang C, Li H, Liu L. Mediation effect selection in high-dimensional and compositional microbiome data. 
 #' Stat Med. 2021. DOI: 10.1002/sim.8808. PMID: 33205470; PMCID: PMC7855955
 #' 
-#' Zhang H, Chen J, Li Z, Liu L. Testing for mediation effect with application to human microbiome data. 
+#' 4. Zhang H, Chen J, Li Z, Liu L. Testing for mediation effect with application to human microbiome data. 
 #' Stat Biosci. 2021. DOI: 10.1007/s12561-019-09253-3. PMID: 34093887; PMCID: PMC8177450
 #' 
-#' Zhang H, Hong X, Zheng Y, Hou L, Zheng C, Wang X, Liu L. High-Dimensional Quantile Mediation Analysis with Application to a Birth 
-#' Cohort Study of Mother–Newborn Pairs. Bioinformatics. 2023. (In press)
+#' 5. Perera C, Zhang H, Zheng Y, Hou L, Qu A, Zheng C, Xie K, Liu L. HIMA2: high-dimensional mediation analysis and its application in epigenome-wide DNA methylation data. 
+#' BMC Bioinformatics. 2022. DOI: 10.1186/s12859-022-04748-1. PMID: 35879655; PMCID: PMC9310002
+#' 
+#' 6. Zhang H, Hong X, Zheng Y, Hou L, Zheng C, Wang X, Liu L. High-Dimensional Quantile Mediation Analysis with Application to a Birth 
+#' Cohort Study of Mother–Newborn Pairs. Bioinformatics. 2024. DOI: 10.1093/bioinformatics/btae055. PMID: 38290773; PMCID: PMC10873903
 #' 
 #' @examples
 #' \dontrun{
@@ -137,6 +137,8 @@ hima2 <- function(formula,
   mediator.family <- match.arg(mediator.family)
   penalty <- match.arg(penalty)
   
+  results = NULL
+  
   # Penalty check
   if (penalty == "DBlasso" & outcome.family == "quantile")
   {
@@ -166,17 +168,25 @@ hima2 <- function(formula,
         if(length(ind_vars) > 1)
           COV <- data.pheno[,ind_vars[-1]] else COV <- NULL
         
-        results <- dblassoHIMA(X = X, Y = Y, M = data.M, Z = COV, 
-                               Y.family = outcome.family, 
-                               topN = topN,
-                               scale = scale, verbose = verbose)
-        
-        attr(results, "variable.labels") <- c("alpha: Effect of exposure on mediator", 
-                                              "beta: Effect of mediator on outcome",
-                                              "gamma: Total effect of exposure on outcome",
-                                              "alpha*beta: Mediation effect",
-                                              "% total effect: Percent of mediation effect out of the total effect",
-                                              "p.joint: Joint raw p-value of selected significant mediator (based on FDR)")
+        res <- dblassoHIMA(X = X, Y = Y, M = data.M, COV = COV, 
+                           Y.family = outcome.family, 
+                           topN = topN,
+                           scale = scale, verbose = verbose)
+        if(!is.null(res))
+        {        
+          results <- data.frame(alpha = res$alpha,
+                                beta = res$beta,
+                                `alpha*beta` = res$`alpha*beta`,
+                                `% total effect` = res$`% total effect`,
+                                p.joint = res$p.joint, check.names = FALSE)
+          rownames(results) <- res$ID
+          attr(results, "variable.labels") <- c("alpha: Effect of exposure on mediator", 
+                                                "beta: Effect of mediator on outcome",
+                                                "gamma: Total effect of exposure on outcome",
+                                                "alpha*beta: Mediation effect",
+                                                "% total effect: Percent of mediation effect out of the total effect",
+                                                "p.joint: Joint raw p-value of selected significant mediator (based on FDR)")
+        }
       } else if (mediator.family == "compositional") {
         response_var <- as.character(formula[[2]]) 
         ind_vars <- all.vars(formula)[-1]
@@ -188,15 +198,19 @@ hima2 <- function(formula,
           COV <- data.pheno[,ind_vars[-1]] else COV <- NULL
         
         res <- microHIMA(X = X, Y = Y, OTU = data.M, COV = COV, FDRcut = 0.05, scale)
-        results <- data.frame(alpha = res$alpha, alpha_se = res$alpha_se, 
-                              beta = res$beta, beta_se = res$beta_se,
-                              FDR = res$FDR, check.names = FALSE)
-        rownames(results) <- res$ID
-        attr(results, "variable.labels") <- c("alpha: Effect of exposure on mediator", 
-                                              "alpha_se: Standard error of the effect of exposure on mediator",
-                                              "beta: Effect of mediator on outcome",
-                                              "beta_se: Standard error of the effect of mediator on outcome",
-                                              "FDR: Hommel's false discovery rate")
+        
+        if(!is.null(res))
+        { 
+          results <- data.frame(alpha = res$alpha, alpha_se = res$alpha_se, 
+                                beta = res$beta, beta_se = res$beta_se,
+                                FDR = res$FDR, check.names = FALSE)
+          rownames(results) <- res$ID
+          attr(results, "variable.labels") <- c("alpha: Effect of exposure on mediator", 
+                                                "alpha_se: Standard error of the effect of exposure on mediator",
+                                                "beta: Effect of mediator on outcome",
+                                                "beta_se: Standard error of the effect of mediator on outcome",
+                                                "FDR: Hommel's false discovery rate")
+        }
       }
     } else if (outcome.family == "survival") {
       response_vars <- as.character(formula[[2]])[c(2,3)]
@@ -209,17 +223,20 @@ hima2 <- function(formula,
       if(length(ind_vars) > 1)
         COV <- data.pheno[,ind_vars[-1]] else COV <- NULL
       
-      res <- survHIMA(X, COV, data.M, OT, status, FDRcut = 0.05, scale, verbose)
+      res <- survHIMA(X, data.M, COV, OT, status, FDRcut = 0.05, scale, verbose)
       
-      results <- data.frame(alpha = res$alpha, alpha_se = res$alpha_se, 
-                            beta = res$beta, beta_se = res$beta_se,
-                            p.joint = res$p.joint, check.names = FALSE)
-      rownames(results) <- res$ID
-      attr(results, "variable.labels") <- c("alpha: Effect of exposure on mediator", 
-                                            "alpha_se: Standard error of the effect of exposure on mediator",
-                                            "beta: Effect of mediator on outcome",
-                                            "beta_se: Standard error of the effect of mediator on outcome",
-                                            "p.joint: Joint raw p-value of selected significant mediator (based on FDR)")
+      if(!is.null(res))
+      { 
+        results <- data.frame(alpha = res$alpha, alpha_se = res$alpha_se, 
+                              beta = res$beta, beta_se = res$beta_se,
+                              p.joint = res$p.joint, check.names = FALSE)
+        rownames(results) <- res$ID
+        attr(results, "variable.labels") <- c("alpha: Effect of exposure on mediator", 
+                                              "alpha_se: Standard error of the effect of exposure on mediator",
+                                              "beta: Effect of mediator on outcome",
+                                              "beta_se: Standard error of the effect of mediator on outcome",
+                                              "p.joint: Joint raw p-value of selected significant mediator (based on FDR)")
+      }
     }
   } else { # If penalty is not DBlasso
     if (outcome.family %in% c("gaussian", "binomial"))
@@ -238,13 +255,16 @@ hima2 <- function(formula,
                       penalty = penalty, topN = topN,
                       parallel = FALSE, ncore = 1, scale = scale, verbose = verbose)
       
-      attr(results, "variable.labels") <- c("alpha: Effect of exposure on mediator", 
-                                            "beta: Effect of mediator on outcome",
-                                            "gamma: Total effect of exposure on outcome",
-                                            "alpha*beta: Mediation effect",
-                                            "% total effect: Percent of mediation effect out of the total effect",
-                                            "Bonferroni.p: Bonferroni adjusted p value",
-                                            "BH.FDR: Benjamini-Hochberg False Discovery Rate")
+      if(!is.null(results))
+      { 
+        attr(results, "variable.labels") <- c("alpha: Effect of exposure on mediator", 
+                                              "beta: Effect of mediator on outcome",
+                                              "gamma: Total effect of exposure on outcome",
+                                              "alpha*beta: Mediation effect",
+                                              "% total effect: Percent of mediation effect out of the total effect",
+                                              "Bonferroni.p: Bonferroni adjusted p value",
+                                              "BH.FDR: Benjamini-Hochberg False Discovery Rate")
+      }
     } else if (outcome.family == "quantile") {
       # tau <- readline(prompt = "Enter quantile level(s) (between 0-1, multiple values accepted): ")
       # tau <- eval(parse(text = paste0("c(", tau, ")")))
@@ -258,22 +278,27 @@ hima2 <- function(formula,
       if(length(ind_vars) > 1)
         COV <- data.pheno[,ind_vars[-1]] else COV <- NULL
       
-      res <- qHIMA(X = X, M = data.M, Y = Y, Z = COV,
+
+      res <- qHIMA(X = X, M = data.M, Y = Y, COV = COV,
                    Bonfcut = 0.05, penalty = penalty, scale = scale, verbose = verbose, ...)
       
-      results <- data.frame(alpha = res$alpha, alpha_se = res$alpha_se, 
-                            beta = res$beta, beta_se = res$beta_se,
-                            Bonferroni.p = res$Bonferroni.p, tau = res$tau, 
-                            check.names = FALSE)
-      rownames(results) <- paste0(res$ID, "-q", res$tau*100) 
-      
-      attr(results, "variable.labels") <- c("alpha: Effect of exposure on mediator", 
-                                            "alpha_se: Standard error of the effect of exposure on mediator",
-                                            "beta: Effect of mediator on outcome",
-                                            "beta_se: Standard error of the effect of mediator on outcome",
-                                            "Bonferroni.p: Bonferroni adjusted p value",
-                                            "tau: Quantile level of the outcome")
+      if(!is.null(res))
+      { 
+        results <- data.frame(alpha = res$alpha, alpha_se = res$alpha_se, 
+                              beta = res$beta, beta_se = res$beta_se,
+                              Bonferroni.p = res$Bonferroni.p, tau = res$tau, 
+                              check.names = FALSE)
+        rownames(results) <- paste0(res$ID, "-q", res$tau*100) 
+        
+        attr(results, "variable.labels") <- c("alpha: Effect of exposure on mediator", 
+                                              "alpha_se: Standard error of the effect of exposure on mediator",
+                                              "beta: Effect of mediator on outcome",
+                                              "beta_se: Standard error of the effect of mediator on outcome",
+                                              "Bonferroni.p: Bonferroni adjusted p value",
+                                              "tau: Quantile level of the outcome")
+      }
     }
   }
+  if(is.null(results)) message("No mediator found!")
   return(results)
 }

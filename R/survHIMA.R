@@ -4,9 +4,9 @@
 #' \code{survHIMA} is used to estimate and test high-dimensional mediation effects for survival data.
 #' 
 #' @param X a vector of exposure. 
-#' @param Z a matrix of adjusting covariates. Rows represent samples, columns represent variables. Can be \code{NULL}.
 #' @param M a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns 
 #' represent mediator variables.
+#' @param COV a matrix of adjusting covariates. Rows represent samples, columns represent variables. Can be \code{NULL}.
 #' @param OT a vector of observed failure times.
 #' @param status a vector of censoring indicator (\code{status = 1}: uncensored; \code{status = 0}: censored)
 #' @param FDRcut FDR cutoff applied to define and select significant mediators. Default = \code{0.05}. 
@@ -24,7 +24,7 @@
 #' }
 #' 
 #' @references Zhang H, Zheng Y, Hou L, Zheng C, Liu L. Mediation Analysis for Survival Data with High-Dimensional Mediators. 
-#' Bioinformatics. 2021. DOI: 10.1093/bioinformatics/btab564. PMID: 34343267. PMCID: PMC8570823
+#' Bioinformatics. 2021. DOI: 10.1093/bioinformatics/btab564. PMID: 34343267; PMCID: PMC8570823
 #' 
 #' @examples
 #' \dontrun{
@@ -34,8 +34,8 @@
 #' head(himaDat$Example3$PhenoData)
 #' 
 #' survHIMA.fit <- survHIMA(X = himaDat$Example3$PhenoData$Treatment,
-#'                 Z = himaDat$Example3$PhenoData[, c("Sex", "Age")], 
 #'                 M = himaDat$Example3$Mediator, 
+#'                 COV = himaDat$Example3$PhenoData[, c("Sex", "Age")], 
 #'                 OT = himaDat$Example3$PhenoData$Time, 
 #'                 status = himaDat$Example3$PhenoData$Status, 
 #'                 FDRcut = 0.05,
@@ -45,7 +45,7 @@
 #' }
 #' 
 #' @export
-survHIMA <- function(X, Z, M, OT, status, FDRcut = 0.05, scale = TRUE, verbose = FALSE){
+survHIMA <- function(X, M, COV = NULL, OT, status, FDRcut = 0.05, scale = TRUE, verbose = FALSE){
 
   X <- matrix(X, ncol = 1)
   M <- as.matrix(M)
@@ -53,14 +53,13 @@ survHIMA <- function(X, Z, M, OT, status, FDRcut = 0.05, scale = TRUE, verbose =
   M_ID_name <- colnames(M)
   if(is.null(M_ID_name)) M_ID_name <- seq_len(ncol(M))
     
-  MZ <- cbind(M,Z,X)
-  n <- length(X)
-  p <- dim(M)[2]
+  n <- nrow(M)
+  p <- nrow(M)
   
-  if(is.null(Z))
+  if(is.null(COV))
     {q <- 0; MZ <- cbind(M,X)}
   else
-    {Z <- as.matrix(Z); q <- dim(Z)[2]; MZ <- cbind(M,Z,X)}
+    {COV <- as.matrix(COV); q <- dim(COV)[2]; MZ <- cbind(M,COV,X)}
   
   if(scale) MZ <- scale(MZ)
   
@@ -79,7 +78,7 @@ survHIMA <- function(X, Z, M, OT, status, FDRcut = 0.05, scale = TRUE, verbose =
   }
 
   alpha_SIS <- matrix(0,1,p)
-  XZ <- cbind(X,Z)
+  XZ <- cbind(X,COV)
   for (i in 1:p){
     fit_a  <- lsfit(XZ,M[,i],intercept = TRUE)
     est_a <- matrix(coef(fit_a))[2]
@@ -90,12 +89,21 @@ survHIMA <- function(X, Z, M, OT, status, FDRcut = 0.05, scale = TRUE, verbose =
   ID_SIS  <- which(-abs(ab_SIS) <= sort(-abs(ab_SIS))[min(p, d_0)])
 
   d <- length(ID_SIS)
-  if(verbose) message("        ", d, " mediators selected from the screening.")
+  
+  if(verbose) message("        Top ", d, " mediators are selected: ", paste0(M_ID_name[ID_SIS], collapse = ", "))
   
   #########################################################################
   ################################ STEP 2 #################################
   #########################################################################
   message("Step 2: De-biased Lasso estimates ...", "     (", format(Sys.time(), "%X"), ")")
+  
+  if(verbose)
+  {
+    if(is.null(COV)) 
+    {message("        No covariate was adjusted.")} 
+    else
+    {message("        Adjusting for covariate(s): ", paste0(colnames(COV), collapse = ", "))}
+  }
   
   ## estimation of beta
   P_beta_SIS <- matrix(0,1,d)
@@ -121,7 +129,7 @@ survHIMA <- function(X, Z, M, OT, status, FDRcut = 0.05, scale = TRUE, verbose =
   alpha_SIS_est <- matrix(0,1,d)
   alpha_SIS_SE <- matrix(0,1,d)
   P_alpha_SIS <- matrix(0,1,d)
-  XZ <- cbind(X,Z)
+  XZ <- cbind(X,COV)
   
   for (i in 1:d){
     fit_a  <- lsfit(XZ,M[,ID_SIS[i]],intercept = TRUE)
@@ -157,21 +165,18 @@ survHIMA <- function(X, Z, M, OT, status, FDRcut = 0.05, scale = TRUE, verbose =
   ID_fdr <- which(fdrcut <= FDRcut)
 
   if (length(ID_fdr) > 0){
-    alpha_hat <- alpha_SIS_est[ID_fdr]
-    alpha_est <- alpha_SIS_SE[ID_fdr]
-    beta_hat <- beta_DLASSO_SIS_est[ID_fdr]
-    beta_est <- beta_DLASSO_SIS_SE[ID_fdr]
-    ID <- ID_SIS[ID_fdr]
-    P_max <- P_value[ID_fdr]
+    out_result <- data.frame(ID = M_ID_name[ID_fdr], 
+                             alpha = alpha_SIS_est[ID_fdr], 
+                             alpha_se = alpha_SIS_SE[ID_fdr], 
+                             beta = beta_DLASSO_SIS_est[ID_fdr], 
+                             beta_se = beta_DLASSO_SIS_SE[ID_fdr],
+                             p.joint = P_value[ID_fdr])
+    if(verbose) message(paste0("        ", length(ID_fdr), " significant mediator(s) identified."))
+  } else {
+    if(verbose) message("        No significant mediator identified.")
+    out_result = NULL
   }
-  
-  out_result <- data.frame(ID = M_ID_name[ID], 
-                           alpha = alpha_hat, 
-                           alpha_se = alpha_est, 
-                           beta = beta_hat, 
-                           beta_se = beta_est,
-                           p.joint = P_max)
-  
+
   message("Done!", "     (", format(Sys.time(), "%X"), ")")
   
   return(out_result)

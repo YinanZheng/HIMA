@@ -4,15 +4,24 @@
 \alias{survHIMA}
 \title{High-dimensional mediation analysis for survival data}
 \usage{
-survHIMA(X, Z, M, OT, status, FDRcut = 0.05, scale = TRUE, verbose = FALSE)
+survHIMA(
+  X,
+  M,
+  COV = NULL,
+  OT,
+  status,
+  FDRcut = 0.05,
+  scale = TRUE,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{X}{a vector of exposure.}
 
-\item{Z}{a matrix of adjusting covariates. Rows represent samples, columns represent variables. Can be \code{NULL}.}
-
 \item{M}{a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns 
 represent mediator variables.}
+
+\item{COV}{a matrix of adjusting covariates. Rows represent samples, columns represent variables. Can be \code{NULL}.}
 
 \item{OT}{a vector of observed failure times.}
 
@@ -46,8 +55,8 @@ data(himaDat)
 head(himaDat$Example3$PhenoData)
 
 survHIMA.fit <- survHIMA(X = himaDat$Example3$PhenoData$Treatment,
-                Z = himaDat$Example3$PhenoData[, c("Sex", "Age")], 
                 M = himaDat$Example3$Mediator, 
+                COV = himaDat$Example3$PhenoData[, c("Sex", "Age")], 
                 OT = himaDat$Example3$PhenoData$Time, 
                 status = himaDat$Example3$PhenoData$Status, 
                 FDRcut = 0.05,
@@ -59,5 +68,5 @@ survHIMA.fit
 }
 \references{
 Zhang H, Zheng Y, Hou L, Zheng C, Liu L. Mediation Analysis for Survival Data with High-Dimensional Mediators. 
-Bioinformatics. 2021. DOI: 10.1093/bioinformatics/btab564. PMID: 34343267. PMCID: PMC8570823
+Bioinformatics. 2021. DOI: 10.1093/bioinformatics/btab564. PMID: 34343267; PMCID: PMC8570823
 }

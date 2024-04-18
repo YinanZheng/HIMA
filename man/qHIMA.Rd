@@ -8,7 +8,7 @@ qHIMA(
   X,
   M,
   Y,
-  Z,
+  COV = NULL,
   penalty = c("MCP", "SCAD", "lasso"),
   topN = NULL,
   tau = 0.5,
@@ -26,7 +26,7 @@ represent mediator variables.}
 
 \item{Y}{a vector of continuous outcome. Do not use data.frame or matrix.}
 
-\item{Z}{a matrix of adjusting covariates. Rows represent samples, columns represent variables. Can be \code{NULL}.}
+\item{COV}{a matrix of adjusting covariates. Rows represent samples, columns represent variables. Can be \code{NULL}.}
 
 \item{penalty}{the penalty to be applied to the model (a parameter passed to function \code{conquer.cv.reg} in package \code{\link{conquer}}. 
 Either 'MCP' (the default), 'SCAD', or 'lasso'.}
@@ -69,7 +69,7 @@ head(himaDat$Example5$PhenoData)
 qHIMA.fit <- qHIMA(X = himaDat$Example5$PhenoData$Treatment,
                 M = himaDat$Example5$Mediator, 
                 Y = himaDat$Example5$PhenoData$Outcome, 
-                Z = himaDat$Example5$PhenoData[, c("Sex", "Age")], 
+                COV = himaDat$Example5$PhenoData[, c("Sex", "Age")], 
                 Bonfcut = 0.05,
                 tau = c(0.3, 0.5, 0.7),
                 scale = FALSE, 
@@ -80,5 +80,5 @@ qHIMA.fit
 }
 \references{
 Zhang H, Hong X, Zheng Y, Hou L, Zheng C, Wang X, Liu L. High-Dimensional Quantile Mediation Analysis with Application to a Birth 
-Cohort Study of Mother–Newborn Pairs. Bioinformatics. 2023. (In press)
+Cohort Study of Mother–Newborn Pairs. Bioinformatics. 2024. DOI: 10.1093/bioinformatics/btae055. PMID: 38290773; PMCID: PMC10873903
 }
