@@ -315,7 +315,7 @@ hima2 <- function(formula,
       
       if(!is.null(res))
       { 
-        results <- data.frame(ID = paste0(res$ID, "-q", res$tau*100),
+        results <- data.frame(ID = res$ID,
                               alpha = res$alpha, 
                               alpha_se = res$alpha_se, 
                               beta = res$beta, 
