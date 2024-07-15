@@ -74,7 +74,7 @@
 #'       data.M = himaDat$Example2$Mediator,
 #'       outcome.family = "binomial",
 #'       mediator.family = "gaussian",
-#'       penalty = "DBlasso",
+#'       penalty = "MCP",
 #'       scale = FALSE) # Disabled only for example data
 #' e2
 #' attributes(e2)$variable.labels
@@ -139,18 +139,38 @@ hima2 <- function(formula,
   
   results = NULL
   
+  if(is.null(colnames(data.M))) colnames(data.M) <- seq_len(ncol(data.M))
+  
   # Penalty check
-  if (penalty == "DBlasso" & outcome.family == "quantile")
+  if (penalty == "DBlasso")
   {
-    message("Note: Quantile HIMA does not support De-biased Lasso penalty. Switing to 'MCP' (default) ...")
-    penalty = "MCP"
+    if(outcome.family == "quantile") 
+    {
+      message("Note: Quantile HIMA does not support De-biased Lasso penalty. Switing to 'MCP' ...")
+      penalty = "MCP"
+    }
+    if(outcome.family == "binomial") 
+    {
+      message("Note: Logistic HIMA does not support De-biased Lasso penalty. Switing to 'MCP' ...")
+      penalty = "MCP"
+    }
+  }
+    
+  if (penalty != "DBlasso")
+  {
+    if(outcome.family == "survival")
+    {
+      message("Note: Survival HIMA can be only performed using De-biased Lasso. Switing to 'DBlasso' ...")
+      penalty = "DBlasso"
+    }
+    if(mediator.family == "compositional")
+    {
+      message("Note: Compositional HIMA can be only performed using De-biased Lasso. Switing to 'DBlasso' ...")
+      penalty = "DBlasso"
+    }
   }
   
-  if (penalty != "DBlasso" & (outcome.family == "survival" | mediator.family == "compositional"))
-  {
-    message("Note: Survival HIMA and Compositional HIMA can be only performed using De-biased Lasso. Switing to 'DBlasso' ...")
-    penalty = "DBlasso"
-  }
+  ######
   
   # DBlasso
   if (penalty == "DBlasso")
@@ -174,13 +194,15 @@ hima2 <- function(formula,
                            scale = scale, verbose = verbose)
         if(!is.null(res))
         {        
-          results <- data.frame(alpha = res$alpha,
+          results <- data.frame(ID = res$ID, 
+                                alpha = res$alpha,
                                 beta = res$beta,
                                 `alpha*beta` = res$`alpha*beta`,
                                 `% total effect` = res$`% total effect`,
                                 p.joint = res$p.joint, check.names = FALSE)
-          rownames(results) <- res$ID
-          attr(results, "variable.labels") <- c("alpha: Effect of exposure on mediator", 
+          results <- results[order(results$p.joint), ]
+          attr(results, "variable.labels") <- c("ID: Mediator ID",
+                                                "alpha: Effect of exposure on mediator", 
                                                 "beta: Effect of mediator on outcome",
                                                 "gamma: Total effect of exposure on outcome",
                                                 "alpha*beta: Mediation effect",
@@ -201,11 +223,15 @@ hima2 <- function(formula,
         
         if(!is.null(res))
         { 
-          results <- data.frame(alpha = res$alpha, alpha_se = res$alpha_se, 
-                                beta = res$beta, beta_se = res$beta_se,
+          results <- data.frame(ID = res$ID,
+                                alpha = res$alpha, 
+                                alpha_se = res$alpha_se, 
+                                beta = res$beta, 
+                                beta_se = res$beta_se,
                                 FDR = res$FDR, check.names = FALSE)
-          rownames(results) <- res$ID
-          attr(results, "variable.labels") <- c("alpha: Effect of exposure on mediator", 
+          results <- results[order(results$FDR), ]
+          attr(results, "variable.labels") <- c("ID: Mediator ID",
+                                                "alpha: Effect of exposure on mediator", 
                                                 "alpha_se: Standard error of the effect of exposure on mediator",
                                                 "beta: Effect of mediator on outcome",
                                                 "beta_se: Standard error of the effect of mediator on outcome",
@@ -227,11 +253,15 @@ hima2 <- function(formula,
       
       if(!is.null(res))
       { 
-        results <- data.frame(alpha = res$alpha, alpha_se = res$alpha_se, 
-                              beta = res$beta, beta_se = res$beta_se,
+        results <- data.frame(ID = res$ID,
+                              alpha = res$alpha, 
+                              alpha_se = res$alpha_se, 
+                              beta = res$beta, 
+                              beta_se = res$beta_se,
                               p.joint = res$p.joint, check.names = FALSE)
-        rownames(results) <- res$ID
-        attr(results, "variable.labels") <- c("alpha: Effect of exposure on mediator", 
+        results <- results[order(results$p.joint), ]
+        attr(results, "variable.labels") <- c("ID: Mediator ID",
+                                              "alpha: Effect of exposure on mediator", 
                                               "alpha_se: Standard error of the effect of exposure on mediator",
                                               "beta: Effect of mediator on outcome",
                                               "beta_se: Standard error of the effect of mediator on outcome",
@@ -254,10 +284,11 @@ hima2 <- function(formula,
                       Y.family = outcome.family, M.family = mediator.family, 
                       penalty = penalty, topN = topN,
                       parallel = FALSE, ncore = 1, scale = scale, verbose = verbose)
-      
+      results <- results[order(results$Bonferroni.p), ]
       if(!is.null(results))
       { 
-        attr(results, "variable.labels") <- c("alpha: Effect of exposure on mediator", 
+        attr(results, "variable.labels") <- c("ID: Mediator ID",
+                                              "alpha: Effect of exposure on mediator", 
                                               "beta: Effect of mediator on outcome",
                                               "gamma: Total effect of exposure on outcome",
                                               "alpha*beta: Mediation effect",
@@ -284,13 +315,18 @@ hima2 <- function(formula,
       
       if(!is.null(res))
       { 
-        results <- data.frame(alpha = res$alpha, alpha_se = res$alpha_se, 
-                              beta = res$beta, beta_se = res$beta_se,
-                              Bonferroni.p = res$Bonferroni.p, tau = res$tau, 
+        results <- data.frame(ID = paste0(res$ID, "-q", res$tau*100),
+                              alpha = res$alpha, 
+                              alpha_se = res$alpha_se, 
+                              beta = res$beta, 
+                              beta_se = res$beta_se,
+                              Bonferroni.p = res$Bonferroni.p, 
+                              tau = res$tau, 
                               check.names = FALSE)
-        rownames(results) <- paste0(res$ID, "-q", res$tau*100) 
+        results <- results[order(results$Bonferroni.p), ]
         
-        attr(results, "variable.labels") <- c("alpha: Effect of exposure on mediator", 
+        attr(results, "variable.labels") <- c("ID: Mediator ID",
+                                              "alpha: Effect of exposure on mediator", 
                                               "alpha_se: Standard error of the effect of exposure on mediator",
                                               "beta: Effect of mediator on outcome",
                                               "beta_se: Standard error of the effect of mediator on outcome",
@@ -299,6 +335,10 @@ hima2 <- function(formula,
       }
     }
   }
+  
   if(is.null(results)) message("No mediator found!")
+  
+  rownames(results) <- NULL
+  
   return(results)
 }

@@ -33,7 +33,7 @@
 #' }
 #' 
 #' @references Bai X, Zheng Y, Hou L, Zheng C, Liu L, Zhang H. An efficient testing procedure for high-dimensional mediators with FDR control. 
-#' Statistics in Biosciences. 2024. Under review.
+#' Statistics in Biosciences. 2024. DOI: 10.1007/s12561-024-09447-4
 #' 
 #' @examples
 #' \dontrun{

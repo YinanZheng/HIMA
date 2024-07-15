@@ -147,6 +147,7 @@ hima <- function(X, Y, M, COV.XM = NULL, COV.MY = COV.XM,
     if(verbose) message("    Top ", length(ID), " mediators are selected: ", paste0(names(SIS_Pvalue_sort[seq_len(d)]), collapse = ", "))
   
     M_SIS <- M[, ID]
+    M_ID_name <- colnames(M)
     XM <- cbind(M_SIS, X)
     
     #########################################################################
@@ -244,9 +245,14 @@ hima <- function(X, Y, M, COV.XM = NULL, COV.MY = COV.XM,
     
     gamma_est <- coef(glm(Y ~ ., family = Y.family, data = YX))[2]
     
-    results <- data.frame(alpha = alpha_est, beta = beta_est, gamma = gamma_est, 
-                          `alpha*beta` = ab_est, `% total effect` = ab_est/gamma_est * 100, 
-                          `Bonferroni.p` = P_value, `BH.FDR` = FDR, check.names = FALSE)
+    results <- data.frame(ID = M_ID_name[ID_test], 
+                          alpha = alpha_est, 
+                          beta = beta_est, 
+                          gamma = gamma_est, 
+                          `alpha*beta` = ab_est, 
+                          `% total effect` = ab_est/gamma_est * 100, 
+                          `Bonferroni.p` = P_value, 
+                          `BH.FDR` = FDR, check.names = FALSE)
     
     message("Done!", "     (", format(Sys.time(), "%X"), ")")
     
