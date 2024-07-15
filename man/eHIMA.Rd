@@ -94,6 +94,6 @@ eHIMA.fit
 
 }
 \references{
-Zhang H, Hong X, Zheng Y, Hou L, Zheng C, Wang X, Liu L. High-Dimensional Quantile Mediation Analysis with Application to a Birth 
-Cohort Study of Mother–Newborn Pairs. Bioinformatics. 2024. DOI: 10.1093/bioinformatics/btae055. PMID: 38290773; PMCID: PMC10873903
+Bai X, Zheng Y, Hou L, Zheng C, Liu L, Zhang H. An efficient testing procedure for high-dimensional mediators with FDR control. 
+Statistics in Biosciences. 2024. DOI: 10.1007/s12561-024-09447-4
 }

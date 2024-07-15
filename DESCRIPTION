@@ -40,4 +40,4 @@ Encoding: UTF-8
 LazyData: true
 URL: https://github.com/YinanZheng/HIMA/
 BugReports: https://github.com/YinanZheng/HIMA/issues/
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2

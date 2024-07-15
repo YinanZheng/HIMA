@@ -83,7 +83,7 @@ e2 <- hima2(Disease ~ Treatment + Sex + Age,
       data.M = himaDat$Example2$Mediator,
       outcome.family = "binomial",
       mediator.family = "gaussian",
-      penalty = "DBlasso",
+      penalty = "MCP",
       scale = FALSE) # Disabled only for example data
 e2
 attributes(e2)$variable.labels
