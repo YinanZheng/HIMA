@@ -8,8 +8,7 @@
 #' represent mediator variables.
 #' @param Y a vector of continuous outcome. Do not use data.frame or matrix.
 #' @param COV a matrix of adjusting covariates. Rows represent samples, columns represent variables. Can be \code{NULL}.
-#' @param Y.family either 'gaussian' (default) or 'binomial', depending on the data type of outcome (\code{Y}). This parameter is passed 
-#' to function \code{lasso.proj} in R package \code{\link{hdi}} for de-biased lasso penalization.
+#' @param Y.family currently \code{eHIMA} only supports 'gaussian', i.e., normally distributed continuous outcome (\code{Y}).
 #' @param penalty the penalty to be applied to the model (a parameter passed to function \code{ncvreg} in package \code{\link{ncvreg}}. 
 #' Either 'MCP' (the default), 'SCAD', or 'lasso'.
 #' @param topN an integer specifying the number of top markers from sure independent screening. 
@@ -21,7 +20,7 @@
 #' 
 #' @return A data.frame containing mediation testing results of selected mediators (Bonferroni-adjusted p value <\code{Bonfcut}). 
 #' \itemize{
-#'     \item{ID: }{index of selected significant mediator.}
+#'     \item{ID: }{Mediation ID of selected significant mediator.}
 #'     \item{alpha: }{coefficient estimates of exposure (X) --> mediators (M).}
 #'     \item{alpha_se: }{standard error for alpha.}
 #'     \item{beta: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
@@ -40,7 +39,7 @@
 #' # Note: In the following example, M1, M2, and M3 are true mediators.
 #' data(himaDat)
 #' 
-#' # When Y is continuous and normally distributed
+#' # Y is continuous and normally distributed
 #' # Example 1 (continuous outcome): 
 #' head(himaDat$Example1$PhenoData)
 #' 
@@ -52,27 +51,16 @@
 #'                    scale = FALSE,
 #'                    verbose = TRUE) 
 #' eHIMA.fit
-#' 
-#' # When Y is binary (should specify Y.family)
-#' # Example 2 (binary outcome): 
-#' head(himaDat$Example2$PhenoData)
-#' 
-#' eHIMA.fit <- eHIMA(X = himaDat$Example2$PhenoData$Treatment,
-#'                    Y = himaDat$Example2$PhenoData$Disease,
-#'                    M = himaDat$Example2$Mediator,
-#'                    COV = himaDat$Example2$PhenoData[, c("Sex", "Age")],
-#'                    Y.family = 'binomial',
-#'                    scale = FALSE,
-#'                    verbose = TRUE)
-#' eHIMA.fit
 #' }
 #' 
 #' @export
-eHIMA <- function(X, M, Y, COV = NULL, Y.family = c("gaussian", "binomial"),
+eHIMA <- function(X, M, Y, COV = NULL, Y.family = c("gaussian"),
                   penalty = c('MCP', "SCAD", "lasso"), 
                   topN = NULL, scale = TRUE, FDRcut = 0.05, verbose = FALSE)
 {
   Y.family <- match.arg(Y.family)
+  
+  if(Y.family != "gaussian") stop("Currently eHIMA only supports Y.family = 'gaussian'")
   
   n <- nrow(M)
   p <- ncol(M)

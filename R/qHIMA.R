@@ -21,7 +21,7 @@
 #' 
 #' @return A data.frame containing mediation testing results of selected mediators (Bonferroni-adjusted p value <\code{Bonfcut}). 
 #' \itemize{
-#'     \item{ID: }{index of selected significant mediator.}
+#'     \item{ID: }{Mediation ID of selected significant mediator.}
 #'     \item{alpha: }{coefficient estimates of exposure (X) --> mediators (M).}
 #'     \item{alpha_se: }{standard error for alpha.}
 #'     \item{beta: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}

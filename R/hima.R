@@ -32,6 +32,7 @@
 #' 
 #' @return A data.frame containing mediation testing results of selected mediators. 
 #' \itemize{
+#'     \item{ID: }{Mediation ID of selected significant mediator.}
 #'     \item{alpha: }{coefficient estimates of exposure (X) --> mediators (M).}
 #'     \item{beta: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
 #'     \item{gamma: }{coefficient estimates of exposure (X) --> outcome (Y) (total effect).}
