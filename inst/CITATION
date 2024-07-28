@@ -103,4 +103,19 @@ c(bibentry(bibtype = "Article",
            doi = "10.1093/bioinformatics/btae055",
            pubmed = "38290773",
            header = "The qHIMA function is described in:")
+           
+    bibentry(bibtype = "Article",
+           key = "eHIMA",
+           title = "{An Efficient Testing Procedure for High-dimensional Mediators with FDR Control}",
+           author = c(person(given = "Xueyan", family = "Bai"),
+                      person(given = "Yinan", family = "Zheng"),
+                      person(given = "Lifang", family = "Hou"),
+                      person(given = "Cheng", family = "Zheng"),
+                      person(given = "Lei", family = "Liu"),
+                      person(given = "Haixiang", family = "Zhang")
+                      ),
+           journal = "Statistics in Biosciences",
+           year = 2024,
+           doi = "10.1007/s12561-024-09447-4",
+           header = "The eHIMA function is described in:")
  )

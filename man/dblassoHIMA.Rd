@@ -44,6 +44,7 @@ mediators will be included in the test (i.e. low-dimensional scenario).}
 \value{
 A data.frame containing mediation testing results of selected mediators (FDR <\code{FDPcut}). 
 \itemize{
+    \item{ID: }{Mediation ID of selected significant mediator.}
     \item{alpha: }{coefficient estimates of exposure (X) --> mediators (M).}
     \item{beta: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
     \item{gamma: }{coefficient estimates of exposure (X) --> outcome (Y) (total effect).}

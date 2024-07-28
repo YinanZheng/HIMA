@@ -20,7 +20,7 @@
 #'     \item{alpha_se: }{standard error for alpha.}
 #'     \item{beta: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
 #'     \item{beta_se: }{standard error for beta.}
-#'     \item{FDR: }{false discovery rate of selected significant mediator.}
+#'     \item{p_raw: }{Raw p-value of selected significant mediator.}
 #' }
 #' 
 #' @references
@@ -122,7 +122,7 @@ microHIMA <- function(X, Y, OTU, COV = NULL, FDRcut = 0.05, scale = TRUE, verbos
   
   P_adj_DLASSO <- as.numeric(P_raw_DLASSO)
   
-  message("Step 2: Joint significance test ...", "     (", format(Sys.time(), "%X"), ")")
+  message("Step 2: Closted testing-based procedure ...", "     (", format(Sys.time(), "%X"), ")")
   
   ## The FDR method
   set <- which(P_adj_DLASSO < FDRcut)
@@ -145,7 +145,7 @@ microHIMA <- function(X, Y, OTU, COV = NULL, FDRcut = 0.05, scale = TRUE, verbos
                              alpha_se = alpha_SE[ID_FDR], 
                              beta = beta_EST[ID_FDR], 
                              beta_se = beta_SE[ID_FDR],
-                             FDR = P_adj_DLASSO[ID_FDR])
+                             p_raw = P_adj_DLASSO[ID_FDR])
     if(verbose) message(paste0("        ", length(ID_FDR), " significant mediator(s) identified."))
   } else {
     if(verbose) message("        No significant mediator identified.")

@@ -20,7 +20,7 @@
 #'     \item{alpha_se: }{standard error for alpha.}
 #'     \item{beta: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
 #'     \item{beta_se: }{standard error for beta.}
-#'     \item{p.joint: }{joint raw p-value of selected significant mediator (based on FDR).}
+#'     \item{p_raw: }{Raw p-value of selected significant mediator.}
 #' }
 #' 
 #' @references Zhang H, Zheng Y, Hou L, Zheng C, Liu L. Mediation Analysis for Survival Data with High-Dimensional Mediators. 
@@ -170,7 +170,7 @@ survHIMA <- function(X, M, COV = NULL, OT, status, FDRcut = 0.05, scale = TRUE, 
                              alpha_se = alpha_SIS_SE[ID_fdr], 
                              beta = beta_DLASSO_SIS_est[ID_fdr], 
                              beta_se = beta_DLASSO_SIS_SE[ID_fdr],
-                             p.joint = P_value[ID_fdr])
+                             p_raw = P_value[ID_fdr])
     if(verbose) message(paste0("        ", length(ID_fdr), " significant mediator(s) identified."))
   } else {
     if(verbose) message("        No significant mediator identified.")

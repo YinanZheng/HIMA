@@ -10,7 +10,6 @@ eHIMA(
   Y,
   COV = NULL,
   Y.family = c("gaussian"),
-  penalty = c("MCP", "SCAD", "lasso"),
   topN = NULL,
   scale = TRUE,
   FDRcut = 0.05,
@@ -28,9 +27,6 @@ represent mediator variables.}
 \item{COV}{a matrix of adjusting covariates. Rows represent samples, columns represent variables. Can be \code{NULL}.}
 
 \item{Y.family}{currently \code{eHIMA} only supports 'gaussian', i.e., normally distributed continuous outcome (\code{Y}).}
-
-\item{penalty}{the penalty to be applied to the model (a parameter passed to function \code{ncvreg} in package \code{\link{ncvreg}}. 
-Either 'MCP' (the default), 'SCAD', or 'lasso'.}
 
 \item{topN}{an integer specifying the number of top markers from sure independent screening. 
 Default = \code{NULL}. If \code{NULL}, \code{topN} will be \code{2*ceiling(n/log(n))}, where \code{n} is the sample size.
@@ -80,6 +76,6 @@ eHIMA.fit
 
 }
 \references{
-Bai X, Zheng Y, Hou L, Zheng C, Liu L, Zhang H. An efficient testing procedure for high-dimensional mediators with FDR control. 
-Statistics in Biosciences. 2024. DOI: 10.1007/s12561-024-09447-4
+Bai X, Zheng Y, Hou L, Zheng C, Liu L, Zhang H. An Efficient Testing Procedure for High-dimensional Mediators with FDR Control. 
+Statistics in Biosciences. 2024. DOI: 10.1007/s12561-024-09447-4.
 }

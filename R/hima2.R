@@ -1,6 +1,6 @@
-#' Advanced High-dimensional Mediation Analysis
+#' High-dimensional Mediation Analysis
 #' 
-#' \code{hima2} is an upgraded version of hima for estimating and testing high-dimensional mediation effects.
+#' \code{hima2} is a wrapper function designed to perform various hima methods for estimating and testing high-dimensional mediation effects.
 #' 
 #' @param formula an object of class \code{formula}: a symbolic description of the overall effect model, i.e., 
 #' \code{outcome ~ exposure + covariates}, to be fitted. Make sure the "exposure" is the variable of interest, which
@@ -36,24 +36,27 @@
 #' 2. Zhang H, Zheng Y, Hou L, Zheng C, Liu L. Mediation Analysis for Survival Data with High-Dimensional Mediators. 
 #' Bioinformatics. 2021. DOI: 10.1093/bioinformatics/btab564. PMID: 34343267; PMCID: PMC8570823
 #' 
-#' 3. Zhang H, Chen J, Feng Y, Wang C, Li H, Liu L. Mediation effect selection in high-dimensional and compositional microbiome data. 
+#' 3. Zhang H, Chen J, Feng Y, Wang C, Li H, Liu L. Mediation Effect Selection in High-dimensional and Compositional Microbiome data. 
 #' Stat Med. 2021. DOI: 10.1002/sim.8808. PMID: 33205470; PMCID: PMC7855955
 #' 
-#' 4. Zhang H, Chen J, Li Z, Liu L. Testing for mediation effect with application to human microbiome data. 
+#' 4. Zhang H, Chen J, Li Z, Liu L. Testing for Mediation Effect with Application to Human Microbiome Data. 
 #' Stat Biosci. 2021. DOI: 10.1007/s12561-019-09253-3. PMID: 34093887; PMCID: PMC8177450
 #' 
-#' 5. Perera C, Zhang H, Zheng Y, Hou L, Qu A, Zheng C, Xie K, Liu L. HIMA2: high-dimensional mediation analysis and its application in epigenome-wide DNA methylation data. 
-#' BMC Bioinformatics. 2022. DOI: 10.1186/s12859-022-04748-1. PMID: 35879655; PMCID: PMC9310002
+#' 5. Perera C, Zhang H, Zheng Y, Hou L, Qu A, Zheng C, Xie K, Liu L. HIMA2: High-dimensional Mediation Analysis and Its Application in 
+#' Epigenome-wide DNA Methylation Data. BMC Bioinformatics. 2022. DOI: 10.1186/s12859-022-04748-1. PMID: 35879655; PMCID: PMC9310002
 #' 
 #' 6. Zhang H, Hong X, Zheng Y, Hou L, Zheng C, Wang X, Liu L. High-Dimensional Quantile Mediation Analysis with Application to a Birth 
 #' Cohort Study of Mother–Newborn Pairs. Bioinformatics. 2024. DOI: 10.1093/bioinformatics/btae055. PMID: 38290773; PMCID: PMC10873903
+#' 
+#' 7. Bai X, Zheng Y, Hou L, Zheng C, Liu L, Zhang H. An Efficient Testing Procedure for High-dimensional Mediators with FDR Control. 
+#' Statistics in Biosciences. 2024. DOI: 10.1007/s12561-024-09447-4.
 #' 
 #' @examples
 #' \dontrun{
 #' # Note: In the following examples, M1, M2, and M3 are true mediators.
 #' data(himaDat)
 #' 
-#' # Example 1 (continous outcome): 
+#' # Example 1 (continous outcome - linear hima): 
 #' head(himaDat$Example1$PhenoData)
 #' 
 #' e1 <- hima2(Outcome ~ Treatment + Sex + Age, 
@@ -66,7 +69,7 @@
 #' e1
 #' attributes(e1)$variable.labels
 #' 
-#' # Example 2 (binary outcome): 
+#' # Example 2 (binary outcome - logistic hima): 
 #' head(himaDat$Example2$PhenoData)
 #' 
 #' e2 <- hima2(Disease ~ Treatment + Sex + Age, 
@@ -79,7 +82,7 @@
 #' e2
 #' attributes(e2)$variable.labels
 #' 
-#' # Example 3 (time-to-event outcome): 
+#' # Example 3 (time-to-event outcome - survival hima): 
 #' head(himaDat$Example3$PhenoData)
 #' 
 #' e3 <- hima2(Surv(Status, Time) ~ Treatment + Sex + Age, 
@@ -105,7 +108,7 @@
 #' e4
 #' attributes(e4)$variable.labels
 #' 
-#' #' # Example 5 (quantile mediation anlaysis): 
+#' #' # Example 5 (quantile mediation anlaysis - quantile hima): 
 #' head(himaDat$Example5$PhenoData)
 #' 
 #' # Note that the function will prompt input for quantile level.
@@ -207,7 +210,7 @@ hima2 <- function(formula,
                                                 "gamma: Total effect of exposure on outcome",
                                                 "alpha*beta: Mediation effect",
                                                 "% total effect: Percent of mediation effect out of the total effect",
-                                                "p.joint: Joint raw p-value of selected significant mediator (based on FDR)")
+                                                "p_raw: Raw p-value of selected significant mediator")
         }
       } else if (mediator.family == "compositional") {
         response_var <- as.character(formula[[2]]) 
@@ -265,7 +268,7 @@ hima2 <- function(formula,
                                               "alpha_se: Standard error of the effect of exposure on mediator",
                                               "beta: Effect of mediator on outcome",
                                               "beta_se: Standard error of the effect of mediator on outcome",
-                                              "p.joint: Joint raw p-value of selected significant mediator (based on FDR)")
+                                              "p_raw: Raw p-value of selected significant mediator")
       }
     }
   } else { # If penalty is not DBlasso

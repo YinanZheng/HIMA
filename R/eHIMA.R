@@ -9,8 +9,6 @@
 #' @param Y a vector of continuous outcome. Do not use data.frame or matrix.
 #' @param COV a matrix of adjusting covariates. Rows represent samples, columns represent variables. Can be \code{NULL}.
 #' @param Y.family currently \code{eHIMA} only supports 'gaussian', i.e., normally distributed continuous outcome (\code{Y}).
-#' @param penalty the penalty to be applied to the model (a parameter passed to function \code{ncvreg} in package \code{\link{ncvreg}}. 
-#' Either 'MCP' (the default), 'SCAD', or 'lasso'.
 #' @param topN an integer specifying the number of top markers from sure independent screening. 
 #' Default = \code{NULL}. If \code{NULL}, \code{topN} will be \code{2*ceiling(n/log(n))}, where \code{n} is the sample size.
 #' If the sample size is greater than topN (pre-specified or calculated), all mediators will be included in the test (i.e. low-dimensional scenario).
@@ -31,8 +29,8 @@
 #'     \item{p.joint: }{joint raw p-value of selected significant mediator (based on FDR).}
 #' }
 #' 
-#' @references Bai X, Zheng Y, Hou L, Zheng C, Liu L, Zhang H. An efficient testing procedure for high-dimensional mediators with FDR control. 
-#' Statistics in Biosciences. 2024. DOI: 10.1007/s12561-024-09447-4
+#' @references Bai X, Zheng Y, Hou L, Zheng C, Liu L, Zhang H. An Efficient Testing Procedure for High-dimensional Mediators with FDR Control. 
+#' Statistics in Biosciences. 2024. DOI: 10.1007/s12561-024-09447-4.
 #' 
 #' @examples
 #' \dontrun{
@@ -55,7 +53,6 @@
 #' 
 #' @export
 eHIMA <- function(X, M, Y, COV = NULL, Y.family = c("gaussian"),
-                  penalty = c('MCP', "SCAD", "lasso"), 
                   topN = NULL, scale = TRUE, FDRcut = 0.05, verbose = FALSE)
 {
   Y.family <- match.arg(Y.family)
@@ -90,7 +87,7 @@ eHIMA <- function(X, M, Y, COV = NULL, Y.family = c("gaussian"),
   if(is.null(M_ID_name)) M_ID_name <- seq_len(p)
   
   #------------- Step 1:  mediator screening ---------------------------
-  message("Step 1: Sure Independent Screening ...", "     (", format(Sys.time(), "%X"), ")")
+  message("Step 1: Sure Independent Screening + minimax concave penalty (MCP) ...", "     (", format(Sys.time(), "%X"), ")")
   
   beta_SIS <- matrix(0,1,p)
   for (i in 1:p){
@@ -113,9 +110,6 @@ eHIMA <- function(X, M, Y, COV = NULL, Y.family = c("gaussian"),
   
   if(verbose) message("        Top ", d, " mediators are selected: ", paste0(M_ID_name[ID_SIS], collapse = ", "))
   
-  #----------- Step 2: Penalized estimate ---------------------- 
-  message("Step 2: Penalized estimate (", penalty, ") ...", "     (", format(Sys.time(), "%X"), ")")
-  
   if(verbose)
   {
     if(is.null(COV)) 
@@ -125,11 +119,13 @@ eHIMA <- function(X, M, Y, COV = NULL, Y.family = c("gaussian"),
   }
   
   MZX_SIS <- MZX[,c(ID_SIS, (p+1):(p+q+1))]   # select m_i in \Omega_1 from M
-  fit <- ncvreg(MZX_SIS, Y, family = Y.family, penalty=penalty)
+  fit <- ncvreg(MZX_SIS, Y, family = Y.family, penalty="MCP")
   lam <- fit$lambda[which.min(BIC(fit))]
   beta_penalty <- coef(fit, lambda=lam)[2:(d+1)]
   id_non <- ID_SIS[which(beta_penalty != 0)] # the ID of non-zero
   
+  #----------- Step 2: Refitted partial regression ---------------------- 
+  message("Step 2: Refitted partial regression ...", "     (", format(Sys.time(), "%X"), ")")
   ## beta_est ########
   MZX_penalty <- MZX[,c(id_non, (p+1):(p+q+1))]
   fit <- lsfit(MZX_penalty,Y,intercept = TRUE)
@@ -140,9 +136,6 @@ eHIMA <- function(X, M, Y, COV = NULL, Y.family = c("gaussian"),
   beta_est=fit$coefficients[2:(length(id_non)+1)] #estimated beta != 0
   beta_SE=ls.diag(fit)$std.err[2:(length(id_non)+1)]
   P_beta_penalty=2*(1-pnorm(abs(beta_est_cox[1:length(id_non)])/beta_SE_cox[1:length(id_non)],0,1))
-  
-  #---------- Step 3: calculate oracle p-value -------------------------
-  message("Step 3: Oracle p and DACT significance test ...", "     (", format(Sys.time(), "%X"), ")")
   
   P_oracle_beta=matrix(0,1,p) #an empty vector
   beta_est_orc=matrix(0,1,p)
@@ -206,6 +199,9 @@ eHIMA <- function(X, M, Y, COV = NULL, Y.family = c("gaussian"),
       alpha_SE_orc[i]<-se_a_ora
     }
   }
+  
+  #---------- Step 3: DACT  -------------------------
+  message("Step 3: Divide-aggregate composite-null test (DACT) ...", "     (", format(Sys.time(), "%X"), ")")
   
   #Mediator selection
   P_oracle_alpha[P_oracle_alpha==0]<-10^(-17)

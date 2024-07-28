@@ -31,7 +31,7 @@ A data.frame containing mediation testing results of selected mediators (FDR < \
     \item{alpha_se: }{standard error for alpha.}
     \item{beta: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
     \item{beta_se: }{standard error for beta.}
-    \item{FDR: }{false discovery rate of selected significant mediator.}
+    \item{p_raw: }{Raw p-value of selected significant mediator.}
 }
 }
 \description{

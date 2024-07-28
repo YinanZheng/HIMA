@@ -41,7 +41,7 @@ A data.frame containing mediation testing results of selected mediators (FDR <\c
     \item{alpha_se: }{standard error for alpha.}
     \item{beta: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
     \item{beta_se: }{standard error for beta.}
-    \item{p.joint: }{joint raw p-value of selected significant mediator (based on FDR).}
+    \item{p_raw: }{Raw p-value of selected significant mediator.}
 }
 }
 \description{

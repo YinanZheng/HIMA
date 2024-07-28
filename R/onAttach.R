@@ -33,7 +33,11 @@
                      "  5. Zhang H, Hong X, Zheng Y, Hou L, Zheng C, Wang X, Liu L.\n",
                      "     High-Dimensional Quantile Mediation Analysis with Application to a Birth Cohort Study of Mother-Newborn Pairs.\n",
                      "     Bioinformatics. 2024.\n",
-                     "     PMID: 38290773; PMCID: PMC10873903.\n")
+                     "     PMID: 38290773; PMCID: PMC10873903.\n",
+                     "\n",
+                     "  6. Bai X, Zheng Y, Hou L, Zheng C, Liu L, Zhang H.\n",
+                     "     An Efficient Testing Procedure for High-dimensional Mediators with FDR Control.\n",
+                     "     Statistics in Biosciences. 2024.\n")
   
   packageStartupMessage(citation)
   
