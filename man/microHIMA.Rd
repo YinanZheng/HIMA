@@ -25,7 +25,7 @@ Can be \code{NULL}.}
 }
 \value{
 A data.frame containing mediation testing results of significant mediators (FDR <\code{FDRcut}). 
-\itemize{
+\describe{
     \item{Index: }{mediation name of selected significant mediator.}
     \item{alpha_hat: }{coefficient estimates of exposure (X) --> mediators (M).}
     \item{alpha_se: }{standard error for alpha.}

@@ -102,7 +102,7 @@ c(bibentry(bibtype = "Article",
            pages = "btae055",
            doi = "10.1093/bioinformatics/btae055",
            pubmed = "38290773",
-           header = "The qHIMA function is described in:")
+           header = "The qHIMA function is described in:"),
            
     bibentry(bibtype = "Article",
            key = "eHIMA",

@@ -40,7 +40,7 @@ If the sample size is greater than topN (pre-specified or calculated), all media
 }
 \value{
 A data.frame containing mediation testing results of significant mediators (FDR <\code{FDRcut}). 
-\itemize{
+\describe{
     \item{Index: }{mediation name of selected significant mediator.}
     \item{alpha_hat: }{coefficient estimates of exposure (X) --> mediators (M).}
     \item{alpha_se: }{standard error for alpha.}
@@ -52,7 +52,8 @@ A data.frame containing mediation testing results of significant mediators (FDR 
 }
 }
 \description{
-\code{eHIMA} is used to estimate and test high-dimensional mediation effects using an efficient algorithm.
+\code{eHIMA} is used to estimate and test high-dimensional mediation effects using an efficient algorithm. It provides
+higher statistical power than the standard \code{hima}.
 }
 \examples{
 \dontrun{

@@ -1,7 +1,8 @@
 # This is the main function for our proposed method for efficient high-dimensional mediation analysis
 #' Efficient high-dimensional mediation analysis
 #' 
-#' \code{eHIMA} is used to estimate and test high-dimensional mediation effects using an efficient algorithm.
+#' \code{eHIMA} is used to estimate and test high-dimensional mediation effects using an efficient algorithm. It provides
+#' higher statistical power than the standard \code{hima}.
 #' 
 #' @param X a vector of exposure. 
 #' @param M a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns 
@@ -17,7 +18,7 @@
 #' @param verbose logical. Should the function be verbose? Default = \code{FALSE}.
 #' 
 #' @return A data.frame containing mediation testing results of significant mediators (FDR <\code{FDRcut}). 
-#' \itemize{
+#' \describe{
 #'     \item{Index: }{mediation name of selected significant mediator.}
 #'     \item{alpha_hat: }{coefficient estimates of exposure (X) --> mediators (M).}
 #'     \item{alpha_se: }{standard error for alpha.}

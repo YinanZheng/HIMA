@@ -32,7 +32,7 @@
 #' @param ... other arguments passed to \code{\link{ncvreg}}.
 #' 
 #' @return A data.frame containing mediation testing results of selected mediators. 
-#' \itemize{
+#' \describe{
 #'     \item{Index: }{mediation name of selected significant mediator.}
 #'     \item{alpha_hat: }{coefficient estimates of exposure (X) --> mediators (M).}
 #'     \item{beta_hat: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
