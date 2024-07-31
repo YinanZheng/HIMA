@@ -9,7 +9,7 @@ HIMA is an R package for estimating and testing high-dimensional mediation effec
 HIMA can perform high-dimensional mediation analysis on a wide range of omic data types as
 potential mediators, including epigenetics, transcriptomics, proteomics, and metabolomics using function \code{hima} and 
 microbiome data (function \code{microHIMA}). HIMA can also handle survival data (function \code{survHIMA}) and perform
-quantile mediation analysis \code{qHIMA}.
+quantile mediation analysis (function \code{qHIMA}).
 
 \tabular{ll}{ Package: \tab HIMA\cr Type: \tab Package\cr
 Version: \tab 2.2.2\cr Date: \tab 2024-08-01\cr License: \tab GPL-3\cr }
