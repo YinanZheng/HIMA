@@ -13,20 +13,19 @@
 #' Default = \code{NULL}. If \code{NULL}, \code{topN} will be \code{2*ceiling(n/log(n))}, where \code{n} is the sample size.
 #' If the sample size is greater than topN (pre-specified or calculated), all mediators will be included in the test (i.e. low-dimensional scenario).
 #' @param scale logical. Should the function scale the data? Default = \code{TRUE}.
-#' @param FDRcut BH-FDR-corrected p value cutoff applied to define and select significant mediators. Default = \code{0.05}. 
+#' @param FDRcut Benjamini-Hochberg FDR cutoff applied to select significant mediators. Default = \code{0.05}. 
 #' @param verbose logical. Should the function be verbose? Default = \code{FALSE}.
 #' 
-#' @return A data.frame containing mediation testing results of selected mediators (Bonferroni-adjusted p value <\code{Bonfcut}). 
+#' @return A data.frame containing mediation testing results of significant mediators (FDR <\code{FDRcut}). 
 #' \itemize{
-#'     \item{ID: }{Mediation ID of selected significant mediator.}
-#'     \item{alpha: }{coefficient estimates of exposure (X) --> mediators (M).}
+#'     \item{Index: }{mediation name of selected significant mediator.}
+#'     \item{alpha_hat: }{coefficient estimates of exposure (X) --> mediators (M).}
 #'     \item{alpha_se: }{standard error for alpha.}
-#'     \item{beta: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
+#'     \item{beta_hat: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
 #'     \item{beta_se: }{standard error for beta.}
-#'     \item{gamma: }{coefficient estimates of exposure (X) --> outcome (Y) (total effect).}
-#'     \item{alpha*beta: }{mediation effect.}
-#'     \item{\% total effect: }{alpha*beta / gamma. Percentage of the mediation effect out of the total effect.}
-#'     \item{p.joint: }{joint raw p-value of selected significant mediator (based on FDR).}
+#'     \item{IDE: }{mediation (indirect) effect, i.e., alpha*beta.}
+#'     \item{rimp: }{relative importance of the mediator.}
+#'     \item{pmax: }{joint raw p-value of selected significant mediator (based on Benjamini-Hochberg FDR method).}
 #' }
 #' 
 #' @references Bai X, Zheng Y, Hou L, Zheng C, Liu L, Zhang H. An Efficient Testing Procedure for High-dimensional Mediators with FDR Control. 
@@ -52,8 +51,12 @@
 #' }
 #' 
 #' @export
-eHIMA <- function(X, M, Y, COV = NULL, Y.family = c("gaussian"),
-                  topN = NULL, scale = TRUE, FDRcut = 0.05, verbose = FALSE)
+eHIMA <- function(X, M, Y, COV = NULL, 
+                  Y.family = c("gaussian"),
+                  topN = NULL, 
+                  scale = TRUE, 
+                  FDRcut = 0.05, 
+                  verbose = FALSE)
 {
   Y.family <- match.arg(Y.family)
   
@@ -67,6 +70,7 @@ eHIMA <- function(X, M, Y, COV = NULL, Y.family = c("gaussian"),
     X <- scale(X)
     M <- scale(M)
     if(!is.null(COV)) COV <- scale(COV)
+    if(verbose) message("Data scaling is completed.")
   } else {
     X <- as.matrix(X)
     M <- as.matrix(M)
@@ -214,23 +218,27 @@ eHIMA <- function(X, M, Y, COV = NULL, Y.family = c("gaussian"),
   SN <- sum(as.numeric(P_sort_DACT <= P_BH))
   ID_BH_DACT <- order(DACT_ora)[1:SN]
   
-  # Total effect
-  if(is.null(COV)) {
-    YX <- data.frame(Y = Y, X = X)
-  } else {
-    YX <- data.frame(Y = Y, X = X, COV)
-  }
+  # # Total effect
+  # if(is.null(COV)) {
+  #   YX <- data.frame(Y = Y, X = X)
+  # } else {
+  #   YX <- data.frame(Y = Y, X = X, COV)
+  # }
+  # 
+  # gamma_est <- coef(glm(Y ~ ., family = Y.family, data = YX))[2]
   
-  gamma_est <- coef(glm(Y ~ ., family = Y.family, data = YX))[2]
-  ab_est <- alpha_est_orc * beta_est_orc
+  IDE <- alpha_est_orc[ID_BH_DACT] * beta_est_orc[ID_BH_DACT]
   
   if(length(ID_BH_DACT) > 0)
   {
-    out_result <- data.frame(ID = M_ID_name[ID_BH_DACT],
-                             alpha_hat = alpha_est_orc[ID_BH_DACT], alpha_SE = alpha_SE_orc[ID_BH_DACT],
-                             beta_hat = beta_est_orc[ID_BH_DACT], beta_SE = beta_SE_orc[ID_BH_DACT],
-                             `alpha*beta` = ab_est[ID_BH_DACT], `% total effect` = ab_est[ID_BH_DACT]/gamma_est * 100,
-                             p.joint = DACT_ora[ID_BH_DACT], check.names = FALSE)
+    out_result <- data.frame(Index = M_ID_name[ID_BH_DACT],
+                             alpha_hat = alpha_est_orc[ID_BH_DACT], 
+                             alpha_se = alpha_SE_orc[ID_BH_DACT],
+                             beta_hat = beta_est_orc[ID_BH_DACT], 
+                             beta_se = beta_SE_orc[ID_BH_DACT],
+                             IDE = IDE, 
+                             rimp = abs(IDE)/sum(abs(IDE)) * 100, 
+                             pmax = DACT_ora[ID_BH_DACT], check.names = FALSE)
     if(verbose) message(paste0("        ", length(ID_BH_DACT), " significant mediator(s) identified."))
   } else {
     if(verbose) message("        No significant mediator identified.")

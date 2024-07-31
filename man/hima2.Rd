@@ -11,8 +11,8 @@ hima2(
   outcome.family = c("gaussian", "binomial", "survival", "quantile"),
   mediator.family = c("gaussian", "negbin", "compositional"),
   penalty = c("DBlasso", "MCP", "SCAD", "lasso"),
-  topN = NULL,
   scale = TRUE,
+  Sigcut = 0.05,
   verbose = FALSE,
   ...
 )
@@ -40,12 +40,9 @@ high-dimensional mediators (\code{data.M}).}
 \code{'MCP'}, \code{'SCAD'}, or \code{'lasso'}. Please note, survival HIMA and microbiome HIMA can be only performed with \code{'DBlasso'}; 
 Quantile HIMA cannot be performed with \code{'DBlasso'}.}
 
-\item{topN}{an integer specifying the number of top markers from sure independent screening. 
-Default = \code{NULL}. If \code{NULL}, \code{topN} will be \code{ceiling(2 * n/log(n))}, where \code{n} is the sample size. 
-If the sample size is greater than topN (pre-specified or calculated), all mediators will be included in the test 
-(i.e. a low-dimensional scenario).}
-
 \item{scale}{logical. Should the function scale the data (exposure, mediators, and covariates)? Default = \code{TRUE}.}
+
+\item{Sigcut}{cutoff applied to select significant mediators. Default = \code{0.05}.}
 
 \item{verbose}{logical. Should the function be verbose and shows the progression? Default = \code{FALSE}.}
 

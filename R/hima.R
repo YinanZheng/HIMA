@@ -27,19 +27,18 @@
 #' @param ncore number of cores to run parallel computing Valid when \code{parallel == TRUE}. 
 #' By default max number of cores available in the machine will be utilized.
 #' @param scale logical. Should the function scale the data? Default = \code{TRUE}.
+#' @param Bonfcut Bonferroni-corrected p value cutoff applied to select significant mediators. Default = \code{0.05}. 
 #' @param verbose logical. Should the function be verbose? Default = \code{FALSE}.
 #' @param ... other arguments passed to \code{\link{ncvreg}}.
 #' 
 #' @return A data.frame containing mediation testing results of selected mediators. 
 #' \itemize{
-#'     \item{ID: }{Mediation ID of selected significant mediator.}
-#'     \item{alpha: }{coefficient estimates of exposure (X) --> mediators (M).}
-#'     \item{beta: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
-#'     \item{gamma: }{coefficient estimates of exposure (X) --> outcome (Y) (total effect).}
-#'     \item{alpha*beta: }{mediation effect.}
-#'     \item{\% total effect: }{alpha*beta / gamma. Percentage of the mediation effect out of the total effect.}
-#'     \item{Bonferroni.p: }{statistical significance of the mediator (Bonferroni-corrected p value).}
-#'     \item{BH.FDR: }{statistical significance of the mediator (Benjamini-Hochberg FDR).}
+#'     \item{Index: }{mediation name of selected significant mediator.}
+#'     \item{alpha_hat: }{coefficient estimates of exposure (X) --> mediators (M).}
+#'     \item{beta_hat: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
+#'     \item{IDE: }{mediation (indirect) effect, i.e., alpha*beta.}
+#'     \item{rimp: }{relative importance of the mediator.}
+#'     \item{pmax: }{joint raw p-value of selected significant mediator (based on Bonferroni method).}
 #' }
 #' 
 #' @references Zhang H, Zheng Y, Zhang Z, Gao T, Joyce B, Yoon G, Zhang W, Schwartz J, Just A, Colicino E, Vokonas P, Zhao L, 
@@ -87,103 +86,106 @@ hima <- function(X, Y, M, COV.XM = NULL, COV.MY = COV.XM,
                  parallel = FALSE, 
                  ncore = 1, 
                  scale = TRUE,
+                 Bonfcut = 0.05,
                  verbose = FALSE, 
-                 ...) {
-    Y.family <- match.arg(Y.family)
-    M.family <- match.arg(M.family)
-    penalty <- match.arg(penalty)
-    
-    if(parallel & (ncore == 1)) ncore <- parallel::detectCores()
-    if(!parallel & (ncore > 1)) parallel = TRUE
-    
-    n <- nrow(M)
-    p <- ncol(M)
-    
-    if(scale)
-    {
-      X <- scale(X)
-      M <- scale(M)
-      if(!is.null(COV.XM)) COV.XM <- scale(COV.XM)
-      if(!is.null(COV.MY)) COV.MY <- scale(COV.MY)
-    } else {
-      X <- as.matrix(X)
-      M <- as.matrix(M)
-      if(!is.null(COV.XM)) COV.XM <- as.matrix(COV.XM)
-      if(!is.null(COV.MY)) COV.MY <- as.matrix(COV.MY)
-    }
- 
-    if(is.null(topN)) {
-      if(Y.family == "binomial") d <- ceiling(n/(2*log(n))) else d <- ceiling(2 * n/log(n)) 
-    } else {
-      d <- topN  # the number of top mediators that associated with exposure (X)
-    }
+                 ...) 
+{
+  Y.family <- match.arg(Y.family)
+  M.family <- match.arg(M.family)
+  penalty <- match.arg(penalty)
   
-    d <- min(p, d) # if d > p select all mediators
-    
-    #########################################################################
-    ################################ STEP 1 #################################
-    #########################################################################
-    message("Step 1: Sure Independent Screening ...", "     (", format(Sys.time(), "%X"), ")")
-    
-    if(Y.family == "binomial")
-    {
-      # Screen M using X given the limited information provided by Y (binary)
-      if(verbose) message("    Screening M using the association between X (independent variable) and M (dependent variable): ", appendLF = FALSE)
-      alpha = SIS_Results <- himasis(NA, M, X, COV.XM, glm.family = M.family, modelstatement = "Mone ~ X", 
-                               parallel = parallel, ncore = ncore, verbose, tag = paste0("Sure Independent Screening (M ~ X + COV.XM, family: ", M.family, ")"))
-      SIS_Pvalue <- SIS_Results[2,]
-    } else if(Y.family == "gaussian"){
-      # Screen M using Y (continuous)
-      if(verbose) message("    Screening M using the association between M (independent variable) and Y (dependent variable): ", appendLF = FALSE)
-      SIS_Results <- himasis(Y, M, X, COV.MY, glm.family = Y.family, modelstatement = "Y ~ Mone + X", 
-                               parallel = parallel, ncore = ncore, verbose, tag = paste0("Sure Independent Screening (Y ~ M + X + COV.MY, family: ", Y.family, ")"))
-      SIS_Pvalue <- SIS_Results[2,]
-    } else {
-      stop(paste0("Family ", Y.family, " is not supported."))
-    }
-    
-    # Note: ranking using p on un-standardized data is equivalent to ranking using beta on standardized data
-    SIS_Pvalue_sort <- sort(SIS_Pvalue)
-    ID <- which(SIS_Pvalue <= SIS_Pvalue_sort[d])  # the index of top mediators
-    if(verbose) message("    Top ", length(ID), " mediators are selected: ", paste0(names(SIS_Pvalue_sort[seq_len(d)]), collapse = ", "))
+  if(parallel & (ncore == 1)) ncore <- parallel::detectCores()
+  if(!parallel & (ncore > 1)) parallel = TRUE
   
-    M_SIS <- M[, ID]
-    M_ID_name <- colnames(M)
-    XM <- cbind(M_SIS, X)
-    
-    #########################################################################
-    ################################ STEP 2 #################################
-    #########################################################################
-    message("Step 2: Penalized estimate (", penalty, ") ...", "     (", format(Sys.time(), "%X"), ")")
-    
-    ## Based on the screening results in step 1. We will find the most influential M on Y.
-    if(is.null(COV.MY)) {
-      fit <- ncvreg(XM, Y, family = Y.family, 
-                    penalty = penalty, 
-                    penalty.factor = c(rep(1, ncol(M_SIS)), 0), ...)
-    } else {
-      COV.MY <- data.frame(COV.MY)
-      COV.MY <- data.frame(model.matrix(~., COV.MY))[, -1]
-      conf.names <- colnames(COV.MY)
-      if(verbose) message("    Adjusting for covariate(s): ", paste0(conf.names, collapse = ", "))
-      XM_COV <- cbind(XM, COV.MY)
-      fit <- ncvreg(XM_COV, Y, family = Y.family, 
-                    penalty = penalty, 
-                    penalty.factor = c(rep(1, ncol(M_SIS)), rep(0, 1 + ncol(COV.MY))), ...)
-    }
-    # plot(fit)
-    
-    lam <- fit$lambda[which.min(BIC(fit))]
-    if(verbose) message("    Tuning parameter lambda selected: ", lam)
-    Coefficients <- coef(fit, lambda = lam)
-    est <- Coefficients[2:(d + 1)]
-    ID_1_non <- which(est != 0)
-    if(length(ID_1_non) == 0)
-    {
-      if(verbose) message("    All ", penalty, " beta estimates of the ", length(ID), " mediators are zero.")
-      results <- NULL
-      return(results)
-    } else {
+  n <- nrow(M)
+  p <- ncol(M)
+  
+  if(scale)
+  {
+    X <- scale(X)
+    M <- scale(M)
+    if(!is.null(COV.XM)) COV.XM <- scale(COV.XM)
+    if(!is.null(COV.MY)) COV.MY <- scale(COV.MY)
+    if(verbose) message("Data scaling is completed.")
+  } else {
+    X <- as.matrix(X)
+    M <- as.matrix(M)
+    if(!is.null(COV.XM)) COV.XM <- as.matrix(COV.XM)
+    if(!is.null(COV.MY)) COV.MY <- as.matrix(COV.MY)
+  }
+  
+  if(is.null(topN)) {
+    if(Y.family == "binomial") d <- ceiling(n/(2*log(n))) else d <- ceiling(2 * n/log(n)) 
+  } else {
+    d <- topN  # the number of top mediators that associated with exposure (X)
+  }
+  
+  d <- min(p, d) # if d > p select all mediators
+  
+  #########################################################################
+  ################################ STEP 1 #################################
+  #########################################################################
+  message("Step 1: Sure Independent Screening ...", "     (", format(Sys.time(), "%X"), ")")
+  
+  if(Y.family == "binomial")
+  {
+    # Screen M using X given the limited information provided by Y (binary)
+    if(verbose) message("    Screening M using the association between X (independent variable) and M (dependent variable): ", appendLF = FALSE)
+    alpha = SIS_Results <- himasis(NA, M, X, COV.XM, glm.family = M.family, modelstatement = "Mone ~ X", 
+                                   parallel = parallel, ncore = ncore, verbose, tag = paste0("Sure Independent Screening (M ~ X + COV.XM, family: ", M.family, ")"))
+    SIS_Pvalue <- SIS_Results[2,]
+  } else if(Y.family == "gaussian"){
+    # Screen M using Y (continuous)
+    if(verbose) message("    Screening M using the association between M (independent variable) and Y (dependent variable): ", appendLF = FALSE)
+    SIS_Results <- himasis(Y, M, X, COV.MY, glm.family = Y.family, modelstatement = "Y ~ Mone + X", 
+                           parallel = parallel, ncore = ncore, verbose, tag = paste0("Sure Independent Screening (Y ~ M + X + COV.MY, family: ", Y.family, ")"))
+    SIS_Pvalue <- SIS_Results[2,]
+  } else {
+    stop(paste0("Family ", Y.family, " is not supported."))
+  }
+  
+  # Note: ranking using p on un-standardized data is equivalent to ranking using beta on standardized data
+  SIS_Pvalue_sort <- sort(SIS_Pvalue)
+  ID <- which(SIS_Pvalue <= SIS_Pvalue_sort[d])  # the index of top mediators
+  if(verbose) message("    Top ", length(ID), " mediators are selected: ", paste0(names(SIS_Pvalue_sort[seq_len(d)]), collapse = ", "))
+  
+  M_SIS <- M[, ID]
+  M_ID_name <- colnames(M)
+  XM <- cbind(M_SIS, X)
+  
+  #########################################################################
+  ################################ STEP 2 #################################
+  #########################################################################
+  message("Step 2: Penalized estimate (", penalty, ") ...", "     (", format(Sys.time(), "%X"), ")")
+  
+  ## Based on the screening results in step 1. We will find the most influential M on Y.
+  if(is.null(COV.MY)) {
+    fit <- ncvreg(XM, Y, family = Y.family, 
+                  penalty = penalty, 
+                  penalty.factor = c(rep(1, ncol(M_SIS)), 0), ...)
+  } else {
+    COV.MY <- data.frame(COV.MY)
+    COV.MY <- data.frame(model.matrix(~., COV.MY))[, -1]
+    conf.names <- colnames(COV.MY)
+    if(verbose) message("    Adjusting for covariate(s): ", paste0(conf.names, collapse = ", "))
+    XM_COV <- cbind(XM, COV.MY)
+    fit <- ncvreg(XM_COV, Y, family = Y.family, 
+                  penalty = penalty, 
+                  penalty.factor = c(rep(1, ncol(M_SIS)), rep(0, 1 + ncol(COV.MY))), ...)
+  }
+  # plot(fit)
+  
+  lam <- fit$lambda[which.min(BIC(fit))]
+  if(verbose) message("    Tuning parameter lambda selected: ", lam)
+  Coefficients <- coef(fit, lambda = lam)
+  est <- Coefficients[2:(d + 1)]
+  ID_1_non <- which(est != 0)
+  if(length(ID_1_non) == 0)
+  {
+    if(verbose) message("    All ", penalty, " beta estimates of the ", length(ID), " mediators are zero.")
+    results <- NULL
+    return(results)
+  } else {
     if(verbose) message("    Non-zero ", penalty, " beta estimate(s) of mediator(s) found: ", paste0(names(ID_1_non), collapse = ","))
     beta_est <- est[ID_1_non]  # The non-zero MCP estimators of beta
     ID_test <- ID[ID_1_non]  # The index of the ID of non-zero beta in Y ~ M
@@ -209,10 +211,7 @@ hima <- function(X, Y, M, COV.XM = NULL, COV.MY = COV.XM,
     message("Step 3: Joint significance test ...", "     (", format(Sys.time(), "%X"), ")")
     
     alpha_est_ID_test <- as.numeric(alpha[1, ])  #  the estimator for alpha
-    P_adjust_alpha <- length(ID_test) * alpha[2, ]  # the adjusted p-value for alpha (bonferroni)
-    P_adjust_alpha[P_adjust_alpha > 1] <- 1
-    P_fdr_alpha <- p.adjust(alpha[2, ], "fdr")  # the adjusted p-value for alpha (FDR)
-    
+    P_alpha <- alpha[2, ]  # the raw p-value for alpha
     alpha_est <- alpha_est_ID_test
     
     ## Post-test based on the oracle property of the MCP penalty
@@ -224,36 +223,35 @@ hima <- function(X, Y, M, COV.XM = NULL, COV.MY = COV.XM,
     
     res <- summary(glm(Y ~ ., family = Y.family, data = YMX))$coefficients
     est <- res[2:(length(ID_test) + 1), 1]  # the estimator for beta
-    P_adjust_beta <- length(ID_test) * res[2:(length(ID_test) + 1), 4]  # the adjused p-value for beta (bonferroni)
-    P_adjust_beta[P_adjust_beta > 1] <- 1
-    P_fdr_beta <- p.adjust(res[2:(length(ID_test) + 1), 4], "fdr")  # the adjusted p-value for beta (FDR)
-    
-    ab_est <- alpha_est * beta_est
+    P_beta <- res[2:(length(ID_test) + 1), 4]  # the raw p-value for beta
+
+    IDE <- alpha_est * beta_est # mediation(indirect) effect
     
     ## Use the maximum value as p value 
-    PA <- rbind(P_adjust_beta, P_adjust_alpha)
-    P_value <- apply(PA, 2, max)
+    Pmax <- apply(cbind(P_alpha, P_beta), 1, max)
     
-    FDRA <- rbind(P_fdr_beta, P_fdr_alpha)
-    FDR <- apply(FDRA, 2, max)
+    ## Bonferroni
+    Pmax_Bonf  <- Pmax * length(ID_test)
+    sig_ind <- which(Pmax_Bonf < Bonfcut)
+    
+    # FDRA <- rbind(P_fdr_beta, P_fdr_alpha)
+    # FDR <- apply(FDRA, 2, max)
     
     # Total effect
-    if(is.null(COV.MY)) {
-      YX <- data.frame(Y = Y, X = X)
-    } else {
-      YX <- data.frame(Y = Y, X = X, COV.MY)
-    }
+    # if(is.null(COV.MY)) {
+    #   YX <- data.frame(Y = Y, X = X)
+    # } else {
+    #   YX <- data.frame(Y = Y, X = X, COV.MY)
+    # }
+    # 
+    # gamma_est <- coef(glm(Y ~ ., family = Y.family, data = YX))[2]
     
-    gamma_est <- coef(glm(Y ~ ., family = Y.family, data = YX))[2]
-    
-    results <- data.frame(ID = M_ID_name[ID_test], 
-                          alpha = alpha_est, 
-                          beta = beta_est, 
-                          gamma = gamma_est, 
-                          `alpha*beta` = ab_est, 
-                          `% total effect` = ab_est/gamma_est * 100, 
-                          `Bonferroni.p` = P_value, 
-                          `BH.FDR` = FDR, check.names = FALSE)
+    results <- data.frame(Index = M_ID_name[ID_test][sig_ind], 
+                          alpha_hat = alpha_est[sig_ind], 
+                          beta_hat = beta_est[sig_ind], 
+                          IDE = IDE[sig_ind], 
+                          rimp = (abs(IDE)/sum(abs(IDE)))[sig_ind] * 100, 
+                          pmax = Pmax[sig_ind], check.names = FALSE)
     
     message("Done!", "     (", format(Sys.time(), "%X"), ")")
     

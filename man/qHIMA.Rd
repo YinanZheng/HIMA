@@ -39,7 +39,7 @@ If the sample size is greater than topN (pre-specified or calculated), all media
 
 \item{scale}{logical. Should the function scale the data? Default = \code{TRUE}.}
 
-\item{Bonfcut}{Bonferroni-corrected p value cutoff applied to define and select significant mediators. Default = \code{0.05}.}
+\item{Bonfcut}{Bonferroni-corrected p value cutoff applied to select significant mediators. Default = \code{0.05}.}
 
 \item{verbose}{logical. Should the function be verbose? Default = \code{FALSE}.}
 
@@ -48,12 +48,14 @@ If the sample size is greater than topN (pre-specified or calculated), all media
 \value{
 A data.frame containing mediation testing results of selected mediators (Bonferroni-adjusted p value <\code{Bonfcut}). 
 \itemize{
-    \item{ID: }{Mediation ID of selected significant mediator.}
-    \item{alpha: }{coefficient estimates of exposure (X) --> mediators (M).}
+    \item{Index: }{mediation name of selected significant mediator.}
+    \item{alpha_hat: }{coefficient estimates of exposure (X) --> mediators (M).}
     \item{alpha_se: }{standard error for alpha.}
-    \item{beta: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
+    \item{beta_hat: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
     \item{beta_se: }{standard error for beta.}
-    \item{Bonferroni.p: }{statistical significance of the mediator (Bonferroni-corrected p value).}
+    \item{IDE: }{mediation (indirect) effect, i.e., alpha*beta.}
+    \item{rimp: }{relative importance of the mediator.}
+    \item{pmax: }{joint raw p-value of selected significant mediator (based on Bonferroni method).}
 }
 }
 \description{

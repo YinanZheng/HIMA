@@ -15,18 +15,20 @@
 #' If the sample size is greater than topN (pre-specified or calculated), all mediators will be included in the test (i.e. low-dimensional scenario).
 #' @param tau quantile level of outcome. Default = 0.5. A vector of tau is accepted.
 #' @param scale logical. Should the function scale the data? Default = \code{TRUE}.
-#' @param Bonfcut Bonferroni-corrected p value cutoff applied to define and select significant mediators. Default = \code{0.05}. 
+#' @param Bonfcut Bonferroni-corrected p value cutoff applied to select significant mediators. Default = \code{0.05}. 
 #' @param verbose logical. Should the function be verbose? Default = \code{FALSE}.
 #' @param ... other arguments.
 #' 
 #' @return A data.frame containing mediation testing results of selected mediators (Bonferroni-adjusted p value <\code{Bonfcut}). 
 #' \itemize{
-#'     \item{ID: }{Mediation ID of selected significant mediator.}
-#'     \item{alpha: }{coefficient estimates of exposure (X) --> mediators (M).}
+#'     \item{Index: }{mediation name of selected significant mediator.}
+#'     \item{alpha_hat: }{coefficient estimates of exposure (X) --> mediators (M).}
 #'     \item{alpha_se: }{standard error for alpha.}
-#'     \item{beta: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
+#'     \item{beta_hat: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
 #'     \item{beta_se: }{standard error for beta.}
-#'     \item{Bonferroni.p: }{statistical significance of the mediator (Bonferroni-corrected p value).}
+#'     \item{IDE: }{mediation (indirect) effect, i.e., alpha*beta.}
+#'     \item{rimp: }{relative importance of the mediator.}
+#'     \item{pmax: }{joint raw p-value of selected significant mediator (based on Bonferroni method).}
 #' }
 #' 
 #' @references Zhang H, Hong X, Zheng Y, Hou L, Zheng C, Wang X, Liu L. High-Dimensional Quantile Mediation Analysis with Application to a Birth 
@@ -51,9 +53,15 @@
 #' }
 #' 
 #' @export
-qHIMA <- function(X, M, Y, COV = NULL, penalty = c('MCP', "SCAD", "lasso"), 
-                  topN = NULL, tau = 0.5, scale = TRUE, Bonfcut = 0.05, verbose = FALSE, ...){
-  
+qHIMA <- function(X, M, Y, COV = NULL, 
+                  penalty = c('MCP', "SCAD", "lasso"), 
+                  topN = NULL, 
+                  tau = 0.5, 
+                  scale = TRUE, 
+                  Bonfcut = 0.05, 
+                  verbose = FALSE, 
+                  ...)
+{
   penalty <- match.arg(penalty)
   
   n <- nrow(M)
@@ -64,6 +72,7 @@ qHIMA <- function(X, M, Y, COV = NULL, penalty = c('MCP', "SCAD", "lasso"),
     X <- scale(X)
     M <- scale(M)
     if(!is.null(COV)) COV <- scale(COV)
+    if(verbose) message("Data scaling is completed.")
   } else {
     X <- as.matrix(X)
     M <- as.matrix(M)
@@ -144,24 +153,28 @@ qHIMA <- function(X, M, Y, COV = NULL, penalty = c('MCP', "SCAD", "lasso"),
     beta_fit_penalty[ID_penalty] <-  beta_hat_penalty
     
     #--- the p-values
-    P_raw_2k <- 2*(1-pnorm(abs(alpha_est)/alpha_SE,0,1)) # the p-values of \alpha
+    P_raw_2k <- 2*(1-pnorm(abs(alpha_est)/alpha_SE,0,1)) # the p-values of alpha
     P_raw_1k_penalty  <-  2*(1-pnorm(abs(beta_hat_penalty)/beta_SE_penalty,0,1))
-    P_max_k_penalty <- apply(cbind(P_raw_1k_penalty, t(t(P_raw_2k[ID_penalty]))),1,max)
+    P_max_k_penalty <- apply(cbind(P_raw_1k_penalty, P_raw_2k[ID_penalty]),1,max)
     
     #-- the Pmax method
     P_penalty_Pmax  <- P_max_k_penalty*length(ID_penalty)
     sig_ind <- which(P_penalty_Pmax < Bonfcut)
     ID_Non_penalty_Pmax <- ID_penalty[sig_ind] # the ID of significant M by JS
     
+    IDE <- alpha_est[ID_Non_penalty_Pmax] * beta_hat_penalty[sig_ind]
+    
     if(length(ID_Non_penalty_Pmax) > 0)
     {
       out_result <- rbind(out_result, 
-                          data.frame(ID = M_ID_name[ID_Non_penalty_Pmax], 
-                                     alpha = alpha_est[ID_Non_penalty_Pmax], 
+                          data.frame(Index = M_ID_name[ID_Non_penalty_Pmax], 
+                                     alpha_hat = alpha_est[ID_Non_penalty_Pmax], 
                                      alpha_se = alpha_SE[ID_Non_penalty_Pmax], 
-                                     beta = beta_hat_penalty[sig_ind], 
+                                     beta_hat = beta_hat_penalty[sig_ind], 
                                      beta_se = beta_SE_penalty[sig_ind],
-                                     Bonferroni.p = P_max_k_penalty[sig_ind],
+                                     IDE = IDE, 
+                                     rimp = abs(IDE)/sum(abs(IDE)) * 100, 
+                                     pmax = P_max_k_penalty[sig_ind],
                                      tau = tau_temp))
       if(verbose) message(paste0("        ", length(ID_Non_penalty_Pmax), " significant mediator(s) identified."))
     } else {

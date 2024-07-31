@@ -17,6 +17,7 @@ hima(
   parallel = FALSE,
   ncore = 1,
   scale = TRUE,
+  Bonfcut = 0.05,
   verbose = FALSE,
   ...
 )
@@ -59,6 +60,8 @@ By default max number of cores available in the machine will be utilized.}
 
 \item{scale}{logical. Should the function scale the data? Default = \code{TRUE}.}
 
+\item{Bonfcut}{Bonferroni-corrected p value cutoff applied to select significant mediators. Default = \code{0.05}.}
+
 \item{verbose}{logical. Should the function be verbose? Default = \code{FALSE}.}
 
 \item{...}{other arguments passed to \code{\link{ncvreg}}.}
@@ -66,14 +69,12 @@ By default max number of cores available in the machine will be utilized.}
 \value{
 A data.frame containing mediation testing results of selected mediators. 
 \itemize{
-    \item{ID: }{Mediation ID of selected significant mediator.}
-    \item{alpha: }{coefficient estimates of exposure (X) --> mediators (M).}
-    \item{beta: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
-    \item{gamma: }{coefficient estimates of exposure (X) --> outcome (Y) (total effect).}
-    \item{alpha*beta: }{mediation effect.}
-    \item{\% total effect: }{alpha*beta / gamma. Percentage of the mediation effect out of the total effect.}
-    \item{Bonferroni.p: }{statistical significance of the mediator (Bonferroni-corrected p value).}
-    \item{BH.FDR: }{statistical significance of the mediator (Benjamini-Hochberg FDR).}
+    \item{Index: }{mediation name of selected significant mediator.}
+    \item{alpha_hat: }{coefficient estimates of exposure (X) --> mediators (M).}
+    \item{beta_hat: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
+    \item{IDE: }{mediation (indirect) effect, i.e., alpha*beta.}
+    \item{rimp: }{relative importance of the mediator.}
+    \item{pmax: }{joint raw p-value of selected significant mediator (based on Bonferroni method).}
 }
 }
 \description{

@@ -45,6 +45,6 @@
 * Add quantile HIMA function "qhima".
 * Enable de-biased lasso penalty for regular hima in function "hima2"
 
-# HIMA 2.2.2 (2024-07-15)
+# HIMA 2.2.2 (2024-08-01)
 * Add efficient HIMA function "eHIMA".
-* Some minor improvements in output presentation.
+* Some improvements in output presentation and consistency.

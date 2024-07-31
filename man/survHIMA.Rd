@@ -27,21 +27,23 @@ represent mediator variables.}
 
 \item{status}{a vector of censoring indicator (\code{status = 1}: uncensored; \code{status = 0}: censored)}
 
-\item{FDRcut}{FDR cutoff applied to define and select significant mediators. Default = \code{0.05}.}
+\item{FDRcut}{HDMT pointwise FDR cutoff applied to select significant mediators. Default = \code{0.05}.}
 
 \item{scale}{logical. Should the function scale the data? Default = \code{TRUE}.}
 
 \item{verbose}{logical. Should the function be verbose? Default = \code{FALSE}.}
 }
 \value{
-A data.frame containing mediation testing results of selected mediators (FDR <\code{FDPcut}). 
+A data.frame containing mediation testing results of significant mediators (FDR <\code{FDRcut}). 
 \itemize{
-    \item{ID: }{Mediation ID of selected significant mediator.}
-    \item{alpha: }{coefficient estimates of exposure (X) --> mediators (M).}
+    \item{Index: }{mediation name of selected significant mediator.}
+    \item{alpha_hat: }{coefficient estimates of exposure (X) --> mediators (M).}
     \item{alpha_se: }{standard error for alpha.}
-    \item{beta: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
+    \item{beta_hat: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
     \item{beta_se: }{standard error for beta.}
-    \item{p_raw: }{Raw p-value of selected significant mediator.}
+    \item{IDE: }{mediation (indirect) effect, i.e., alpha*beta.}
+    \item{rimp: }{relative importance of the mediator.}
+    \item{pmax: }{joint raw p-value of selected significant mediator (based on HDMT pointwise FDR method).}
 }
 }
 \description{

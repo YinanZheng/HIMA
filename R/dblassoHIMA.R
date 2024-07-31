@@ -16,18 +16,19 @@
 #' where \code{n} is the sample size. If the sample size is greater than topN (pre-specified or calculated), all 
 #' mediators will be included in the test (i.e. low-dimensional scenario).
 #' @param scale logical. Should the function scale the data? Default = \code{TRUE}.
-#' @param FDRcut FDR cutoff applied to define and select significant mediators. Default = \code{0.05}. 
+#' @param FDRcut HDMT pointwise FDR cutoff applied to select significant mediators. Default = \code{0.05}. 
 #' @param verbose logical. Should the function be verbose? Default = \code{FALSE}.
 #' 
-#' @return A data.frame containing mediation testing results of selected mediators (FDR <\code{FDPcut}). 
+#' @return A data.frame containing mediation testing results of significant mediators (FDR <\code{FDRcut}). 
 #' \itemize{
-#'     \item{ID: }{Mediation ID of selected significant mediator.}
-#'     \item{alpha: }{coefficient estimates of exposure (X) --> mediators (M).}
-#'     \item{beta: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
-#'     \item{gamma: }{coefficient estimates of exposure (X) --> outcome (Y) (total effect).}
-#'     \item{alpha*beta: }{mediation effect.}
-#'     \item{\% total effect: }{alpha*beta / gamma. Percentage of the mediation effect out of the total effect.}
-#'     \item{p.joint: }{joint raw p-value of selected significant mediator (based on FDR).}
+#'     \item{Index: }{mediation name of selected significant mediator.}
+#'     \item{alpha_hat: }{coefficient estimates of exposure (X) --> mediators (M).}
+#'     \item{alpha_se: }{standard error for alpha.}
+#'     \item{beta_hat: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
+#'     \item{beta_se: }{standard error for beta.}
+#'     \item{IDE: }{mediation (indirect) effect, i.e., alpha*beta.}
+#'     \item{rimp: }{relative importance of the mediator.}
+#'     \item{pmax: }{joint raw p-value of selected significant mediator (based on HDMT pointwise FDR method).}
 #' }
 #' 
 #' @references Perera C, Zhang H, Zheng Y, Hou L, Qu A, Zheng C, Xie K, Liu L. 
@@ -84,6 +85,7 @@ dblassoHIMA<-function(X, Y, M, COV = NULL,
     X <- scale(X)
     M <- scale(M)
     if(!is.null(COV)) COV <- scale(COV)
+    if(verbose) message("Data scaling is completed.")
   } else {
     X <- as.matrix(X)
     M <- as.matrix(M)
@@ -212,20 +214,25 @@ dblassoHIMA<-function(X, Y, M, COV = NULL,
   # Indirect effect
   IDE <- beta_hat_est*alpha_hat_est # mediation(indirect) effect
   
-  # Total effect
-  if(is.null(COV)) {
-    YX <- data.frame(Y = Y, X = X)
-  } else {
-    YX <- data.frame(Y = Y, X = X, COV)
-  }
-  
-  gamma_est <- coef(glm(Y ~ ., family = Y.family, data = YX))[2]
+  # # Total effect
+  # if(is.null(COV)) {
+  #   YX <- data.frame(Y = Y, X = X)
+  # } else {
+  #   YX <- data.frame(Y = Y, X = X, COV)
+  # }
+  # 
+  # gamma_est <- coef(glm(Y ~ ., family = Y.family, data = YX))[2]
   
   if(length(ID_fdr) > 0)
   {
-    results <- data.frame(ID = M_ID_name[ID_fdr], alpha = alpha_hat_est, beta = beta_hat_est, gamma = gamma_est, 
-                          `alpha*beta` = IDE, `% total effect` = IDE/gamma_est * 100, 
-                          `p.joint` = P.value_raw, check.names = FALSE)
+    results <- data.frame(Index = M_ID_name[ID_fdr], 
+                          alpha_hat = alpha_hat_est,
+                          alpha_se = alpha_hat_SE,
+                          beta_hat = beta_hat_est, 
+                          beta_se = beta_hat_SE,
+                          IDE = IDE, 
+                          rimp = abs(IDE)/sum(abs(IDE)) * 100, 
+                          pmax = P.value_raw, check.names = FALSE)
     
     if(verbose) message(paste0("        ", length(ID_fdr), " significant mediator(s) identified."))
   } else {

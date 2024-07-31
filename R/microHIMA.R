@@ -10,17 +10,19 @@
 #' @param COV a \code{data.frame} or \code{matrix} of adjusting covariates. Rows represent samples, columns represent microbiome variables. 
 #' Can be \code{NULL}.
 #' @param scale logical. Should the function scale the data? Default = \code{TRUE}.
-#' @param FDRcut FDR cutoff applied to define and select significant mediators. Default = \code{0.05}. 
+#' @param FDRcut Hommel FDR cutoff applied to select significant mediators. Default = \code{0.05}. 
 #' @param verbose logical. Should the function be verbose? Default = \code{FALSE}.
 #' 
-#' @return A data.frame containing mediation testing results of selected mediators (FDR < \code{FDRcut}). 
+#' @return A data.frame containing mediation testing results of significant mediators (FDR <\code{FDRcut}). 
 #' \itemize{
-#'     \item{ID: }{Mediation ID of selected significant mediator.}
-#'     \item{alpha: }{coefficient estimates of exposure (X) --> mediators (M).}
+#'     \item{Index: }{mediation name of selected significant mediator.}
+#'     \item{alpha_hat: }{coefficient estimates of exposure (X) --> mediators (M).}
 #'     \item{alpha_se: }{standard error for alpha.}
-#'     \item{beta: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
+#'     \item{beta_hat: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
 #'     \item{beta_se: }{standard error for beta.}
-#'     \item{p_raw: }{Raw p-value of selected significant mediator.}
+#'     \item{IDE: }{mediation (indirect) effect, i.e., alpha*beta.}
+#'     \item{rimp: }{relative importance of the mediator.}
+#'     \item{pmax: }{joint raw p-value of selected significant mediator (based on Hommel FDR method).}
 #' }
 #' 
 #' @references
@@ -46,7 +48,11 @@
 #' }
 #' 
 #' @export
-microHIMA <- function(X, Y, OTU, COV = NULL, FDRcut = 0.05, scale = TRUE, verbose = FALSE){
+microHIMA <- function(X, Y, OTU, COV = NULL, 
+                      FDRcut = 0.05, 
+                      scale = TRUE, 
+                      verbose = FALSE)
+{
   
   X <- matrix(X, ncol = 1)
   
@@ -56,10 +62,10 @@ microHIMA <- function(X, Y, OTU, COV = NULL, FDRcut = 0.05, scale = TRUE, verbos
   if(is.null(M_ID_name)) M_ID_name <- seq_len(ncol(M_raw))
   
   if(!is.null(COV))
-    {COV <- as.matrix(COV); X <- cbind(X, COV)}
+  {COV <- as.matrix(COV); X <- cbind(X, COV)}
   
   Y <- Y - mean(Y)
-
+  
   M <- M_raw
   n <- dim(M)[1]
   d <- dim(M)[2]
@@ -98,7 +104,7 @@ microHIMA <- function(X, Y, OTU, COV = NULL, FDRcut = 0.05, scale = TRUE, verbos
     
     MT <- matrix(as.numeric(MT), nrow(MT))
     MX <- cbind(MT, X)
-
+    
     if(scale) MX <- scale(MX)
     
     fit.dlasso  <- DLASSO_fun(MX, Y)
@@ -138,14 +144,18 @@ microHIMA <- function(X, Y, OTU, COV = NULL, FDRcut = 0.05, scale = TRUE, verbos
   N0 <- N1 - N2
   
   ID_FDR <- set[which(N0 > 0)]
-
+  
+  IDE <- alpha_EST[ID_FDR] * beta_EST[ID_FDR]
+  
   if (length(ID_FDR) > 0){
-    out_result <- data.frame(ID = M_ID_name[ID_FDR], 
-                             alpha = alpha_EST[ID_FDR], 
+    out_result <- data.frame(Index = M_ID_name[ID_FDR], 
+                             alpha_hat = alpha_EST[ID_FDR], 
                              alpha_se = alpha_SE[ID_FDR], 
-                             beta = beta_EST[ID_FDR], 
+                             beta_hat = beta_EST[ID_FDR], 
                              beta_se = beta_SE[ID_FDR],
-                             p_raw = P_adj_DLASSO[ID_FDR])
+                             IDE = IDE, 
+                             rimp = abs(IDE)/sum(abs(IDE)) * 100, 
+                             pmax = P_adj_DLASSO[ID_FDR])
     if(verbose) message(paste0("        ", length(ID_FDR), " significant mediator(s) identified."))
   } else {
     if(verbose) message("        No significant mediator identified.")

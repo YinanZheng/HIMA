@@ -18,11 +18,8 @@
 #' @param penalty the penalty to be applied to the model. Either \code{'DBlasso'} (De-biased LASSO, default), 
 #' \code{'MCP'}, \code{'SCAD'}, or \code{'lasso'}. Please note, survival HIMA and microbiome HIMA can be only performed with \code{'DBlasso'}; 
 #' Quantile HIMA cannot be performed with \code{'DBlasso'}.
-#' @param topN an integer specifying the number of top markers from sure independent screening. 
-#' Default = \code{NULL}. If \code{NULL}, \code{topN} will be \code{ceiling(2 * n/log(n))}, where \code{n} is the sample size. 
-#' If the sample size is greater than topN (pre-specified or calculated), all mediators will be included in the test 
-#' (i.e. a low-dimensional scenario).
 #' @param scale logical. Should the function scale the data (exposure, mediators, and covariates)? Default = \code{TRUE}.
+#' @param Sigcut cutoff applied to select significant mediators. Default = \code{0.05}. 
 #' @param verbose logical. Should the function be verbose and shows the progression? Default = \code{FALSE}.
 #' @param ... other arguments.
 #' 
@@ -131,8 +128,8 @@ hima2 <- function(formula,
                   outcome.family = c("gaussian", "binomial", "survival", "quantile"), 
                   mediator.family = c("gaussian", "negbin", "compositional"), 
                   penalty = c("DBlasso", "MCP", "SCAD", "lasso"), 
-                  topN = NULL, 
                   scale = TRUE,
+                  Sigcut = 0.05,
                   verbose = FALSE,
                   ...) 
 {
@@ -189,28 +186,28 @@ hima2 <- function(formula,
         X <- data.pheno[,ind_vars[1]]
         
         if(length(ind_vars) > 1)
-          COV <- data.pheno[,ind_vars[-1]] else COV <- NULL
+          COV <- convert_to_dummies(data.pheno[,ind_vars[-1]]) else COV <- NULL
         
         res <- dblassoHIMA(X = X, Y = Y, M = data.M, COV = COV, 
                            Y.family = outcome.family, 
-                           topN = topN,
+                           topN = NULL,
+                           FDRcut = Sigcut,
                            scale = scale, verbose = verbose)
         if(!is.null(res))
         {        
-          results <- data.frame(ID = res$ID, 
-                                alpha = res$alpha,
-                                beta = res$beta,
-                                `alpha*beta` = res$`alpha*beta`,
-                                `% total effect` = res$`% total effect`,
-                                p.joint = res$p.joint, check.names = FALSE)
+          results <- data.frame(ID = res$Index, 
+                                alpha = res$alpha_hat,
+                                beta = res$beta_hat,
+                                `alpha*beta` = res$IDE,
+                                `Relative Importance (%)` = res$rimp,
+                                `p-value` = res$pmax, check.names = FALSE)
           results <- results[order(results$p.joint), ]
           attr(results, "variable.labels") <- c("ID: Mediator ID",
                                                 "alpha: Effect of exposure on mediator", 
                                                 "beta: Effect of mediator on outcome",
-                                                "gamma: Total effect of exposure on outcome",
-                                                "alpha*beta: Mediation effect",
-                                                "% total effect: Percent of mediation effect out of the total effect",
-                                                "p_raw: Raw p-value of selected significant mediator")
+                                                "alpha*beta: Mediation (indirect) effect",
+                                                "Relative Importance: Relative importance of the mediator out of all significant mediators",
+                                                paste0("p-value: Joint raw p-value of significant mediator selected based on HDMT pointwise FDR < ", Sigcut))
         }
       } else if (mediator.family == "compositional") {
         response_var <- as.character(formula[[2]]) 
@@ -220,25 +217,28 @@ hima2 <- function(formula,
         X <- data.pheno[,ind_vars[1]]
         
         if(length(ind_vars) > 1)
-          COV <- data.pheno[,ind_vars[-1]] else COV <- NULL
+          COV <- convert_to_dummies(data.pheno[,ind_vars[-1]]) else COV <- NULL
         
-        res <- microHIMA(X = X, Y = Y, OTU = data.M, COV = COV, FDRcut = 0.05, scale)
+        res <- microHIMA(X = X, Y = Y, OTU = data.M, COV = COV, 
+                         FDRcut = Sigcut, 
+                         scale = scale,
+                         verbose = verbose)
         
         if(!is.null(res))
         { 
-          results <- data.frame(ID = res$ID,
-                                alpha = res$alpha, 
-                                alpha_se = res$alpha_se, 
-                                beta = res$beta, 
-                                beta_se = res$beta_se,
-                                FDR = res$FDR, check.names = FALSE)
-          results <- results[order(results$FDR), ]
+          results <- data.frame(ID = res$Index,
+                                alpha = res$alpha_hat, 
+                                beta = res$beta_hat, 
+                                `alpha*beta` = res$IDE,
+                                `Relative Importance (%)` = res$rimp,
+                                `p-value` = res$pmax, check.names = FALSE)
+          results <- results[order(results$`p-value`), ]
           attr(results, "variable.labels") <- c("ID: Mediator ID",
                                                 "alpha: Effect of exposure on mediator", 
-                                                "alpha_se: Standard error of the effect of exposure on mediator",
                                                 "beta: Effect of mediator on outcome",
-                                                "beta_se: Standard error of the effect of mediator on outcome",
-                                                "FDR: Hommel's false discovery rate")
+                                                "alpha*beta: Mediation (indirect) effect",
+                                                "Relative Importance: Relative importance of the mediator out of all significant mediators",
+                                                paste0("p-value: Joint raw p-value of significant mediator selected based on Hommel FDR < ", Sigcut))
         }
       }
     } else if (outcome.family == "survival") {
@@ -250,25 +250,28 @@ hima2 <- function(formula,
       OT <- data.pheno[, response_vars[2]]
       
       if(length(ind_vars) > 1)
-        COV <- data.pheno[,ind_vars[-1]] else COV <- NULL
+        COV <- convert_to_dummies(data.pheno[,ind_vars[-1]]) else COV <- NULL
       
-      res <- survHIMA(X, data.M, COV, OT, status, FDRcut = 0.05, scale, verbose)
+      res <- survHIMA(X, data.M, COV, OT, status, 
+                      FDRcut = Sigcut, 
+                      scale = scale, 
+                      verbose = verbose)
       
       if(!is.null(res))
       { 
-        results <- data.frame(ID = res$ID,
-                              alpha = res$alpha, 
-                              alpha_se = res$alpha_se, 
-                              beta = res$beta, 
-                              beta_se = res$beta_se,
-                              p.joint = res$p.joint, check.names = FALSE)
-        results <- results[order(results$p.joint), ]
+        results <- data.frame(ID = res$Index,
+                              alpha = res$alpha_hat, 
+                              beta = res$beta_hat, 
+                              `alpha*beta` = res$IDE,
+                              `Relative Importance (%)` = res$rimp,
+                              `p-value` = res$pmax, check.names = FALSE)
+        results <- results[order(results$`p-value`), ]
         attr(results, "variable.labels") <- c("ID: Mediator ID",
                                               "alpha: Effect of exposure on mediator", 
-                                              "alpha_se: Standard error of the effect of exposure on mediator",
                                               "beta: Effect of mediator on outcome",
-                                              "beta_se: Standard error of the effect of mediator on outcome",
-                                              "p_raw: Raw p-value of selected significant mediator")
+                                              "alpha*beta: Mediation (indirect) effect",
+                                              "Relative Importance: Relative importance of the mediator out of all significant mediators",
+                                              paste0("p-value: Joint raw p-value of significant mediator selected based on HDMT pointwise FDR < ", Sigcut))
       }
     }
   } else { # If penalty is not DBlasso
@@ -281,23 +284,34 @@ hima2 <- function(formula,
       X <- data.pheno[,ind_vars[1]]
       
       if(length(ind_vars) > 1)
-        COV <- data.pheno[,ind_vars[-1]] else COV <- NULL
+        COV <- convert_to_dummies(data.pheno[,ind_vars[-1]]) else COV <- NULL
       
-      results <- hima(X = X, Y = Y, M = data.M, COV.XM = COV, 
-                      Y.family = outcome.family, M.family = mediator.family, 
-                      penalty = penalty, topN = topN,
-                      parallel = FALSE, ncore = 1, scale = scale, verbose = verbose)
-      results <- results[order(results$Bonferroni.p), ]
-      if(!is.null(results))
+      res <- hima(X = X, Y = Y, M = data.M, COV.XM = COV, 
+                  Y.family = outcome.family, 
+                  M.family = mediator.family, 
+                  penalty = penalty, 
+                  topN = NULL,
+                  parallel = FALSE, 
+                  ncore = 1, 
+                  scale = scale, 
+                  Bonfcut = Sigcut,
+                  verbose = verbose)
+      
+      if(!is.null(res))                                                                               
       { 
+        results <- data.frame(ID = res$Index,
+                              alpha = res$alpha_hat, 
+                              beta = res$beta_hat, 
+                              `alpha*beta` = res$IDE,
+                              `Relative Importance (%)` = res$rimp,
+                              `p-value` = res$pmax, check.names = FALSE)
+        results <- results[order(results$`p-value`), ]
         attr(results, "variable.labels") <- c("ID: Mediator ID",
                                               "alpha: Effect of exposure on mediator", 
                                               "beta: Effect of mediator on outcome",
-                                              "gamma: Total effect of exposure on outcome",
-                                              "alpha*beta: Mediation effect",
-                                              "% total effect: Percent of mediation effect out of the total effect",
-                                              "Bonferroni.p: Bonferroni adjusted p value",
-                                              "BH.FDR: Benjamini-Hochberg False Discovery Rate")
+                                              "alpha*beta: Mediation (indirect) effect",
+                                              "Relative Importance: Relative importance of the mediator out of all significant mediators",
+                                              paste0("p-value: Joint raw p-value of significant mediator selected based on Bonferroni-adjusted p < ", Sigcut))
       }
     } else if (outcome.family == "quantile") {
       # tau <- readline(prompt = "Enter quantile level(s) (between 0-1, multiple values accepted): ")
@@ -310,36 +324,37 @@ hima2 <- function(formula,
       X <- data.pheno[,ind_vars[1]]
       
       if(length(ind_vars) > 1)
-        COV <- data.pheno[,ind_vars[-1]] else COV <- NULL
+        COV <- convert_to_dummies(data.pheno[,ind_vars[-1]]) else COV <- NULL
       
 
       res <- qHIMA(X = X, M = data.M, Y = Y, COV = COV,
-                   Bonfcut = 0.05, penalty = penalty, scale = scale, verbose = verbose, ...)
+                   penalty = penalty, 
+                   scale = scale, 
+                   Bonfcut = 0.05,
+                   verbose = verbose, ...)
       
       if(!is.null(res))
       { 
-        results <- data.frame(ID = res$ID,
-                              alpha = res$alpha, 
-                              alpha_se = res$alpha_se, 
-                              beta = res$beta, 
-                              beta_se = res$beta_se,
-                              Bonferroni.p = res$Bonferroni.p, 
-                              tau = res$tau, 
-                              check.names = FALSE)
-        results <- results[order(results$Bonferroni.p), ]
-        
+        results <- data.frame(ID = res$Index,
+                              alpha = res$alpha_hat, 
+                              beta = res$beta_hat, 
+                              `alpha*beta` = res$IDE,
+                              `Relative Importance (%)` = res$rimp,
+                              `p-value` = res$pmax, 
+                              tau = res$tau, check.names = FALSE)
+        results <- results[order(results$`p-value`), ]
         attr(results, "variable.labels") <- c("ID: Mediator ID",
                                               "alpha: Effect of exposure on mediator", 
-                                              "alpha_se: Standard error of the effect of exposure on mediator",
                                               "beta: Effect of mediator on outcome",
-                                              "beta_se: Standard error of the effect of mediator on outcome",
-                                              "Bonferroni.p: Bonferroni adjusted p value",
+                                              "alpha*beta: Mediation (indirect) effect",
+                                              "Relative Importance: Relative importance of the mediator out of all significant mediators",
+                                              paste0("p-value: Joint raw p-value of significant mediator selected based on Bonferroni-adjusted p < ", Sigcut),
                                               "tau: Quantile level of the outcome")
       }
     }
   }
   
-  if(is.null(results)) message("No mediator found!")
+  if(is.null(results)) message("No significant mediator found!")
   
   rownames(results) <- NULL
   

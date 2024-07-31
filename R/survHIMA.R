@@ -9,18 +9,20 @@
 #' @param COV a matrix of adjusting covariates. Rows represent samples, columns represent variables. Can be \code{NULL}.
 #' @param OT a vector of observed failure times.
 #' @param status a vector of censoring indicator (\code{status = 1}: uncensored; \code{status = 0}: censored)
-#' @param FDRcut FDR cutoff applied to define and select significant mediators. Default = \code{0.05}. 
+#' @param FDRcut HDMT pointwise FDR cutoff applied to select significant mediators. Default = \code{0.05}. 
 #' @param scale logical. Should the function scale the data? Default = \code{TRUE}.
 #' @param verbose logical. Should the function be verbose? Default = \code{FALSE}.
 #' 
-#' @return A data.frame containing mediation testing results of selected mediators (FDR <\code{FDPcut}). 
+#' @return A data.frame containing mediation testing results of significant mediators (FDR <\code{FDRcut}). 
 #' \itemize{
-#'     \item{ID: }{Mediation ID of selected significant mediator.}
-#'     \item{alpha: }{coefficient estimates of exposure (X) --> mediators (M).}
+#'     \item{Index: }{mediation name of selected significant mediator.}
+#'     \item{alpha_hat: }{coefficient estimates of exposure (X) --> mediators (M).}
 #'     \item{alpha_se: }{standard error for alpha.}
-#'     \item{beta: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
+#'     \item{beta_hat: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
 #'     \item{beta_se: }{standard error for beta.}
-#'     \item{p_raw: }{Raw p-value of selected significant mediator.}
+#'     \item{IDE: }{mediation (indirect) effect, i.e., alpha*beta.}
+#'     \item{rimp: }{relative importance of the mediator.}
+#'     \item{pmax: }{joint raw p-value of selected significant mediator (based on HDMT pointwise FDR method).}
 #' }
 #' 
 #' @references Zhang H, Zheng Y, Hou L, Zheng C, Liu L. Mediation Analysis for Survival Data with High-Dimensional Mediators. 
@@ -45,23 +47,31 @@
 #' }
 #' 
 #' @export
-survHIMA <- function(X, M, COV = NULL, OT, status, FDRcut = 0.05, scale = TRUE, verbose = FALSE){
-
+survHIMA <- function(X, M, COV = NULL, OT, status, 
+                     FDRcut = 0.05, 
+                     scale = TRUE, 
+                     verbose = FALSE)
+{
+  
   X <- matrix(X, ncol = 1)
   M <- as.matrix(M)
   
   M_ID_name <- colnames(M)
   if(is.null(M_ID_name)) M_ID_name <- seq_len(ncol(M))
-    
+  
   n <- nrow(M)
   p <- nrow(M)
   
   if(is.null(COV))
-    {q <- 0; MZ <- cbind(M,X)}
+  {q <- 0; MZ <- cbind(M,X)}
   else
-    {COV <- as.matrix(COV); q <- dim(COV)[2]; MZ <- cbind(M,COV,X)}
+  {COV <- as.matrix(COV); q <- dim(COV)[2]; MZ <- cbind(M,COV,X)}
   
-  if(scale) MZ <- scale(MZ)
+  if(scale) 
+  {
+    MZ <- scale(MZ)
+    if(verbose) message("Data scaling is completed.")
+  }
   
   #########################################################################
   ################################ STEP 1 #################################
@@ -76,7 +86,7 @@ survHIMA <- function(X, M, COV = NULL, OT, status, FDRcut = 0.05, scale = TRUE, 
     fit <- survival::coxph(survival::Surv(OT, status) ~ MZ_SIS)
     beta_SIS[i] <- fit$coefficients[1]
   }
-
+  
   alpha_SIS <- matrix(0,1,p)
   XZ <- cbind(X,COV)
   for (i in 1:p){
@@ -87,7 +97,7 @@ survHIMA <- function(X, M, COV = NULL, OT, status, FDRcut = 0.05, scale = TRUE, 
   
   ab_SIS <- alpha_SIS*beta_SIS
   ID_SIS  <- which(-abs(ab_SIS) <= sort(-abs(ab_SIS))[min(p, d_0)])
-
+  
   d <- length(ID_SIS)
   
   if(verbose) message("        Top ", d, " mediators are selected: ", paste0(M_ID_name[ID_SIS], collapse = ", "))
@@ -147,8 +157,8 @@ survHIMA <- function(X, M, COV = NULL, OT, status, FDRcut = 0.05, scale = TRUE, 
   message("Step 3: Multiple-testing procedure ...", "     (", format(Sys.time(), "%X"), ")")
   
   PA <- cbind(t(P_alpha_SIS), t(P_beta_SIS))
-  P_value <- apply(PA,1,max)  # the joint p-values for SIS variable
-
+  P_value <- apply(PA, 1, max)  # the joint p-values for SIS variable
+  
   ## the multiple-testing  procedure
   N0 <- dim(PA)[1]*dim(PA)[2]
   
@@ -163,20 +173,24 @@ survHIMA <- function(X, M, COV = NULL, OT, status, FDRcut = 0.05, scale = TRUE, 
                            exact=0)
   
   ID_fdr <- which(fdrcut <= FDRcut)
-
+  
+  IDE <- alpha_SIS_est[ID_fdr] * beta_DLASSO_SIS_est[ID_fdr]
+  
   if (length(ID_fdr) > 0){
-    out_result <- data.frame(ID = M_ID_name[ID_fdr], 
-                             alpha = alpha_SIS_est[ID_fdr], 
+    out_result <- data.frame(Index = M_ID_name[ID_fdr], 
+                             alpha_hat = alpha_SIS_est[ID_fdr], 
                              alpha_se = alpha_SIS_SE[ID_fdr], 
-                             beta = beta_DLASSO_SIS_est[ID_fdr], 
+                             beta_hat = beta_DLASSO_SIS_est[ID_fdr], 
                              beta_se = beta_DLASSO_SIS_SE[ID_fdr],
-                             p_raw = P_value[ID_fdr])
+                             IDE = IDE, 
+                             rimp = abs(IDE)/sum(abs(IDE)) * 100, 
+                             pmax = P_value[ID_fdr])
     if(verbose) message(paste0("        ", length(ID_fdr), " significant mediator(s) identified."))
   } else {
     if(verbose) message("        No significant mediator identified.")
     out_result = NULL
   }
-
+  
   message("Done!", "     (", format(Sys.time(), "%X"), ")")
   
   return(out_result)

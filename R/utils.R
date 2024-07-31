@@ -53,43 +53,21 @@ iblkcol_lag <- function(M, ...) {
 
 
 
-## Internal function: check data and scale 
+# Internal function: recognize character variables and convert to dummy (only in hima2)
 
-dat <- data.frame(y = 1:12, x = c(rep("A",3), rep("B", 3), rep("C", 3), rep("D", 3)))
-dat
-f <- y~x
-
-formula <- f
-model.matrix(f, dat)
-
-model.matrix(update(f, .~.-1), dat)
-
-
-checkscale <- function(formula, dat) {
-  if (is.null(dat)) 
-    return(list(dn = NULL, d = NULL, ds = NULL))
-  if(sum(is.na(dat))>0)
-    return("Missing")
-  
-  
-  
-  dat_scale <- scale(dat)
-  dat_names <- names(dat)
-  if (any(class(dat) %in% c("matrix", "data.frame", "data.table"))) {
-    dat_names <- colnames(dat)
-    dat <- as.matrix(data.frame(dat_scale))
-  } else {
-    dat_names <- names(dat)
-    dat <- as.numeric(dat_scale)
-  }
-  dat_scale <- as.numeric(attributes(dat_scale)[["scaled:scale"]])
-  return(list(dn = dat_names, d = dat, ds = dat_scale))
+convert_to_dummies <- function(df) {
+  char_cols <- sapply(df, is.character)
+  df[char_cols] <- lapply(df[char_cols], as.factor)
+  df_dummies <- as.data.frame(model.matrix(~ . - 1, data = df))
+  non_char_cols <- names(df)[!char_cols]
+  df_dummies[non_char_cols] <- df[non_char_cols]
+  return(df_dummies)
 }
 
 
 
-# Internal function: Sure Independent Screening
-# Global variables:
+# Internal function: Sure Independent Screening for hima
+
 globalVariables("n")
 globalVariables("M_chunk")
 

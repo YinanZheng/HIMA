@@ -34,22 +34,21 @@ If the sample size is greater than topN (pre-specified or calculated), all media
 
 \item{scale}{logical. Should the function scale the data? Default = \code{TRUE}.}
 
-\item{FDRcut}{BH-FDR-corrected p value cutoff applied to define and select significant mediators. Default = \code{0.05}.}
+\item{FDRcut}{Benjamini-Hochberg FDR cutoff applied to select significant mediators. Default = \code{0.05}.}
 
 \item{verbose}{logical. Should the function be verbose? Default = \code{FALSE}.}
 }
 \value{
-A data.frame containing mediation testing results of selected mediators (Bonferroni-adjusted p value <\code{Bonfcut}). 
+A data.frame containing mediation testing results of significant mediators (FDR <\code{FDRcut}). 
 \itemize{
-    \item{ID: }{Mediation ID of selected significant mediator.}
-    \item{alpha: }{coefficient estimates of exposure (X) --> mediators (M).}
+    \item{Index: }{mediation name of selected significant mediator.}
+    \item{alpha_hat: }{coefficient estimates of exposure (X) --> mediators (M).}
     \item{alpha_se: }{standard error for alpha.}
-    \item{beta: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
+    \item{beta_hat: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
     \item{beta_se: }{standard error for beta.}
-    \item{gamma: }{coefficient estimates of exposure (X) --> outcome (Y) (total effect).}
-    \item{alpha*beta: }{mediation effect.}
-    \item{\% total effect: }{alpha*beta / gamma. Percentage of the mediation effect out of the total effect.}
-    \item{p.joint: }{joint raw p-value of selected significant mediator (based on FDR).}
+    \item{IDE: }{mediation (indirect) effect, i.e., alpha*beta.}
+    \item{rimp: }{relative importance of the mediator.}
+    \item{pmax: }{joint raw p-value of selected significant mediator (based on Benjamini-Hochberg FDR method).}
 }
 }
 \description{
