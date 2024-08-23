@@ -147,7 +147,7 @@ qHIMA <- function(X, M, Y, COV = NULL,
     MXZ_penalty <- cbind(M[,ID_penalty],XZ)            # cbind M[ID_penalty], X, and COV
     
     fit_rq_penalty <- quantreg::rq(Y ~ MXZ_penalty, tau = tau_temp, method="fn", model=TRUE)
-    rq_est_penalty <- summary(fit_rq_penalty, covariance = TRUE, se = "boot")$coefficients
+    rq_est_penalty <- summary(fit_rq_penalty, covariance = TRUE, se = "boot", R = 10000)$coefficients
     beta_hat_penalty <- matrix(rq_est_penalty[2:(length(ID_penalty)+1),1])
     beta_SE_penalty  <- matrix(rq_est_penalty[2:(length(ID_penalty)+1),2])
     beta_fit_penalty[ID_penalty] <-  beta_hat_penalty

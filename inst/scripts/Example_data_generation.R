@@ -129,7 +129,6 @@ Example3 <- list(PhenoData = pheno, Mediator = M)
 # Dataset - 4 (microbiome mediators)
 ######################################################
 
-set.seed(1029)
 n <- 100 # the sample size
 p <- 100 # the dimension of mediator
 a <- matrix(0,1,p) # the coefficient a in Eq. (16)
@@ -209,8 +208,8 @@ for (i in 1:p) {
 
 E <- matrix(rt(n, 3)) # E is t distribution
 
-zeta <- matrix(0.3,p,q) # the coefficients of covariates for X -> M
-eta <- matrix(0.5,1,q) # the coefficients of covariates for M -> Y
+zeta <- matrix(0.01,p,q) # the coefficients of covariates for X -> M
+eta <- matrix(0.01,1,q) # the coefficients of covariates for M -> Y
 gamma <- 0.8 # the direct effect
 gamma_total <- gamma + alpha%*%t(beta) # the total effect
 X <- matrix(rnorm(n, mean = 0, sd = 2),n,1) # expoure: 1=treatment; 0=placebo

@@ -8,7 +8,7 @@
 #' quantile mediation analysis (function \code{qHIMA}).
 #' 
 #' \tabular{ll}{ Package: \tab HIMA\cr Type: \tab Package\cr
-#' Version: \tab 2.2.2\cr Date: \tab 2024-08-01\cr License: \tab GPL-3\cr }
+#' Version: \tab 2.2.2\cr Date: \tab 2024-08-23\cr License: \tab GPL-3\cr }
 #' 
 #' @name HIMA-package
 #' 
@@ -21,7 +21,7 @@
 #' @author 
 #' Yinan Zheng \email{y-zheng@@northwestern.edu},
 #' Haixiang Zhang \email{haixiang.zhang@@tju.edu.cn},  
-#' Lifang Hou \email{l-hou@@northwestern.edu}
+#' Lifang Hou \email{l-hou@@northwestern.edu},
 #' Lei liu (Contact) \email{lei.liu@@wustl.edu}
 #' 
 #' Maintainer: Yinan Zheng \email{y-zheng@@northwestern.edu}

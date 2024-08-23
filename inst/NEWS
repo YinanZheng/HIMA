@@ -48,4 +48,5 @@
 # HIMA 2.2.2 (2024-08-23)
 * Add efficient HIMA function "eHIMA".
 * Optimization of function "hima2".
+* Stablization of estimates in function "qHIMA".
 * Some improvements in output presentation and consistency.

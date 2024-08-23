@@ -77,7 +77,8 @@ e1 <- hima2(Outcome ~ Treatment + Sex + Age,
 e1
 attributes(e1)$variable.labels
 
-# Efficient HIMA (only applicable to mediators and outcomes that are both continuous and normally distributed.)
+# Efficient HIMA (only applicable to mediators and outcomes that are 
+# both continuous and normally distributed.)
 e1e <- hima2(Outcome ~ Treatment + Sex + Age,
              data.pheno = himaDat$Example1$PhenoData,
              data.M = himaDat$Example1$Mediator,

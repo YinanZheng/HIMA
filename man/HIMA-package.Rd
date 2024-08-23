@@ -12,7 +12,7 @@ microbiome data (function \code{microHIMA}). HIMA can also handle survival data 
 quantile mediation analysis (function \code{qHIMA}).
 
 \tabular{ll}{ Package: \tab HIMA\cr Type: \tab Package\cr
-Version: \tab 2.2.2\cr Date: \tab 2024-08-01\cr License: \tab GPL-3\cr }
+Version: \tab 2.2.2\cr Date: \tab 2024-08-23\cr License: \tab GPL-3\cr }
 }
 \details{
 # If package "qvalue" is not found during installation, please first install "qvalue" package
@@ -44,7 +44,7 @@ Statistics in Biosciences. 2024. DOI: 10.1007/s12561-024-09447-4.
 \author{
 Yinan Zheng \email{y-zheng@northwestern.edu},
 Haixiang Zhang \email{haixiang.zhang@tju.edu.cn},  
-Lifang Hou \email{l-hou@northwestern.edu}
+Lifang Hou \email{l-hou@northwestern.edu},
 Lei liu (Contact) \email{lei.liu@wustl.edu}
 
 Maintainer: Yinan Zheng \email{y-zheng@northwestern.edu}
