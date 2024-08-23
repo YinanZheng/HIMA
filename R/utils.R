@@ -53,19 +53,6 @@ iblkcol_lag <- function(M, ...) {
 
 
 
-# Internal function: recognize character variables and convert to dummy (only in hima2)
-
-convert_to_dummies <- function(df) {
-  char_cols <- sapply(df, is.character)
-  df[char_cols] <- lapply(df[char_cols], as.factor)
-  df_dummies <- as.data.frame(model.matrix(~ . - 1, data = df))
-  non_char_cols <- names(df)[!char_cols]
-  df_dummies[non_char_cols] <- df[non_char_cols]
-  return(df_dummies)
-}
-
-
-
 # Internal function: Sure Independent Screening for hima
 
 globalVariables("n")

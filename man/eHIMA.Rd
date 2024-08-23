@@ -9,7 +9,6 @@ eHIMA(
   M,
   Y,
   COV = NULL,
-  Y.family = c("gaussian"),
   topN = NULL,
   scale = TRUE,
   FDRcut = 0.05,
@@ -20,13 +19,11 @@ eHIMA(
 \item{X}{a vector of exposure.}
 
 \item{M}{a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns 
-represent mediator variables.}
+represent mediator variables. \code{M} has to be continuous and normally distributed.}
 
 \item{Y}{a vector of continuous outcome. Do not use data.frame or matrix.}
 
 \item{COV}{a matrix of adjusting covariates. Rows represent samples, columns represent variables. Can be \code{NULL}.}
-
-\item{Y.family}{currently \code{eHIMA} only supports 'gaussian', i.e., normally distributed continuous outcome (\code{Y}).}
 
 \item{topN}{an integer specifying the number of top markers from sure independent screening. 
 Default = \code{NULL}. If \code{NULL}, \code{topN} will be \code{2*ceiling(n/log(n))}, where \code{n} is the sample size.
@@ -48,12 +45,13 @@ A data.frame containing mediation testing results of significant mediators (FDR 
     \item{beta_se: }{standard error for beta.}
     \item{IDE: }{mediation (indirect) effect, i.e., alpha*beta.}
     \item{rimp: }{relative importance of the mediator.}
-    \item{pmax: }{joint raw p-value of selected significant mediator (based on Benjamini-Hochberg FDR method).}
+    \item{pmax: }{joint raw p-value of selected significant mediator (based on divide-aggregate composite-null test [DACT] method).}
 }
 }
 \description{
 \code{eHIMA} is used to estimate and test high-dimensional mediation effects using an efficient algorithm. It provides
-higher statistical power than the standard \code{hima}.
+higher statistical power than the standard \code{hima}. Note: efficient HIMA is only applicable to mediators and outcomes that 
+are both continuous and normally distributed.
 }
 \examples{
 \dontrun{
@@ -61,14 +59,13 @@ higher statistical power than the standard \code{hima}.
 data(himaDat)
 
 # Y is continuous and normally distributed
-# Example 1 (continuous outcome): 
+# Example (continuous outcome): 
 head(himaDat$Example1$PhenoData)
 
 eHIMA.fit <- eHIMA(X = himaDat$Example1$PhenoData$Treatment, 
                    Y = himaDat$Example1$PhenoData$Outcome, 
                    M = himaDat$Example1$Mediator,
                    COV = himaDat$Example1$PhenoData[, c("Sex", "Age")],
-                   Y.family = 'gaussian',
                    scale = FALSE,
                    verbose = TRUE) 
 eHIMA.fit

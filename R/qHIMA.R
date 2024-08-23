@@ -17,7 +17,7 @@
 #' @param scale logical. Should the function scale the data? Default = \code{TRUE}.
 #' @param Bonfcut Bonferroni-corrected p value cutoff applied to select significant mediators. Default = \code{0.05}. 
 #' @param verbose logical. Should the function be verbose? Default = \code{FALSE}.
-#' @param ... other arguments.
+#' @param ... reserved passing parameter.
 #' 
 #' @return A data.frame containing mediation testing results of selected mediators (Bonferroni-adjusted p value <\code{Bonfcut}). 
 #' \describe{
@@ -59,7 +59,7 @@ qHIMA <- function(X, M, Y, COV = NULL,
                   tau = 0.5, 
                   scale = TRUE, 
                   Bonfcut = 0.05, 
-                  verbose = FALSE, 
+                  verbose = FALSE,
                   ...)
 {
   penalty <- match.arg(penalty)

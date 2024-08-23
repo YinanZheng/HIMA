@@ -4,12 +4,12 @@
 \alias{microHIMA}
 \title{High-dimensional mediation analysis for compositional microbiome data}
 \usage{
-microHIMA(X, Y, OTU, COV = NULL, FDRcut = 0.05, scale = TRUE, verbose = FALSE)
+microHIMA(X, Y, OTU, COV = NULL, FDRcut = 0.05, verbose = FALSE)
 }
 \arguments{
 \item{X}{a vector of exposure.}
 
-\item{Y}{a vector of outcome.}
+\item{Y}{a vector of continuous outcome. Binary outcome is not allowed.}
 
 \item{OTU}{a \code{data.frame} or \code{matrix} of high-dimensional compositional OTUs (mediators). Rows represent samples, 
 columns represent variables.}
@@ -18,8 +18,6 @@ columns represent variables.}
 Can be \code{NULL}.}
 
 \item{FDRcut}{Hommel FDR cutoff applied to select significant mediators. Default = \code{0.05}.}
-
-\item{scale}{logical. Should the function scale the data? Default = \code{TRUE}.}
 
 \item{verbose}{logical. Should the function be verbose? Default = \code{FALSE}.}
 }
@@ -49,8 +47,7 @@ head(himaDat$Example4$PhenoData)
 microHIMA.fit <- microHIMA(X = himaDat$Example4$PhenoData$Treatment, 
                            Y = himaDat$Example4$PhenoData$Outcome, 
                            OTU = himaDat$Example4$Mediator, 
-                           COV = himaDat$Example4$PhenoData[, c("Sex", "Age")],
-                           scale = FALSE)
+                           COV = himaDat$Example4$PhenoData[, c("Sex", "Age")])
 microHIMA.fit
 }
 

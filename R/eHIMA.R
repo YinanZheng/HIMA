@@ -2,14 +2,14 @@
 #' Efficient high-dimensional mediation analysis
 #' 
 #' \code{eHIMA} is used to estimate and test high-dimensional mediation effects using an efficient algorithm. It provides
-#' higher statistical power than the standard \code{hima}.
+#' higher statistical power than the standard \code{hima}. Note: efficient HIMA is only applicable to mediators and outcomes that 
+#' are both continuous and normally distributed.
 #' 
 #' @param X a vector of exposure. 
 #' @param M a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns 
-#' represent mediator variables.
+#' represent mediator variables. \code{M} has to be continuous and normally distributed.
 #' @param Y a vector of continuous outcome. Do not use data.frame or matrix.
 #' @param COV a matrix of adjusting covariates. Rows represent samples, columns represent variables. Can be \code{NULL}.
-#' @param Y.family currently \code{eHIMA} only supports 'gaussian', i.e., normally distributed continuous outcome (\code{Y}).
 #' @param topN an integer specifying the number of top markers from sure independent screening. 
 #' Default = \code{NULL}. If \code{NULL}, \code{topN} will be \code{2*ceiling(n/log(n))}, where \code{n} is the sample size.
 #' If the sample size is greater than topN (pre-specified or calculated), all mediators will be included in the test (i.e. low-dimensional scenario).
@@ -26,7 +26,7 @@
 #'     \item{beta_se: }{standard error for beta.}
 #'     \item{IDE: }{mediation (indirect) effect, i.e., alpha*beta.}
 #'     \item{rimp: }{relative importance of the mediator.}
-#'     \item{pmax: }{joint raw p-value of selected significant mediator (based on Benjamini-Hochberg FDR method).}
+#'     \item{pmax: }{joint raw p-value of selected significant mediator (based on divide-aggregate composite-null test [DACT] method).}
 #' }
 #' 
 #' @references Bai X, Zheng Y, Hou L, Zheng C, Liu L, Zhang H. An Efficient Testing Procedure for High-dimensional Mediators with FDR Control. 
@@ -38,14 +38,13 @@
 #' data(himaDat)
 #' 
 #' # Y is continuous and normally distributed
-#' # Example 1 (continuous outcome): 
+#' # Example (continuous outcome): 
 #' head(himaDat$Example1$PhenoData)
 #' 
 #' eHIMA.fit <- eHIMA(X = himaDat$Example1$PhenoData$Treatment, 
 #'                    Y = himaDat$Example1$PhenoData$Outcome, 
 #'                    M = himaDat$Example1$Mediator,
 #'                    COV = himaDat$Example1$PhenoData[, c("Sex", "Age")],
-#'                    Y.family = 'gaussian',
 #'                    scale = FALSE,
 #'                    verbose = TRUE) 
 #' eHIMA.fit
@@ -53,16 +52,11 @@
 #' 
 #' @export
 eHIMA <- function(X, M, Y, COV = NULL, 
-                  Y.family = c("gaussian"),
                   topN = NULL, 
                   scale = TRUE, 
                   FDRcut = 0.05, 
                   verbose = FALSE)
 {
-  Y.family <- match.arg(Y.family)
-  
-  if(Y.family != "gaussian") stop("Currently eHIMA only supports Y.family = 'gaussian'")
-  
   n <- nrow(M)
   p <- ncol(M)
   
@@ -124,7 +118,7 @@ eHIMA <- function(X, M, Y, COV = NULL,
   }
   
   MZX_SIS <- MZX[,c(ID_SIS, (p+1):(p+q+1))]   # select m_i in \Omega_1 from M
-  fit <- ncvreg(MZX_SIS, Y, family = Y.family, penalty="MCP")
+  fit <- ncvreg(MZX_SIS, Y, family = "gaussian", penalty="MCP")
   lam <- fit$lambda[which.min(BIC(fit))]
   beta_penalty <- coef(fit, lambda=lam)[2:(d+1)]
   id_non <- ID_SIS[which(beta_penalty != 0)] # the ID of non-zero

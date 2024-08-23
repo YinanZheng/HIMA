@@ -43,7 +43,7 @@ If the sample size is greater than topN (pre-specified or calculated), all media
 
 \item{verbose}{logical. Should the function be verbose? Default = \code{FALSE}.}
 
-\item{...}{other arguments.}
+\item{...}{reserved passing parameter.}
 }
 \value{
 A data.frame containing mediation testing results of selected mediators (Bonferroni-adjusted p value <\code{Bonfcut}). 

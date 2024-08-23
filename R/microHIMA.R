@@ -1,15 +1,14 @@
 # This is the main function for our proposed method for high-dimensional compositional microbiome mediation analysis
 #' High-dimensional mediation analysis for compositional microbiome data
 #' 
-#' \code{microHIMA} is used to estimate and test high-dimensional mediation effects for compositional microbiome data.
+#' \code{microHIMA} is used to estimate and test high-dimensional mediation effects for compositional microbiome data. 
 #' 
 #' @param X a vector of exposure. 
-#' @param Y a vector of outcome.
+#' @param Y a vector of continuous outcome. Binary outcome is not allowed.
 #' @param OTU a \code{data.frame} or \code{matrix} of high-dimensional compositional OTUs (mediators). Rows represent samples, 
 #' columns represent variables.
 #' @param COV a \code{data.frame} or \code{matrix} of adjusting covariates. Rows represent samples, columns represent microbiome variables. 
 #' Can be \code{NULL}.
-#' @param scale logical. Should the function scale the data? Default = \code{TRUE}.
 #' @param FDRcut Hommel FDR cutoff applied to select significant mediators. Default = \code{0.05}. 
 #' @param verbose logical. Should the function be verbose? Default = \code{FALSE}.
 #' 
@@ -42,18 +41,18 @@
 #' microHIMA.fit <- microHIMA(X = himaDat$Example4$PhenoData$Treatment, 
 #'                            Y = himaDat$Example4$PhenoData$Outcome, 
 #'                            OTU = himaDat$Example4$Mediator, 
-#'                            COV = himaDat$Example4$PhenoData[, c("Sex", "Age")],
-#'                            scale = FALSE)
+#'                            COV = himaDat$Example4$PhenoData[, c("Sex", "Age")])
 #' microHIMA.fit
 #' }
 #' 
 #' @export
-microHIMA <- function(X, Y, OTU, COV = NULL, 
+microHIMA <- function(X, 
+                      Y, 
+                      OTU, 
+                      COV = NULL, 
                       FDRcut = 0.05, 
-                      scale = TRUE, 
                       verbose = FALSE)
 {
-  
   X <- matrix(X, ncol = 1)
   
   M_raw <- as.matrix(OTU)
@@ -63,6 +62,8 @@ microHIMA <- function(X, Y, OTU, COV = NULL,
   
   if(!is.null(COV))
   {COV <- as.matrix(COV); X <- cbind(X, COV)}
+  
+  X <- scale(X) 
   
   Y <- Y - mean(Y)
   
@@ -102,10 +103,8 @@ microHIMA <- function(X, Y, OTU, COV = NULL,
       }
     }
     
-    MT <- matrix(as.numeric(MT), nrow(MT))
+    MT <- scale(MT)
     MX <- cbind(MT, X)
-    
-    if(scale) MX <- scale(MX)
     
     fit.dlasso  <- DLASSO_fun(MX, Y)
     

@@ -11,6 +11,7 @@ hima2(
   outcome.family = c("gaussian", "binomial", "survival", "quantile"),
   mediator.family = c("gaussian", "negbin", "compositional"),
   penalty = c("DBlasso", "MCP", "SCAD", "lasso"),
+  efficient = FALSE,
   scale = TRUE,
   Sigcut = 0.05,
   verbose = FALSE,
@@ -20,8 +21,7 @@ hima2(
 \arguments{
 \item{formula}{an object of class \code{formula}: a symbolic description of the overall effect model, i.e., 
 \code{outcome ~ exposure + covariates}, to be fitted. Make sure the "exposure" is the variable of interest, which
-must be listed as the first variable in the right hand side of the formula.
-independent variable in the formula. The same covariates will be used in screening and penalized regression.}
+must be listed as the first variable in the right hand side of the formula.}
 
 \item{data.pheno}{a data frame containing exposure and covariates that are listed in the right hand side of the \code{formula}.
 The variable names must match those listed in \code{formula}. By default \code{hima2} will scale \code{data.pheno}.}
@@ -38,21 +38,26 @@ high-dimensional mediators (\code{data.M}).}
 
 \item{penalty}{the penalty to be applied to the model. Either \code{'DBlasso'} (De-biased LASSO, default), 
 \code{'MCP'}, \code{'SCAD'}, or \code{'lasso'}. Please note, survival HIMA and microbiome HIMA can be only performed with \code{'DBlasso'}; 
-Quantile HIMA cannot be performed with \code{'DBlasso'}.}
+Quantile HIMA cannot be performed with \code{'DBlasso'}. Not applicable for efficient HIMA (when \code{efficient = TRUE}), as it will always apply \code{'MCP'}.}
 
-\item{scale}{logical. Should the function scale the data (exposure, mediators, and covariates)? Default = \code{TRUE}.}
+\item{efficient}{use efficient HIMA (\code{eHIMA}). Only applicable for linear HIMA with continuous outcome (i.e., \code{outcome.family = "gaussian"} 
+and \code{mediator.family = "gaussian"}). Default = \code{FALSE}.}
+
+\item{scale}{logical. Should the function scale the data (exposure, mediators, and covariates)? Default = \code{TRUE}. Note: for simulation study, scale
+can be turned off to avoid estimate compression.}
 
 \item{Sigcut}{cutoff applied to select significant mediators. Default = \code{0.05}.}
 
 \item{verbose}{logical. Should the function be verbose and shows the progression? Default = \code{FALSE}.}
 
-\item{...}{other arguments.}
+\item{...}{reserved passing parameter.}
 }
 \value{
 A data.frame containing mediation testing results of selected mediators.
 }
 \description{
-\code{hima2} is a wrapper function designed to perform various hima methods for estimating and testing high-dimensional mediation effects.
+\code{hima2} is a wrapper function designed to perform various HIMA methods for estimating and testing high-dimensional mediation effects.
+\code{hima2} can automatically select the appropriate HIMA method based on the outcome and mediator data type specified by the user.
 }
 \examples{
 \dontrun{
@@ -68,9 +73,20 @@ e1 <- hima2(Outcome ~ Treatment + Sex + Age,
       outcome.family = "gaussian",
       mediator.family = "gaussian",
       penalty = "DBlasso",
-      scale = FALSE) # Disabled only for example data
+      scale = FALSE) # Disabled only for simulation data
 e1
 attributes(e1)$variable.labels
+
+# Efficient HIMA (only applicable to mediators and outcomes that are both continuous and normally distributed.)
+e1e <- hima2(Outcome ~ Treatment + Sex + Age,
+             data.pheno = himaDat$Example1$PhenoData,
+             data.M = himaDat$Example1$Mediator,
+             outcome.family = "gaussian",
+             mediator.family = "gaussian",
+             efficient = TRUE,
+             scale = FALSE) # Disabled only for simulation data
+e1e
+attributes(e1e)$variable.labels
 
 # Example 2 (binary outcome - logistic hima): 
 head(himaDat$Example2$PhenoData)
@@ -81,7 +97,7 @@ e2 <- hima2(Disease ~ Treatment + Sex + Age,
       outcome.family = "binomial",
       mediator.family = "gaussian",
       penalty = "MCP",
-      scale = FALSE) # Disabled only for example data
+      scale = FALSE) # Disabled only for simulation data
 e2
 attributes(e2)$variable.labels
 
@@ -94,7 +110,7 @@ e3 <- hima2(Surv(Status, Time) ~ Treatment + Sex + Age,
       outcome.family = "survival",
       mediator.family = "gaussian",
       penalty = "DBlasso",
-      scale = FALSE) # Disabled only for example data
+      scale = FALSE) # Disabled only for simulation data
 e3
 attributes(e3)$variable.labels
 
@@ -106,8 +122,7 @@ e4 <- hima2(Outcome ~ Treatment + Sex + Age,
       data.M = himaDat$Example4$Mediator,
       outcome.family = "gaussian",
       mediator.family = "compositional",
-      penalty = "DBlasso",
-      scale = FALSE) # Disabled only for example data
+      penalty = "DBlasso")
 e4
 attributes(e4)$variable.labels
 
@@ -121,7 +136,7 @@ e5 <- hima2(Outcome ~ Treatment + Sex + Age,
       outcome.family = "quantile",
       mediator.family = "gaussian",
       penalty = "MCP", # Quantile HIMA does not support DBlasso
-      scale = FALSE, # Disabled only for example data
+      scale = FALSE, # Disabled only for simulation data
       tau = c(0.3, 0.5, 0.7)) # Specify multiple quantile level
 e5
 attributes(e5)$variable.labels
