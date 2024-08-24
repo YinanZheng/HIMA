@@ -3,12 +3,11 @@
 #' @description
 #' HIMA is an R package for estimating and testing high-dimensional mediation effects in omic studies.
 #' HIMA can perform high-dimensional mediation analysis on a wide range of omic data types as
-#' potential mediators, including epigenetics, transcriptomics, proteomics, and metabolomics using function \code{hima} and 
-#' microbiome data (function \code{microHIMA}). HIMA can also handle survival data (function \code{survHIMA}) and perform
-#' quantile mediation analysis (function \code{qHIMA}).
+#' potential mediators, including epigenetics, transcriptomics, proteomics, metabolomics, and microbiomics. 
+#' HIMA can also handle survival data mediation analysis and perform quantile mediation analysis.
 #' 
 #' \tabular{ll}{ Package: \tab HIMA\cr Type: \tab Package\cr
-#' Version: \tab 2.2.2\cr Date: \tab 2024-08-23\cr License: \tab GPL-3\cr }
+#' Version: \tab 2.2.2\cr Date: \tab 2024-08-24\cr License: \tab GPL-3\cr }
 #' 
 #' @name HIMA-package
 #' 
@@ -21,7 +20,6 @@
 #' @author 
 #' Yinan Zheng \email{y-zheng@@northwestern.edu},
 #' Haixiang Zhang \email{haixiang.zhang@@tju.edu.cn},  
-#' Lifang Hou \email{l-hou@@northwestern.edu},
 #' Lei liu (Contact) \email{lei.liu@@wustl.edu}
 #' 
 #' Maintainer: Yinan Zheng \email{y-zheng@@northwestern.edu}

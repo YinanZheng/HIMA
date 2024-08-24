@@ -62,7 +62,7 @@ survHIMA.fit <- survHIMA(X = himaDat$Example3$PhenoData$Treatment,
                 OT = himaDat$Example3$PhenoData$Time, 
                 status = himaDat$Example3$PhenoData$Status, 
                 FDRcut = 0.05,
-                scale = FALSE, 
+                scale = FALSE, # Disabled only for simulation data
                 verbose = TRUE)
 survHIMA.fit
 }

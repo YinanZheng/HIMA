@@ -11,11 +11,11 @@ microHIMA(X, Y, OTU, COV = NULL, FDRcut = 0.05, verbose = FALSE)
 
 \item{Y}{a vector of continuous outcome. Binary outcome is not allowed.}
 
-\item{OTU}{a \code{data.frame} or \code{matrix} of high-dimensional compositional OTUs (mediators). Rows represent samples, 
-columns represent variables.}
+\item{OTU}{a \code{data.frame} or \code{matrix} of high-dimensional Operational Taxonomic Unit (OTU) data (mediators). 
+Rows represent samples, columns represent variables.}
 
-\item{COV}{a \code{data.frame} or \code{matrix} of adjusting covariates. Rows represent samples, columns represent microbiome variables. 
-Can be \code{NULL}.}
+\item{COV}{a \code{data.frame} or \code{matrix} of adjusting covariates. Rows represent samples, columns represent 
+microbiome variables. Can be \code{NULL}.}
 
 \item{FDRcut}{Hommel FDR cutoff applied to select significant mediators. Default = \code{0.05}.}
 

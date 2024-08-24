@@ -94,7 +94,7 @@ hima.fit <- hima(X = himaDat$Example1$PhenoData$Treatment,
                  M = himaDat$Example1$Mediator,
                  COV.XM = himaDat$Example1$PhenoData[, c("Sex", "Age")],
                  Y.family = 'gaussian',
-                 scale = FALSE,
+                 scale = FALSE, # Disabled only for simulation data
                  verbose = TRUE) 
 hima.fit
 
@@ -107,7 +107,7 @@ hima.logistic.fit <- hima(X = himaDat$Example2$PhenoData$Treatment,
                           M = himaDat$Example2$Mediator,
                           COV.XM = himaDat$Example2$PhenoData[, c("Sex", "Age")],
                           Y.family = 'binomial',
-                          scale = FALSE,
+                          scale = FALSE, # Disabled only for simulation data
                           verbose = TRUE)
 hima.logistic.fit
 }

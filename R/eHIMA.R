@@ -45,7 +45,7 @@
 #'                    Y = himaDat$Example1$PhenoData$Outcome, 
 #'                    M = himaDat$Example1$Mediator,
 #'                    COV = himaDat$Example1$PhenoData[, c("Sex", "Age")],
-#'                    scale = FALSE,
+#'                    scale = FALSE, # Disabled only for simulation data
 #'                    verbose = TRUE) 
 #' eHIMA.fit
 #' }

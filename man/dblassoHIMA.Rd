@@ -71,7 +71,7 @@ dblassohima.fit <- dblassoHIMA(X = himaDat$Example1$PhenoData$Treatment,
                                M = himaDat$Example1$Mediator,
                                COV = himaDat$Example1$PhenoData[, c("Sex", "Age")],
                                Y.family = 'gaussian',
-                               scale = FALSE,
+                               scale = FALSE, # Disabled only for simulation data
                                verbose = TRUE) 
 dblassohima.fit
 
@@ -84,7 +84,7 @@ dblassohima.logistic.fit <- dblassoHIMA(X = himaDat$Example2$PhenoData$Treatment
                                         M = himaDat$Example2$Mediator,
                                         COV = himaDat$Example2$PhenoData[, c("Sex", "Age")],
                                         Y.family = 'binomial',
-                                        scale = FALSE,
+                                        scale = FALSE, # Disabled only for simulation data
                                         verbose = TRUE)
 dblassohima.logistic.fit
 }
