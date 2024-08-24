@@ -28,7 +28,7 @@ represent mediator variables.}
 
 \item{COV}{a matrix of adjusting covariates. Rows represent samples, columns represent variables. Can be \code{NULL}.}
 
-\item{penalty}{the penalty to be applied to the model (a parameter passed to function \code{conquer.cv.reg} in package \code{\link{conquer}}. 
+\item{penalty}{the penalty to be applied to the model (a parameter passed to function \code{conquer.cv.reg} in package \code{conquer}. 
 Either 'MCP' (the default), 'SCAD', or 'lasso'.}
 
 \item{topN}{an integer specifying the number of top markers from sure independent screening. 

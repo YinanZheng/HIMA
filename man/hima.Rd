@@ -39,7 +39,7 @@ Covariates specified here will not participate penalization. If not specified, t
 \code{M ~ X} will be applied. Using different sets of covariates is allowed but this needs to be handled carefully.}
 
 \item{Y.family}{either 'gaussian' (default) or 'binomial', depending on the data type of outcome (\code{Y}). See 
-\code{\link{ncvreg}}}
+\code{ncvreg}}
 
 \item{M.family}{either 'gaussian' (default) or 'negbin' (i.e., negative binomial), depending on the data type of
 mediator (\code{M}).}
@@ -64,7 +64,7 @@ By default max number of cores available in the machine will be utilized.}
 
 \item{verbose}{logical. Should the function be verbose? Default = \code{FALSE}.}
 
-\item{...}{other arguments passed to \code{\link{ncvreg}}.}
+\item{...}{other arguments passed to \code{ncvreg}.}
 }
 \value{
 A data.frame containing mediation testing results of selected mediators. 

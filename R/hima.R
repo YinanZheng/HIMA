@@ -13,7 +13,7 @@
 #' Covariates specified here will not participate penalization. If not specified, the same set of covariates for 
 #' \code{M ~ X} will be applied. Using different sets of covariates is allowed but this needs to be handled carefully.
 #' @param Y.family either 'gaussian' (default) or 'binomial', depending on the data type of outcome (\code{Y}). See 
-#' \code{\link{ncvreg}}
+#' \code{ncvreg}
 #' @param M.family either 'gaussian' (default) or 'negbin' (i.e., negative binomial), depending on the data type of
 #' mediator (\code{M}).
 #' @param penalty the penalty to be applied to the model. Either 'MCP' (the default), 'SCAD', or 
@@ -29,7 +29,7 @@
 #' @param scale logical. Should the function scale the data? Default = \code{TRUE}.
 #' @param Bonfcut Bonferroni-corrected p value cutoff applied to select significant mediators. Default = \code{0.05}. 
 #' @param verbose logical. Should the function be verbose? Default = \code{FALSE}.
-#' @param ... other arguments passed to \code{\link{ncvreg}}.
+#' @param ... other arguments passed to \code{ncvreg}.
 #' 
 #' @return A data.frame containing mediation testing results of selected mediators. 
 #' \describe{

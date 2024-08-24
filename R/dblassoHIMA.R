@@ -9,7 +9,7 @@
 #' @param M a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns represent variables.
 #' @param COV a \code{data.frame} or \code{matrix} of covariates dataset for testing the association M ~ X and Y ~ M.
 #' @param Y.family either 'gaussian' (default) or 'binomial', depending on the data type of outcome (\code{Y}). This parameter is passed 
-#' to function \code{lasso.proj} in R package \code{\link{hdi}} for de-biased lasso penalization.
+#' to function \code{lasso.proj} in R package \code{hdi} for de-biased lasso penalization.
 #' @param topN an integer specifying the number of top markers from sure independent screening. 
 #' Default = \code{NULL}. If \code{NULL}, \code{topN} will be either \code{ceiling(n/log(n))} if 
 #' \code{Y.family = 'gaussian'}, or \code{ceiling(n/(2*log(n)))} if \code{Y.family = 'binomial'}, 

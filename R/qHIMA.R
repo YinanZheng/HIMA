@@ -8,7 +8,7 @@
 #' represent mediator variables.
 #' @param Y a vector of continuous outcome. Do not use data.frame or matrix.
 #' @param COV a matrix of adjusting covariates. Rows represent samples, columns represent variables. Can be \code{NULL}.
-#' @param penalty the penalty to be applied to the model (a parameter passed to function \code{conquer.cv.reg} in package \code{\link{conquer}}. 
+#' @param penalty the penalty to be applied to the model (a parameter passed to function \code{conquer.cv.reg} in package \code{conquer}. 
 #' Either 'MCP' (the default), 'SCAD', or 'lasso'.
 #' @param topN an integer specifying the number of top markers from sure independent screening. 
 #' Default = \code{NULL}. If \code{NULL}, \code{topN} will be \code{2*ceiling(n/log(n))}, where \code{n} is the sample size.
