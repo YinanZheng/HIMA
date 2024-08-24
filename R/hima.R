@@ -34,8 +34,8 @@
 #' @return A data.frame containing mediation testing results of selected mediators. 
 #' \describe{
 #'     \item{Index: }{mediation name of selected significant mediator.}
-#'     \item{alpha_hat: }{coefficient estimates of exposure (X) --> mediators (M).}
-#'     \item{beta_hat: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for exposure).}
+#'     \item{alpha_hat: }{coefficient estimates of exposure (X) --> mediators (M) (adjusted for covariates).}
+#'     \item{beta_hat: }{coefficient estimates of mediators (M) --> outcome (Y) (adjusted for covariates and exposure).}
 #'     \item{IDE: }{mediation (indirect) effect, i.e., alpha*beta.}
 #'     \item{rimp: }{relative importance of the mediator.}
 #'     \item{pmax: }{joint raw p-value of selected significant mediator (based on Bonferroni method).}

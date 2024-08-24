@@ -53,7 +53,17 @@ can be turned off to avoid estimate compression.}
 \item{...}{reserved passing parameter.}
 }
 \value{
-A data.frame containing mediation testing results of selected mediators.
+A data.frame containing mediation testing results of selected mediators. 
+\describe{
+    \item{ID: }{Mediator ID/name.}
+    \item{alpha: }{Coefficient estimates of exposure (X) --> mediators (M) (adjusted for covariates).}
+    \item{beta: }{Coefficient estimates of mediators (M) --> outcome (Y) (adjusted for covariates and exposure).}
+    \item{alpha*beta: }{Mediation (indirect) effect.}
+    \item{Relative Importance: }{Relative importance of the mediator. It is the proportion of the mediation effect for each mediator 
+    out of the sum of the mediation effect (absolute value) across all significant mediators selected.}
+    \item{p-value: }{Joint raw p-value of significant mediators selected based on corresponding approach.}
+    \item{tau: }{Quantile level of the outcome (applicable only to the quantile mediation model).}
+}
 }
 \description{
 \code{hima2} is a wrapper function designed to perform various HIMA methods for estimating and testing high-dimensional mediation effects.
@@ -72,7 +82,7 @@ e1 <- hima2(Outcome ~ Treatment + Sex + Age,
       data.M = himaDat$Example1$Mediator,
       outcome.family = "gaussian",
       mediator.family = "gaussian",
-      penalty = "DBlasso",
+      penalty = "MCP", # Can be "DBlasso" for dblassoHIMA
       scale = FALSE) # Disabled only for simulation data
 e1
 attributes(e1)$variable.labels
@@ -123,7 +133,7 @@ e4 <- hima2(Outcome ~ Treatment + Sex + Age,
       data.M = himaDat$Example4$Mediator,
       outcome.family = "gaussian",
       mediator.family = "compositional",
-      penalty = "DBlasso")
+      penalty = "DBlasso") # Scaling is always enabled for microHIMA
 e4
 attributes(e4)$variable.labels
 
