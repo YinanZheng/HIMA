@@ -47,7 +47,7 @@
 #'                 COV = himaDat$Example5$PhenoData[, c("Sex", "Age")], 
 #'                 Bonfcut = 0.05,
 #'                 tau = c(0.3, 0.5, 0.7),
-#'                 scale = FALSE, 
+#'                 scale = FALSE, # Disabled only for simulation data
 #'                 verbose = TRUE)
 #' qHIMA.fit
 #' }

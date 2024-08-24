@@ -5,10 +5,10 @@
 #' 
 #' @param X a vector of exposure. 
 #' @param Y a vector of continuous outcome. Binary outcome is not allowed.
-#' @param OTU a \code{data.frame} or \code{matrix} of high-dimensional compositional OTUs (mediators). Rows represent samples, 
-#' columns represent variables.
-#' @param COV a \code{data.frame} or \code{matrix} of adjusting covariates. Rows represent samples, columns represent microbiome variables. 
-#' Can be \code{NULL}.
+#' @param OTU a \code{data.frame} or \code{matrix} of high-dimensional Operational Taxonomic Unit (OTU) data (mediators). 
+#' Rows represent samples, columns represent variables.
+#' @param COV a \code{data.frame} or \code{matrix} of adjusting covariates. Rows represent samples, columns represent 
+#' microbiome variables. Can be \code{NULL}.
 #' @param FDRcut Hommel FDR cutoff applied to select significant mediators. Default = \code{0.05}. 
 #' @param verbose logical. Should the function be verbose? Default = \code{FALSE}.
 #' 

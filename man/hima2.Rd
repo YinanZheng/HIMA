@@ -30,7 +30,7 @@ The variable names must match those listed in \code{formula}. By default \code{h
 represent variables. By default \code{hima2} will scale \code{data.M}.}
 
 \item{outcome.family}{either \code{'gaussian'} (default, for normally distributed continuous outcome), \code{'binomial'} 
-(for binay outcome), \code{'survival'} (for time-to-event outcome), or \code{'quantile'} (for quantile mediation analysis)}
+(for binary outcome), \code{'survival'} (for time-to-event outcome), or \code{'quantile'} (for quantile mediation analysis)}
 
 \item{mediator.family}{either \code{'gaussian'} (default, for continuous mediators), \code{'negbin'} (i.e., negative binomial, 
 for RNA-seq data as mediators), or \code{'compositional'} (for microbiome data as mediators), depending on the data type of 
@@ -48,7 +48,7 @@ can be turned off to avoid estimate compression.}
 
 \item{Sigcut}{cutoff applied to select significant mediators. Default = \code{0.05}.}
 
-\item{verbose}{logical. Should the function be verbose and shows the progression? Default = \code{FALSE}.}
+\item{verbose}{logical. Should the function be verbose and show the progression? Default = \code{FALSE}.}
 
 \item{...}{reserved passing parameter.}
 }

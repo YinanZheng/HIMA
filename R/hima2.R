@@ -11,7 +11,7 @@
 #' @param data.M a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns 
 #' represent variables. By default \code{hima2} will scale \code{data.M}.
 #' @param outcome.family either \code{'gaussian'} (default, for normally distributed continuous outcome), \code{'binomial'} 
-#' (for binay outcome), \code{'survival'} (for time-to-event outcome), or \code{'quantile'} (for quantile mediation analysis)
+#' (for binary outcome), \code{'survival'} (for time-to-event outcome), or \code{'quantile'} (for quantile mediation analysis)
 #' @param mediator.family either \code{'gaussian'} (default, for continuous mediators), \code{'negbin'} (i.e., negative binomial, 
 #' for RNA-seq data as mediators), or \code{'compositional'} (for microbiome data as mediators), depending on the data type of 
 #' high-dimensional mediators (\code{data.M}).
@@ -23,7 +23,7 @@
 #' @param scale logical. Should the function scale the data (exposure, mediators, and covariates)? Default = \code{TRUE}. Note: for simulation study, scale
 #' can be turned off to avoid estimate compression.
 #' @param Sigcut cutoff applied to select significant mediators. Default = \code{0.05}. 
-#' @param verbose logical. Should the function be verbose and shows the progression? Default = \code{FALSE}.
+#' @param verbose logical. Should the function be verbose and show the progression? Default = \code{FALSE}.
 #' @param ... reserved passing parameter.
 #' 
 #' @return A data.frame containing mediation testing results of selected mediators. 
