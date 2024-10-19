@@ -21,17 +21,17 @@ qHIMA(
 \arguments{
 \item{X}{a vector of exposure.}
 
-\item{M}{a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns 
+\item{M}{a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns
 represent mediator variables.}
 
 \item{Y}{a vector of continuous outcome. Do not use data.frame or matrix.}
 
 \item{COV}{a matrix of adjusting covariates. Rows represent samples, columns represent variables. Can be \code{NULL}.}
 
-\item{penalty}{the penalty to be applied to the model (a parameter passed to function \code{conquer.cv.reg} in package \code{conquer}. 
+\item{penalty}{the penalty to be applied to the model (a parameter passed to function \code{conquer.cv.reg} in package \code{conquer}.
 Either 'MCP' (the default), 'SCAD', or 'lasso'.}
 
-\item{topN}{an integer specifying the number of top markers from sure independent screening. 
+\item{topN}{an integer specifying the number of top markers from sure independent screening.
 Default = \code{NULL}. If \code{NULL}, \code{topN} will be \code{2*ceiling(n/log(n))}, where \code{n} is the sample size.
 If the sample size is greater than topN (pre-specified or calculated), all mediators will be included in the test (i.e. low-dimensional scenario).}
 
@@ -46,7 +46,7 @@ If the sample size is greater than topN (pre-specified or calculated), all media
 \item{...}{reserved passing parameter.}
 }
 \value{
-A data.frame containing mediation testing results of selected mediators (Bonferroni-adjusted p value <\code{Bonfcut}). 
+A data.frame containing mediation testing results of selected mediators (Bonferroni-adjusted p value <\code{Bonfcut}).
 \describe{
     \item{Index: }{mediation name of selected significant mediator.}
     \item{alpha_hat: }{coefficient estimates of exposure (X) --> mediators (M) (adjusted for covariates).}
@@ -68,19 +68,21 @@ data(himaDat)
 
 head(himaDat$Example5$PhenoData)
 
-qHIMA.fit <- qHIMA(X = himaDat$Example5$PhenoData$Treatment,
-                M = himaDat$Example5$Mediator, 
-                Y = himaDat$Example5$PhenoData$Outcome, 
-                COV = himaDat$Example5$PhenoData[, c("Sex", "Age")], 
-                Bonfcut = 0.05,
-                tau = c(0.3, 0.5, 0.7),
-                scale = FALSE, # Disabled only for simulation data
-                verbose = TRUE)
+qHIMA.fit <- qHIMA(
+  X = himaDat$Example5$PhenoData$Treatment,
+  M = himaDat$Example5$Mediator,
+  Y = himaDat$Example5$PhenoData$Outcome,
+  COV = himaDat$Example5$PhenoData[, c("Sex", "Age")],
+  tau = c(0.3, 0.5, 0.7),
+  scale = FALSE, # Disabled only for simulation data
+  Bonfcut = 0.05,
+  verbose = TRUE
+)
 qHIMA.fit
 }
 
 }
 \references{
-Zhang H, Hong X, Zheng Y, Hou L, Zheng C, Wang X, Liu L. High-Dimensional Quantile Mediation Analysis with Application to a Birth 
+Zhang H, Hong X, Zheng Y, Hou L, Zheng C, Wang X, Liu L. High-Dimensional Quantile Mediation Analysis with Application to a Birth
 Cohort Study of Mother–Newborn Pairs. Bioinformatics. 2024. DOI: 10.1093/bioinformatics/btae055. PMID: 38290773; PMCID: PMC10873903
 }

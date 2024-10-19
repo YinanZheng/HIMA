@@ -60,8 +60,8 @@ A list of example datasets for HIMA demo and testing.\cr\cr
 }
 }
 \description{
-A \code{list} containing datasets for various scenarios of HIMA. Each dataset contains a phenotype 
-data frame and a high-dimension mediator data matrix. The datasets are simulated using parameters generated 
+A \code{list} containing datasets for various scenarios of HIMA. Each dataset contains a phenotype
+data frame and a high-dimension mediator data matrix. The datasets are simulated using parameters generated
 from real datasets. The code used to generate the data can be found in "/inst/script" folder of the source package.
 }
 \keyword{datasets}

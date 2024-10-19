@@ -3,55 +3,55 @@
 #' @description
 #' HIMA is an R package for estimating and testing high-dimensional mediation effects in omic studies.
 #' HIMA can perform high-dimensional mediation analysis on a wide range of omic data types as
-#' potential mediators, including epigenetics, transcriptomics, proteomics, metabolomics, and microbiomics. 
+#' potential mediators, including epigenetics, transcriptomics, proteomics, metabolomics, and microbiomics.
 #' HIMA can also handle survival data mediation analysis and perform quantile mediation analysis.
-#' 
+#'
 #' \tabular{ll}{ Package: \tab HIMA\cr Type: \tab Package\cr
-#' Version: \tab 2.2.2\cr Date: \tab 2024-08-24\cr License: \tab GPL-3\cr }
-#' 
+#' Version: \tab 2.3.0\cr Date: \tab 2024-10-21\cr License: \tab GPL-3\cr }
+#'
 #' @name HIMA-package
-#' 
-#' @aliases HIMA-package HIMA
-#' 
-#' @details 
+#'
+#' @aliases HIMA-package hima HIMA
+#'
+#' @details
 #' # If package "qvalue" is not found during installation, please first install "qvalue" package
 #' # through Bioconductor: https://www.bioconductor.org/packages/release/bioc/html/qvalue.html
-#' 
-#' @author 
+#'
+#' @author
 #' Yinan Zheng \email{y-zheng@@northwestern.edu},
-#' Haixiang Zhang \email{haixiang.zhang@@tju.edu.cn},  
+#' Haixiang Zhang \email{haixiang.zhang@@tju.edu.cn},
 #' Lei liu (Contact) \email{lei.liu@@wustl.edu}
-#' 
+#'
 #' Maintainer: Yinan Zheng \email{y-zheng@@northwestern.edu}
-#' 
-#' @references 
-#' 1. Zhang H, Zheng Y, Zhang Z, Gao T, Joyce B, Yoon G, Zhang W, Schwartz J, Just A, Colicino E, Vokonas P, Zhao L, 
-#' Lv J, Baccarelli A, Hou L, Liu L. Estimating and Testing High-dimensional Mediation Effects in Epigenetic Studies. 
+#'
+#' @references
+#' 1. Zhang H, Zheng Y, Zhang Z, Gao T, Joyce B, Yoon G, Zhang W, Schwartz J, Just A, Colicino E, Vokonas P, Zhao L,
+#' Lv J, Baccarelli A, Hou L, Liu L. Estimating and Testing High-dimensional Mediation Effects in Epigenetic Studies.
 #' Bioinformatics. 2016. DOI: 10.1093/bioinformatics/btw351. PMID: 27357171; PMCID: PMC5048064
-#' 
-#' 2. Zhang H, Zheng Y, Hou L, Zheng C, Liu L. Mediation Analysis for Survival Data with High-Dimensional Mediators. 
+#'
+#' 2. Zhang H, Zheng Y, Hou L, Zheng C, Liu L. Mediation Analysis for Survival Data with High-Dimensional Mediators.
 #' Bioinformatics. 2021. DOI: 10.1093/bioinformatics/btab564. PMID: 34343267; PMCID: PMC8570823
-#' 
-#' 3. Zhang H, Chen J, Feng Y, Wang C, Li H, Liu L. Mediation Effect Selection in High-dimensional and Compositional Microbiome data. 
+#'
+#' 3. Zhang H, Chen J, Feng Y, Wang C, Li H, Liu L. Mediation Effect Selection in High-dimensional and Compositional Microbiome data.
 #' Stat Med. 2021. DOI: 10.1002/sim.8808. PMID: 33205470; PMCID: PMC7855955
-#' 
-#' 4. Zhang H, Chen J, Li Z, Liu L. Testing for Mediation Effect with Application to Human Microbiome Data. 
+#'
+#' 4. Zhang H, Chen J, Li Z, Liu L. Testing for Mediation Effect with Application to Human Microbiome Data.
 #' Stat Biosci. 2021. DOI: 10.1007/s12561-019-09253-3. PMID: 34093887; PMCID: PMC8177450
-#' 
-#' 5. Perera C, Zhang H, Zheng Y, Hou L, Qu A, Zheng C, Xie K, Liu L. HIMA2: High-dimensional Mediation Analysis and Its Application in 
+#'
+#' 5. Perera C, Zhang H, Zheng Y, Hou L, Qu A, Zheng C, Xie K, Liu L. HIMA2: High-dimensional Mediation Analysis and Its Application in
 #' Epigenome-wide DNA Methylation Data. BMC Bioinformatics. 2022. DOI: 10.1186/s12859-022-04748-1. PMID: 35879655; PMCID: PMC9310002
-#' 
-#' 6. Zhang H, Hong X, Zheng Y, Hou L, Zheng C, Wang X, Liu L. High-Dimensional Quantile Mediation Analysis with Application to a Birth 
+#'
+#' 6. Zhang H, Hong X, Zheng Y, Hou L, Zheng C, Wang X, Liu L. High-Dimensional Quantile Mediation Analysis with Application to a Birth
 #' Cohort Study of Mother–Newborn Pairs. Bioinformatics. 2024. DOI: 10.1093/bioinformatics/btae055. PMID: 38290773; PMCID: PMC10873903
-#' 
-#' 7. Bai X, Zheng Y, Hou L, Zheng C, Liu L, Zhang H. An Efficient Testing Procedure for High-dimensional Mediators with FDR Control. 
+#'
+#' 7. Bai X, Zheng Y, Hou L, Zheng C, Liu L, Zhang H. An Efficient Testing Procedure for High-dimensional Mediators with FDR Control.
 #' Statistics in Biosciences. 2024. DOI: 10.1007/s12561-024-09447-4.
-#' 
+#'
 #' @keywords package
-#' 
+#'
 #' @import ncvreg
 #' @import glmnet
-#' 
+#'
 #' @importFrom utils packageVersion
 #' @importFrom stats p.adjust rnorm runif rbinom lm glm model.matrix BIC coef ls.diag lsfit pnorm complete.cases rgamma
 #' @importFrom iterators idiv nextElem
@@ -65,5 +65,5 @@
 #' @importFrom survival Surv coxph
 #' @importFrom MASS mvrnorm glm.nb
 #' @importFrom hommel hommel discoveries
-#' 
+#'
 NULL

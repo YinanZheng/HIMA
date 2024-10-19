@@ -18,14 +18,14 @@ eHIMA(
 \arguments{
 \item{X}{a vector of exposure.}
 
-\item{M}{a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns 
+\item{M}{a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns
 represent mediator variables. \code{M} has to be continuous and normally distributed.}
 
 \item{Y}{a vector of continuous outcome. Do not use data.frame or matrix.}
 
 \item{COV}{a matrix of adjusting covariates. Rows represent samples, columns represent variables. Can be \code{NULL}.}
 
-\item{topN}{an integer specifying the number of top markers from sure independent screening. 
+\item{topN}{an integer specifying the number of top markers from sure independent screening.
 Default = \code{NULL}. If \code{NULL}, \code{topN} will be \code{2*ceiling(n/log(n))}, where \code{n} is the sample size.
 If the sample size is greater than topN (pre-specified or calculated), all mediators will be included in the test (i.e. low-dimensional scenario).}
 
@@ -36,7 +36,7 @@ If the sample size is greater than topN (pre-specified or calculated), all media
 \item{verbose}{logical. Should the function be verbose? Default = \code{FALSE}.}
 }
 \value{
-A data.frame containing mediation testing results of significant mediators (FDR <\code{FDRcut}). 
+A data.frame containing mediation testing results of significant mediators (FDR <\code{FDRcut}).
 \describe{
     \item{Index: }{mediation name of selected significant mediator.}
     \item{alpha_hat: }{coefficient estimates of exposure (X) --> mediators (M) (adjusted for covariates).}
@@ -50,7 +50,7 @@ A data.frame containing mediation testing results of significant mediators (FDR 
 }
 \description{
 \code{eHIMA} is used to estimate and test high-dimensional mediation effects using an efficient algorithm. It provides
-higher statistical power than the standard \code{hima}. Note: efficient HIMA is only applicable to mediators and outcomes that 
+higher statistical power than the standard \code{hima}. Note: efficient HIMA is only applicable to mediators and outcomes that
 are both continuous and normally distributed.
 }
 \examples{
@@ -59,20 +59,23 @@ are both continuous and normally distributed.
 data(himaDat)
 
 # Y is continuous and normally distributed
-# Example (continuous outcome): 
+# Example (continuous outcome):
 head(himaDat$Example1$PhenoData)
 
-eHIMA.fit <- eHIMA(X = himaDat$Example1$PhenoData$Treatment, 
-                   Y = himaDat$Example1$PhenoData$Outcome, 
-                   M = himaDat$Example1$Mediator,
-                   COV = himaDat$Example1$PhenoData[, c("Sex", "Age")],
-                   scale = FALSE, # Disabled only for simulation data
-                   verbose = TRUE) 
+eHIMA.fit <- eHIMA(
+  X = himaDat$Example1$PhenoData$Treatment,
+  Y = himaDat$Example1$PhenoData$Outcome,
+  M = himaDat$Example1$Mediator,
+  COV = himaDat$Example1$PhenoData[, c("Sex", "Age")],
+  scale = FALSE, # Disabled only for simulation data
+  FDRcut = 0.05,
+  verbose = TRUE
+)
 eHIMA.fit
 }
 
 }
 \references{
-Bai X, Zheng Y, Hou L, Zheng C, Liu L, Zhang H. An Efficient Testing Procedure for High-dimensional Mediators with FDR Control. 
+Bai X, Zheng Y, Hou L, Zheng C, Liu L, Zhang H. An Efficient Testing Procedure for High-dimensional Mediators with FDR Control.
 Statistics in Biosciences. 2024. DOI: 10.1007/s12561-024-09447-4.
 }

@@ -7,34 +7,39 @@
 survHIMA(
   X,
   M,
-  COV = NULL,
   OT,
   status,
-  FDRcut = 0.05,
+  COV = NULL,
+  topN = NULL,
   scale = TRUE,
+  FDRcut = 0.05,
   verbose = FALSE
 )
 }
 \arguments{
 \item{X}{a vector of exposure.}
 
-\item{M}{a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns 
+\item{M}{a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns
 represent mediator variables.}
-
-\item{COV}{a matrix of adjusting covariates. Rows represent samples, columns represent variables. Can be \code{NULL}.}
 
 \item{OT}{a vector of observed failure times.}
 
 \item{status}{a vector of censoring indicator (\code{status = 1}: uncensored; \code{status = 0}: censored)}
 
-\item{FDRcut}{HDMT pointwise FDR cutoff applied to select significant mediators. Default = \code{0.05}.}
+\item{COV}{a matrix of adjusting covariates. Rows represent samples, columns represent variables. Can be \code{NULL}.}
+
+\item{topN}{an integer specifying the number of top markers from sure independent screening.
+Default = \code{NULL}. If \code{NULL}, \code{topN} will be \code{ceiling(n/log(n))}, where \code{n} is the sample size.
+If the sample size is greater than topN (pre-specified or calculated), all mediators will be included in the test (i.e. low-dimensional scenario).}
 
 \item{scale}{logical. Should the function scale the data? Default = \code{TRUE}.}
+
+\item{FDRcut}{HDMT pointwise FDR cutoff applied to select significant mediators. Default = \code{0.05}.}
 
 \item{verbose}{logical. Should the function be verbose? Default = \code{FALSE}.}
 }
 \value{
-A data.frame containing mediation testing results of significant mediators (FDR <\code{FDRcut}). 
+A data.frame containing mediation testing results of significant mediators (FDR <\code{FDRcut}).
 \describe{
     \item{Index: }{mediation name of selected significant mediator.}
     \item{alpha_hat: }{coefficient estimates of exposure (X) --> mediators (M) (adjusted for covariates).}
@@ -56,19 +61,21 @@ data(himaDat)
 
 head(himaDat$Example3$PhenoData)
 
-survHIMA.fit <- survHIMA(X = himaDat$Example3$PhenoData$Treatment,
-                M = himaDat$Example3$Mediator, 
-                COV = himaDat$Example3$PhenoData[, c("Sex", "Age")], 
-                OT = himaDat$Example3$PhenoData$Time, 
-                status = himaDat$Example3$PhenoData$Status, 
-                FDRcut = 0.05,
-                scale = FALSE, # Disabled only for simulation data
-                verbose = TRUE)
+survHIMA.fit <- survHIMA(
+  X = himaDat$Example3$PhenoData$Treatment,
+  M = himaDat$Example3$Mediator,
+  OT = himaDat$Example3$PhenoData$Time,
+  status = himaDat$Example3$PhenoData$Status,
+  COV = himaDat$Example3$PhenoData[, c("Sex", "Age")],
+  scale = FALSE, # Disabled only for simulation data
+  FDRcut = 0.05,
+  verbose = TRUE
+)
 survHIMA.fit
 }
 
 }
 \references{
-Zhang H, Zheng Y, Hou L, Zheng C, Liu L. Mediation Analysis for Survival Data with High-Dimensional Mediators. 
+Zhang H, Zheng Y, Hou L, Zheng C, Liu L. Mediation Analysis for Survival Data with High-Dimensional Mediators.
 Bioinformatics. 2021. DOI: 10.1093/bioinformatics/btab564. PMID: 34343267; PMCID: PMC8570823
 }

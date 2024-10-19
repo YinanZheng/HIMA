@@ -2,15 +2,13 @@
 % Please edit documentation in R/dblassoHIMA.R
 \name{dblassoHIMA}
 \alias{dblassoHIMA}
-\title{This is the function for high-dimensional mediation analysis using de-biased lasso
-HIMA with de-biased lasso}
+\title{High-dimensional mediation analysis with de-biased lasso penalty}
 \usage{
 dblassoHIMA(
   X,
-  Y,
   M,
+  Y,
   COV = NULL,
-  Y.family = c("gaussian", "binomial"),
   topN = NULL,
   scale = TRUE,
   FDRcut = 0.05,
@@ -20,19 +18,15 @@ dblassoHIMA(
 \arguments{
 \item{X}{a vector of exposure.}
 
-\item{Y}{a vector of outcome. Can be either continuous or binary (0-1).}
-
 \item{M}{a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns represent variables.}
+
+\item{Y}{a vector of outcome. Can be either continuous or binary (0-1).}
 
 \item{COV}{a \code{data.frame} or \code{matrix} of covariates dataset for testing the association M ~ X and Y ~ M.}
 
-\item{Y.family}{either 'gaussian' (default) or 'binomial', depending on the data type of outcome (\code{Y}). This parameter is passed 
-to function \code{lasso.proj} in R package \code{hdi} for de-biased lasso penalization.}
-
-\item{topN}{an integer specifying the number of top markers from sure independent screening. 
-Default = \code{NULL}. If \code{NULL}, \code{topN} will be either \code{ceiling(n/log(n))} if 
-\code{Y.family = 'gaussian'}, or \code{ceiling(n/(2*log(n)))} if \code{Y.family = 'binomial'}, 
-where \code{n} is the sample size. If the sample size is greater than topN (pre-specified or calculated), all 
+\item{topN}{an integer specifying the number of top markers from sure independent screening.
+Default = \code{NULL}. If \code{NULL}, \code{topN} will be \code{ceiling(n/log(n))},
+where \code{n} is the sample size. If the sample size is greater than topN (pre-specified or calculated), all
 mediators will be included in the test (i.e. low-dimensional scenario).}
 
 \item{scale}{logical. Should the function scale the data? Default = \code{TRUE}.}
@@ -42,7 +36,7 @@ mediators will be included in the test (i.e. low-dimensional scenario).}
 \item{verbose}{logical. Should the function be verbose? Default = \code{FALSE}.}
 }
 \value{
-A data.frame containing mediation testing results of significant mediators (FDR <\code{FDRcut}). 
+A data.frame containing mediation testing results of significant mediators (FDR <\code{FDRcut}).
 \describe{
     \item{Index: }{mediation name of selected significant mediator.}
     \item{alpha_hat: }{coefficient estimates of exposure (X) --> mediators (M) (adjusted for covariates).}
@@ -62,36 +56,25 @@ A data.frame containing mediation testing results of significant mediators (FDR 
 # Note: In the following examples, M1, M2, and M3 are true mediators.
 data(himaDat)
 
-# When Y is continuous and normally distributed
-# Example 1 (continuous outcome): 
+# Y is continuous and normally distributed
+# Example:
 head(himaDat$Example1$PhenoData)
 
-dblassohima.fit <- dblassoHIMA(X = himaDat$Example1$PhenoData$Treatment, 
-                               Y = himaDat$Example1$PhenoData$Outcome, 
-                               M = himaDat$Example1$Mediator,
-                               COV = himaDat$Example1$PhenoData[, c("Sex", "Age")],
-                               Y.family = 'gaussian',
-                               scale = FALSE, # Disabled only for simulation data
-                               verbose = TRUE) 
+dblassohima.fit <- dblassoHIMA(
+  X = himaDat$Example1$PhenoData$Treatment,
+  Y = himaDat$Example1$PhenoData$Outcome,
+  M = himaDat$Example1$Mediator,
+  COV = himaDat$Example1$PhenoData[, c("Sex", "Age")],
+  scale = FALSE, # Disabled only for simulation data
+  FDRcut = 0.05,
+  verbose = TRUE
+)
 dblassohima.fit
-
-# When Y is binary (should specify Y.family)
-# Example 2 (binary outcome): 
-head(himaDat$Example2$PhenoData)
-
-dblassohima.logistic.fit <- dblassoHIMA(X = himaDat$Example2$PhenoData$Treatment,
-                                        Y = himaDat$Example2$PhenoData$Disease,
-                                        M = himaDat$Example2$Mediator,
-                                        COV = himaDat$Example2$PhenoData[, c("Sex", "Age")],
-                                        Y.family = 'binomial',
-                                        scale = FALSE, # Disabled only for simulation data
-                                        verbose = TRUE)
-dblassohima.logistic.fit
 }
 
 }
 \references{
-Perera C, Zhang H, Zheng Y, Hou L, Qu A, Zheng C, Xie K, Liu L. 
-HIMA2: high-dimensional mediation analysis and its application in epigenome-wide DNA methylation data. 
+Perera C, Zhang H, Zheng Y, Hou L, Qu A, Zheng C, Xie K, Liu L.
+HIMA2: high-dimensional mediation analysis and its application in epigenome-wide DNA methylation data.
 BMC Bioinformatics. 2022. DOI: 10.1186/s12859-022-04748-1. PMID: 35879655; PMCID: PMC9310002
 }

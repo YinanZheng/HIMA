@@ -4,17 +4,17 @@
 \alias{microHIMA}
 \title{High-dimensional mediation analysis for compositional microbiome data}
 \usage{
-microHIMA(X, Y, OTU, COV = NULL, FDRcut = 0.05, verbose = FALSE)
+microHIMA(X, OTU, Y, COV = NULL, FDRcut = 0.05, verbose = FALSE)
 }
 \arguments{
 \item{X}{a vector of exposure.}
 
-\item{Y}{a vector of continuous outcome. Binary outcome is not allowed.}
-
-\item{OTU}{a \code{data.frame} or \code{matrix} of high-dimensional Operational Taxonomic Unit (OTU) data (mediators). 
+\item{OTU}{a \code{data.frame} or \code{matrix} of high-dimensional Operational Taxonomic Unit (OTU) data (mediators).
 Rows represent samples, columns represent variables.}
 
-\item{COV}{a \code{data.frame} or \code{matrix} of adjusting covariates. Rows represent samples, columns represent 
+\item{Y}{a vector of continuous outcome. Binary outcome is not allowed.}
+
+\item{COV}{a \code{data.frame} or \code{matrix} of adjusting covariates. Rows represent samples, columns represent
 microbiome variables. Can be \code{NULL}.}
 
 \item{FDRcut}{Hommel FDR cutoff applied to select significant mediators. Default = \code{0.05}.}
@@ -22,7 +22,7 @@ microbiome variables. Can be \code{NULL}.}
 \item{verbose}{logical. Should the function be verbose? Default = \code{FALSE}.}
 }
 \value{
-A data.frame containing mediation testing results of significant mediators (FDR <\code{FDRcut}). 
+A data.frame containing mediation testing results of significant mediators (FDR <\code{FDRcut}).
 \describe{
     \item{Index: }{mediation name of selected significant mediator.}
     \item{alpha_hat: }{coefficient estimates of exposure (X) --> mediators (M) (adjusted for covariates).}
@@ -44,18 +44,22 @@ data(himaDat)
 
 head(himaDat$Example4$PhenoData)
 
-microHIMA.fit <- microHIMA(X = himaDat$Example4$PhenoData$Treatment, 
-                           Y = himaDat$Example4$PhenoData$Outcome, 
-                           OTU = himaDat$Example4$Mediator, 
-                           COV = himaDat$Example4$PhenoData[, c("Sex", "Age")])
+microHIMA.fit <- microHIMA(
+  X = himaDat$Example4$PhenoData$Treatment,
+  Y = himaDat$Example4$PhenoData$Outcome,
+  OTU = himaDat$Example4$Mediator,
+  COV = himaDat$Example4$PhenoData[, c("Sex", "Age")],
+  FDRcut = 0.05,
+  verbose = TRUE
+)
 microHIMA.fit
 }
 
 }
 \references{
-1. Zhang H, Chen J, Feng Y, Wang C, Li H, Liu L. Mediation effect selection in high-dimensional and compositional microbiome data. 
+1. Zhang H, Chen J, Feng Y, Wang C, Li H, Liu L. Mediation effect selection in high-dimensional and compositional microbiome data.
 Stat Med. 2021. DOI: 10.1002/sim.8808. PMID: 33205470; PMCID: PMC7855955
 
-2. Zhang H, Chen J, Li Z, Liu L. Testing for mediation effect with application to human microbiome data. 
+2. Zhang H, Chen J, Li Z, Liu L. Testing for mediation effect with application to human microbiome data.
 Stat Biosci. 2021. DOI: 10.1007/s12561-019-09253-3. PMID: 34093887; PMCID: PMC8177450
 }
