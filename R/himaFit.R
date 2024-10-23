@@ -197,7 +197,7 @@ himaFit <- function(formula,
   # eHIMA / qHIMA
   if (efficient || quantile) {
     if (efficient) {
-      message("Efficient HIMA is activated.")
+      message("Running efficient HIMA...")
       if (d$type != "continuous" || mediator.type != "gaussian") {
         stop("Efficient HIMA is only applicable to mediators and outcomes that are BOTH continuous and normally distributed.")
       }
@@ -217,7 +217,7 @@ himaFit <- function(formula,
     }
 
     if (quantile) {
-      message("Quantile HIMA is activated.")
+      message("Running quantile HIMA...")
       if (d$type != "continuous" || mediator.type != "gaussian") {
         stop("Quantile HIMA is only applicable to mediators and outcomes that are BOTH continuous and normally distributed.")
       }
@@ -244,6 +244,7 @@ himaFit <- function(formula,
     if (penalty == "DBlasso") {
       if (d$type == "continuous") {
         if (mediator.type == "gaussian") {
+          message("Running DBlasso HIMA...")
           res <- dblassoHIMA(
             X = d$X,
             M = data.M,
@@ -257,6 +258,7 @@ himaFit <- function(formula,
 
           results <- .res_prep(res, method_text = "HDMT pointwise FDR", Sigcut = Sigcut)
         } else if (mediator.type == "compositional") {
+          message("Running compositional HIMA...")
           res <- microHIMA(
             X = d$X,
             OTU = data.M,
@@ -269,6 +271,7 @@ himaFit <- function(formula,
           results <- .res_prep(res, method_text = "Hommel FDR", Sigcut = Sigcut)
         }
       } else if (d$type == "survival") {
+        message("Running survival HIMA...")
         res <- survHIMA(
           X = d$X,
           M = data.M,

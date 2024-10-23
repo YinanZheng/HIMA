@@ -99,6 +99,9 @@ classicHIMA <- function(X, M, Y, COV.XM = NULL, COV.MY = COV.XM,
     stop("Invalid Y.type. Expected 'continuous' or 'binary'.")
   )
 
+  if (Y.family == "gaussian") message("Running linear HIMA...")
+  if (Y.family == "binomial") message("Running logistic HIMA...")
+  
   M.type <- match.arg(M.type)
   penalty <- match.arg(penalty)
 
