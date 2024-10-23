@@ -99,12 +99,12 @@ classicHIMA <- function(X, M, Y, COV.XM = NULL, COV.MY = COV.XM,
     stop("Invalid Y.type. Expected 'continuous' or 'binary'.")
   )
 
-  if (Y.family == "gaussian") message("Running linear HIMA...")
-  if (Y.family == "binomial") message("Running logistic HIMA...")
-  
   M.type <- match.arg(M.type)
   penalty <- match.arg(penalty)
-
+  
+  if (Y.family == "gaussian") message("Running linear HIMA with ", penalty, " penalty...")
+  if (Y.family == "binomial") message("Running logistic HIMA with ", penalty, " penalty...")
+  
   if (parallel && (ncore == 1)) ncore <- parallel::detectCores()
   if (!parallel && (ncore > 1)) parallel <- TRUE
 

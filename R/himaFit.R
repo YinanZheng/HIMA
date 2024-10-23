@@ -86,6 +86,7 @@
 #'   data.M = himaDat$Example1$Mediator,
 #'   mediator.type = "gaussian",
 #'   efficient = TRUE,
+#'   penalty = "MCP", # Efficient HIMA does not support DBlasso
 #'   scale = FALSE
 #' ) # Disabled only for simulation data
 #' e1e
@@ -173,7 +174,7 @@ himaFit <- function(formula,
   if (is.null(colnames(data.M))) colnames(data.M) <- seq_len(ncol(data.M))
 
   # Conditions where 'DBlasso' is not applicable
-  invalid_dblasso <- quantile || d$type == "binary" || mediator.type == "negbin"
+  invalid_dblasso <- efficient || quantile || d$type == "binary" || mediator.type == "negbin"
 
   # Conditions where 'DBlasso' must be used
   require_dblasso <- d$type == "survival" || mediator.type == "compositional"
@@ -185,10 +186,10 @@ himaFit <- function(formula,
 
   # Adjust 'penalty' based on the conditions
   if (penalty == "DBlasso" && invalid_dblasso) {
-    message("Note: The selected conditions do not support De-biased Lasso penalty. Switching to 'MCP' ...")
+    message("Note: The selected conditions do not support de-biased Lasso penalty. Switching to 'MCP' ...")
     penalty <- "MCP"
   } else if (penalty != "DBlasso" && require_dblasso) {
-    message("Note: The selected conditions require De-biased Lasso penalty. Switching to 'DBlasso' ...")
+    message("Note: The selected conditions require de-biased Lasso penalty. Switching to 'DBlasso' ...")
     penalty <- "DBlasso"
   }
 
@@ -197,7 +198,7 @@ himaFit <- function(formula,
   # eHIMA / qHIMA
   if (efficient || quantile) {
     if (efficient) {
-      message("Running efficient HIMA...")
+      message("Running efficient HIMA with ", penalty, " penalty...")
       if (d$type != "continuous" || mediator.type != "gaussian") {
         stop("Efficient HIMA is only applicable to mediators and outcomes that are BOTH continuous and normally distributed.")
       }
@@ -217,7 +218,7 @@ himaFit <- function(formula,
     }
 
     if (quantile) {
-      message("Running quantile HIMA...")
+      message("Running quantile HIMA with ", penalty, " penalty...")
       if (d$type != "continuous" || mediator.type != "gaussian") {
         stop("Quantile HIMA is only applicable to mediators and outcomes that are BOTH continuous and normally distributed.")
       }
@@ -244,7 +245,7 @@ himaFit <- function(formula,
     if (penalty == "DBlasso") {
       if (d$type == "continuous") {
         if (mediator.type == "gaussian") {
-          message("Running DBlasso HIMA...")
+          message("Running linear HIMA with de-biased Lasso penalty...")
           res <- dblassoHIMA(
             X = d$X,
             M = data.M,
@@ -258,7 +259,7 @@ himaFit <- function(formula,
 
           results <- .res_prep(res, method_text = "HDMT pointwise FDR", Sigcut = Sigcut)
         } else if (mediator.type == "compositional") {
-          message("Running compositional HIMA...")
+          message("Running compositional HIMA with de-biased Lasso penalty...")
           res <- microHIMA(
             X = d$X,
             OTU = data.M,
@@ -271,7 +272,7 @@ himaFit <- function(formula,
           results <- .res_prep(res, method_text = "Hommel FDR", Sigcut = Sigcut)
         }
       } else if (d$type == "survival") {
-        message("Running survival HIMA...")
+        message("Running survival HIMA with de-biased Lasso penalty...")
         res <- survHIMA(
           X = d$X,
           M = data.M,
