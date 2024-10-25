@@ -3,10 +3,10 @@
 #'
 #' \code{microHIMA} is used to estimate and test high-dimensional mediation effects for compositional microbiome data.
 #'
-#' @param X a vector of exposure.
+#' @param X a vector of exposure. Do not use \code{data.frame} or \code{matrix}.
 #' @param OTU a \code{data.frame} or \code{matrix} of high-dimensional Operational Taxonomic Unit (OTU) data (mediators).
 #' Rows represent samples, columns represent variables.
-#' @param Y a vector of continuous outcome. Binary outcome is not allowed.
+#' @param Y a vector of continuous outcome. Binary outcome is not allowed. Do not use \code{data.frame} or \code{matrix}.
 #' @param COV a \code{data.frame} or \code{matrix} of adjusting covariates. Rows represent samples, columns represent
 #' microbiome variables. Can be \code{NULL}.
 #' @param FDRcut Hommel FDR cutoff applied to select significant mediators. Default = \code{0.05}.

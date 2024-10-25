@@ -3,9 +3,9 @@
 #'
 #' \code{dblassoHIMA} is used to estimate and test high-dimensional mediation effects using de-biased lasso penalty.
 #'
-#' @param X a vector of exposure.
+#' @param X a vector of exposure. Do not use \code{data.frame} or \code{matrix}.
 #' @param M a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns represent variables.
-#' @param Y a vector of outcome. Can be either continuous or binary (0-1).
+#' @param Y a vector of outcome. Can be either continuous or binary (0-1). Do not use \code{data.frame} or \code{matrix}.
 #' @param COV a \code{data.frame} or \code{matrix} of covariates dataset for testing the association M ~ X and Y ~ M.
 #' @param topN an integer specifying the number of top markers from sure independent screening.
 #' Default = \code{NULL}. If \code{NULL}, \code{topN} will be \code{ceiling(n/log(n))},

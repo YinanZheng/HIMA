@@ -16,12 +16,12 @@ eHIMA(
 )
 }
 \arguments{
-\item{X}{a vector of exposure.}
+\item{X}{a vector of exposure. Do not use \code{data.frame} or \code{matrix}.}
 
 \item{M}{a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns
 represent mediator variables. \code{M} has to be continuous and normally distributed.}
 
-\item{Y}{a vector of continuous outcome. Do not use data.frame or matrix.}
+\item{Y}{a vector of continuous outcome. Do not use \code{data.frame} or \code{matrix}.}
 
 \item{COV}{a matrix of adjusting covariates. Rows represent samples, columns represent variables. Can be \code{NULL}.}
 

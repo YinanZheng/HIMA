@@ -3,26 +3,27 @@
 #'
 #' \code{classicHIMA} is used to estimate and test classic high-dimensional mediation effects (linear & logistic regression).
 #'
-#' @param X a vector of exposure. Do not use data.frame or matrix.
+#' @param X a vector of exposure. Do not use \code{data.frame} or \code{matrix}.
 #' @param M a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns
 #' represent variables.
-#' @param Y a vector of outcome. Can be either continuous or binary (0-1). Do not use data.frame or matrix.
+#' @param Y a vector of outcome. Can be either continuous or binary (0-1). Do not use \code{data.frame} or \code{matrix}.
 #' @param COV.XM a \code{data.frame} or \code{matrix} of covariates dataset for testing the association \code{M ~ X}.
 #' Covariates specified here will not participate penalization. Default = \code{NULL}. If the covariates
 #' contain mixed data types, please make sure all categorical variables are properly formatted as \code{factor} type.
 #' @param COV.MY a \code{data.frame} or \code{matrix} of covariates dataset for testing the association \code{Y ~ M}.
 #' Covariates specified here will not participate penalization. If not specified, the same set of covariates for
-#' \code{M ~ X} will be applied. Using different sets of covariates is allowed but this needs to be handled carefully.
-#' @param Y.type data type of outcome (\code{Y}). Either 'continuous' (default) or 'binary'.
-#' @param M.type data type of mediator (\code{M}). Either 'gaussian' (default) or 'negbin' (i.e., negative binomial).
-#' @param penalty the penalty to be applied to the model. Either 'MCP' (the default), 'SCAD', or
-#' 'lasso'.
+#' \code{M ~ X} will be applied (i.e., \code{COV.XM}. Using different sets of covariates is allowed but this needs to be 
+#' handled carefully.
+#' @param Y.type data type of outcome (\code{Y}). Either \code{'continuous'} (default) or \code{'binary'}.
+#' @param M.type data type of mediator (\code{M}). Either \code{'gaussian'} (default) or \code{'negbin'} (i.e., negative binomial).
+#' @param penalty the penalty to be applied to the model. Either \code{'MCP'} (the default), \code{'SCAD'}, or
+#' \code{'lasso'}.
 #' @param topN an integer specifying the number of top markers from sure independent screening.
 #' Default = \code{NULL}. If \code{NULL}, \code{topN} will be either \code{ceiling(n/log(n))} for continuous outcome,
 #' or \code{ceiling(n/(2*log(n)))} for binary outcome, where \code{n} is the sample size. If the sample size is greater
 #' than topN (pre-specified or calculated), all mediators will be included in the test (i.e. low-dimensional scenario).
 #' @param parallel logical. Enable parallel computing feature? Default = \code{FALSE}.
-#' @param ncore number of cores to run parallel computing Valid when \code{parallel == TRUE}.
+#' @param ncore number of cores to run parallel computing Valid when \code{parallel = TRUE}.
 #' By default max number of cores available in the machine will be utilized.
 #' @param scale logical. Should the function scale the data? Default = \code{TRUE}.
 #' @param Bonfcut Bonferroni-corrected p value cutoff applied to select significant mediators. Default = \code{0.05}.

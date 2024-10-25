@@ -3,7 +3,7 @@
 #'
 #' \code{survHIMA} is used to estimate and test high-dimensional mediation effects for survival data.
 #'
-#' @param X a vector of exposure.
+#' @param X a vector of exposure. Do not use \code{data.frame} or \code{matrix}.
 #' @param M a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns
 #' represent mediator variables.
 #' @param OT a vector of observed failure times.

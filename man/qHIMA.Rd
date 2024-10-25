@@ -19,23 +19,24 @@ qHIMA(
 )
 }
 \arguments{
-\item{X}{a vector of exposure.}
+\item{X}{a vector of exposure. Do not use \code{data.frame} or \code{matrix}.}
 
 \item{M}{a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns
 represent mediator variables.}
 
-\item{Y}{a vector of continuous outcome. Do not use data.frame or matrix.}
+\item{Y}{a vector of continuous outcome. Do not use \code{data.frame} or \code{matrix}.}
 
 \item{COV}{a matrix of adjusting covariates. Rows represent samples, columns represent variables. Can be \code{NULL}.}
 
 \item{penalty}{the penalty to be applied to the model (a parameter passed to function \code{conquer.cv.reg} in package \code{conquer}.
-Either 'MCP' (the default), 'SCAD', or 'lasso'.}
+Either \code{'MCP'} (the default), \code{'SCAD'}, or \code{'lasso'}.}
 
 \item{topN}{an integer specifying the number of top markers from sure independent screening.
 Default = \code{NULL}. If \code{NULL}, \code{topN} will be \code{2*ceiling(n/log(n))}, where \code{n} is the sample size.
-If the sample size is greater than topN (pre-specified or calculated), all mediators will be included in the test (i.e. low-dimensional scenario).}
+If the sample size is greater than topN (pre-specified or calculated), all mediators will be included in the test (i.e. 
+low-dimensional scenario).}
 
-\item{tau}{quantile level of outcome. Default = 0.5. A vector of tau is accepted.}
+\item{tau}{quantile level of outcome. Default = \code{0.5}. A vector of tau is accepted.}
 
 \item{scale}{logical. Should the function scale the data? Default = \code{TRUE}.}
 

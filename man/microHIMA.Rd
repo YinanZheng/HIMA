@@ -7,12 +7,12 @@
 microHIMA(X, OTU, Y, COV = NULL, FDRcut = 0.05, verbose = FALSE)
 }
 \arguments{
-\item{X}{a vector of exposure.}
+\item{X}{a vector of exposure. Do not use \code{data.frame} or \code{matrix}.}
 
 \item{OTU}{a \code{data.frame} or \code{matrix} of high-dimensional Operational Taxonomic Unit (OTU) data (mediators).
 Rows represent samples, columns represent variables.}
 
-\item{Y}{a vector of continuous outcome. Binary outcome is not allowed.}
+\item{Y}{a vector of continuous outcome. Binary outcome is not allowed. Do not use \code{data.frame} or \code{matrix}.}
 
 \item{COV}{a \code{data.frame} or \code{matrix} of adjusting covariates. Rows represent samples, columns represent
 microbiome variables. Can be \code{NULL}.}

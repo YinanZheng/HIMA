@@ -16,11 +16,11 @@ dblassoHIMA(
 )
 }
 \arguments{
-\item{X}{a vector of exposure.}
+\item{X}{a vector of exposure. Do not use \code{data.frame} or \code{matrix}.}
 
 \item{M}{a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns represent variables.}
 
-\item{Y}{a vector of outcome. Can be either continuous or binary (0-1).}
+\item{Y}{a vector of outcome. Can be either continuous or binary (0-1). Do not use \code{data.frame} or \code{matrix}.}
 
 \item{COV}{a \code{data.frame} or \code{matrix} of covariates dataset for testing the association M ~ X and Y ~ M.}
 
