@@ -34,7 +34,7 @@ represent variables. By default \code{himaFit} will scale \code{data.M}.}
 
 \item{penalty}{the penalty to be applied to the model. Either \code{'DBlasso'} (De-biased LASSO, default),
 \code{'MCP'}, \code{'SCAD'}, or \code{'lasso'}. Please note, survival HIMA and microbiome HIMA can be only performed with \code{'DBlasso'};
-Quantile HIMA cannot be performed with \code{'DBlasso'}. Not applicable for efficient HIMA (when \code{efficient = TRUE}), as it will always apply \code{'MCP'}.}
+Quantile HIMA and efficient HIMA cannot be performed with \code{'DBlasso'} as they will always apply \code{'MCP'}.}
 
 \item{quantile}{use quantile HIMA (\code{qHIMA}). Only applicable for classic HIMA with continues outcome. Please add parameter \code{tau} to specify the
 desired quantile (can be a vector), otherwise the default \code{tau = 0.5} will be used.}
@@ -93,6 +93,7 @@ e1e <- himaFit(Outcome ~ Treatment + Sex + Age,
   data.M = himaDat$Example1$Mediator,
   mediator.type = "gaussian",
   efficient = TRUE,
+  penalty = "MCP", # Efficient HIMA does not support DBlasso
   scale = FALSE
 ) # Disabled only for simulation data
 e1e
