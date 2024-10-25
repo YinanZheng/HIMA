@@ -19,37 +19,37 @@ himaFit(
 )
 }
 \arguments{
-\item{formula}{an object of class \code{formula}: a symbolic description of the overall effect model, i.e.,
-\code{outcome ~ exposure + covariates}, to be fitted. Make sure the "exposure" is the variable of interest, which
-must be listed as the first variable in the right hand side of the formula.}
+\item{formula}{an object of class \code{formula} representing the overall effect model to be fitted, specified as \code{outcome ~ exposure + covariates}. 
+The "exposure" variable (the variable of interest) must be listed first on the right-hand side of the formula.}
 
-\item{data.pheno}{a data frame containing exposure and covariates that are listed in the right hand side of the \code{formula}.
-The variable names must match those listed in \code{formula}. By default \code{himaFit} will scale \code{data.pheno}.}
+\item{data.pheno}{a data frame containing the exposure, outcome, and covariates specified in the formula. Variable names in \code{data.pheno} must match those 
+in the formula. When \code{scale = TRUE}, the exposure and covariates will be scaled (the outcome retains its original scale).}
 
-\item{data.M}{a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns
-represent variables. By default \code{himaFit} will scale \code{data.M}.}
+\item{data.M}{a \code{data.frame} or \code{matrix} of high-dimensional mediators, with rows representing samples and columns representing mediator variables. 
+When \code{scale = TRUE}, \code{data.M} will be scaled.}
 
-\item{mediator.type}{data type of high-dimensional mediators (\code{data.M}). Either \code{'gaussian'} (default, for continuous mediators),
-\code{'negbin'} (i.e., negative binomial, for RNA-seq data as mediators), or \code{'compositional'} (for microbiome data as mediators).}
+\item{mediator.type}{a character string indicating the data type of the high-dimensional mediators (\code{data.M}). Options are: \code{'gaussian'} (default): 
+for continuous mediators. \code{'negbin'}: for count data mediators modeled using the negative binomial distribution (e.g., RNA-seq data). \code{'compositional'}: 
+for compositional data mediators (e.g., microbiome data).}
 
-\item{penalty}{the penalty to be applied to the model. Either \code{'DBlasso'} (De-biased LASSO, default),
-\code{'MCP'}, \code{'SCAD'}, or \code{'lasso'}. Please note, survival HIMA and microbiome HIMA can be only performed with \code{'DBlasso'};
-Quantile HIMA and efficient HIMA cannot be performed with \code{'DBlasso'} as they will always apply \code{'MCP'}.}
+\item{penalty}{a character string specifying the penalty method to apply in the model. Options are: \code{'DBlasso'}: De-biased LASSO (default). \code{'MCP'}: 
+Minimax Concave Penalty. \code{'SCAD'}: Smoothly Clipped Absolute Deviation. \code{'lasso'}: Least Absolute Shrinkage and Selection Operator. Note: Survival HIMA and microbiome 
+HIMA can only be performed with \code{'DBlasso'}. Quantile HIMA and efficient HIMA cannot use \code{'DBlasso'}; they always apply \code{'MCP'}.}
 
-\item{quantile}{use quantile HIMA (\code{qHIMA}). Only applicable for classic HIMA with continuous outcome, and \code{mediator.type = "gaussian"}). 
-Please add parameter \code{tau} to specify the desired quantile (can be a vector), otherwise the default \code{tau = 0.5} will be used.}
+\item{quantile}{logical. Indicates whether to use quantile HIMA (\code{qHIMA}). Default is \code{FALSE}. Applicable only for classic HIMA with a continuous outcome and 
+\code{mediator.type = 'gaussian'}. If \code{TRUE}, specify the desired quantile(s) using the \code{tau} parameter; otherwise, the default \code{tau = 0.5} (i.e., median) is used.}
 
-\item{efficient}{use efficient HIMA (\code{eHIMA}). Only applicable for classic HIMA with continuous outcome, and \code{mediator.type = "gaussian"}). 
-Default = \code{FALSE}.}
+\item{efficient}{logical. Indicates whether to use efficient HIMA (\code{eHIMA}). Default is \code{FALSE}. Applicable only for classic HIMA with a continuous outcome and 
+\code{mediator.type = 'gaussian'}.}
 
-\item{scale}{logical. Should the function scale the data (exposure, mediators, and covariates)? Default = \code{TRUE}. Note: for simulation study, scale
-can be turned off to avoid estimate compression.}
+\item{scale}{logical. Determines whether the function scales the data (exposure, mediators, and covariates). Default is \code{TRUE}. Note: For simulation studies, set 
+\code{scale = FALSE} to avoid estimate compression (i.e., shrinkage of estimates toward zero due to scaling).}
 
-\item{Sigcut}{cutoff applied to select significant mediators. Default = \code{0.05}.}
+\item{Sigcut}{numeric. The significance cutoff for selecting mediators. Default is \code{0.05}.}
 
-\item{verbose}{logical. Should the function be verbose and show the progression? Default = \code{FALSE}.}
+\item{verbose}{logical. Determines whether the function displays progress messages. Default is \code{FALSE}.}
 
-\item{...}{reserved passing parameter.}
+\item{...}{reserved passing parameter (or for future use).}
 }
 \value{
 A data.frame containing mediation testing results of selected mediators.
@@ -57,11 +57,10 @@ A data.frame containing mediation testing results of selected mediators.
     \item{ID: }{Mediator ID/name.}
     \item{alpha: }{Coefficient estimates of exposure (X) --> mediators (M) (adjusted for covariates).}
     \item{beta: }{Coefficient estimates of mediators (M) --> outcome (Y) (adjusted for covariates and exposure).}
-    \item{alpha*beta: }{Mediation (indirect) effect.}
-    \item{Relative Importance: }{Relative importance of the mediator. It is the proportion of the mediation effect for each mediator
-    out of the sum of the mediation effect (absolute value) across all significant mediators selected.}
-    \item{p-value: }{Joint raw p-value of significant mediators selected based on corresponding approach.}
-    \item{tau: }{Quantile level of the outcome (applicable only to the quantile mediation model).}
+    \item{alpha*beta: }{The estimated indirect (mediation) effect of exposure on outcome through each mediator.}
+    \item{Relative Importance: }{The proportion of each mediator's mediation effect relative to the sum of the absolute mediation effects of all significant mediators.}
+    \item{p-value: }{The joint p-value assessing the significance of each mediator's indirect effect, calculated based on the corresponding statistical approach.}
+    \item{tau: }{The quantile level of the outcome (applicable only when using the quantile mediation model).}
 }
 }
 \description{
