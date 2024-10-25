@@ -51,7 +51,7 @@
 * Stablization of estimates in function "qHIMA".
 * Some improvements in output presentation and consistency.
 
-# HIMA 2.3.0 (2024-10-21)
+# HIMA 2.3.0 (2024-10-27)
 * Coding optimization and bug fixes.
 * Rename hima to classicHIMA (hima will be retired by 2025-11-1).
 * Renmae hima2 to himaFit (hima2 will be retired by 2025-11-1) and improved parameter naming.

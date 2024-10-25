@@ -15,7 +15,7 @@
 #' \code{'negbin'} (i.e., negative binomial, for RNA-seq data as mediators), or \code{'compositional'} (for microbiome data as mediators).
 #' @param penalty the penalty to be applied to the model. Either \code{'DBlasso'} (De-biased LASSO, default),
 #' \code{'MCP'}, \code{'SCAD'}, or \code{'lasso'}. Please note, survival HIMA and microbiome HIMA can be only performed with \code{'DBlasso'};
-#' Quantile HIMA cannot be performed with \code{'DBlasso'}. Not applicable for efficient HIMA (when \code{efficient = TRUE}), as it will always apply \code{'MCP'}.
+#' Quantile HIMA and efficient HIMA cannot be performed with \code{'DBlasso'} as they will always apply \code{'MCP'}.
 #' @param quantile use quantile HIMA (\code{qHIMA}). Only applicable for classic HIMA with continues outcome. Please add parameter \code{tau} to specify the
 #' desired quantile (can be a vector), otherwise the default \code{tau = 0.5} will be used.
 #' @param efficient use efficient HIMA (\code{eHIMA}). Only applicable for classic HIMA with continuous outcome.
