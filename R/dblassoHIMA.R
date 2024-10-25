@@ -117,8 +117,9 @@ dblassoHIMA <- function(X, M, Y, COV = NULL,
   ab_SIS <- alpha_SIS * beta_SIS
   ID_SIS <- which(-abs(ab_SIS) <= sort(-abs(ab_SIS))[d_0])
   d <- length(ID_SIS)
-
-  if (verbose) message("        Top ", d, " mediators are selected: ", paste0(M_ID_name[ID_SIS], collapse = ", "))
+  M_ID_name_SIS <- M_ID_name[ID_SIS]
+  
+  if (verbose) message("        Top ", d, " mediators are selected: ", paste0(M_ID_name_SIS, collapse = ", "))
 
   #########################################################################
   ################### (Step 2) De-biased Lasso Estimates ##################
@@ -167,9 +168,7 @@ dblassoHIMA <- function(X, M, Y, COV = NULL,
   P_value <- apply(PA, 1, max) # The joint p-values for SIS variable
 
   N0 <- dim(PA)[1] * dim(PA)[2]
-  input_pvalues <- PA + matrix(runif(N0, 0, 10^{
-    -10
-  }), dim(PA)[1], 2)
+  input_pvalues <- PA + matrix(runif(N0, 0, 10^{-10}), dim(PA)[1], 2)
 
   # Estimate the proportions of the three component nulls
   nullprop <- null_estimation(input_pvalues)
@@ -209,7 +208,7 @@ dblassoHIMA <- function(X, M, Y, COV = NULL,
 
   if (length(ID_fdr) > 0) {
     results <- data.frame(
-      Index = M_ID_name[ID_fdr],
+      Index = M_ID_name_SIS[ID_fdr],
       alpha_hat = alpha_hat_est,
       alpha_se = alpha_hat_SE,
       beta_hat = beta_hat_est,
