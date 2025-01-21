@@ -1,7 +1,7 @@
 # This is the function for high-dimensional mediation analysis using de-biased lasso
 #' High-dimensional mediation analysis with de-biased lasso penalty
 #'
-#' \code{dblassoHIMA} is used to estimate and test high-dimensional mediation effects using de-biased lasso penalty.
+#' \code{hima_dblasso} is used to estimate and test high-dimensional mediation effects using de-biased lasso penalty.
 #'
 #' @param X a vector of exposure. Do not use \code{data.frame} or \code{matrix}.
 #' @param M a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns represent variables.
@@ -39,7 +39,7 @@
 #' # Example:
 #' head(ContinuousOutcome$PhenoData)
 #'
-#' dblassohima.fit <- dblassoHIMA(
+#' hima_dblasso.fit <- hima_dblasso(
 #'   X = ContinuousOutcome$PhenoData$Treatment,
 #'   Y = ContinuousOutcome$PhenoData$Outcome,
 #'   M = ContinuousOutcome$Mediator,
@@ -48,11 +48,11 @@
 #'   FDRcut = 0.05,
 #'   verbose = TRUE
 #' )
-#' dblassohima.fit
+#' hima_dblasso.fit
 #' }
 #'
 #' @export
-dblassoHIMA <- function(X, M, Y, COV = NULL,
+hima_dblasso <- function(X, M, Y, COV = NULL,
                         topN = NULL,
                         scale = TRUE,
                         FDRcut = 0.05,

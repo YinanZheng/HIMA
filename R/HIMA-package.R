@@ -11,7 +11,7 @@
 #'
 #' @name HIMA-package
 #'
-#' @aliases HIMA-package hima HIMA
+#' @aliases HIMA-package
 #'
 #' @details
 #' # If package "qvalue" is not found during installation, please first install "qvalue" package
@@ -65,5 +65,6 @@
 #' @importFrom survival Surv coxph
 #' @importFrom MASS mvrnorm glm.nb
 #' @importFrom hommel hommel discoveries
+#' @importFrom stats contrasts<-
 #'
 NULL

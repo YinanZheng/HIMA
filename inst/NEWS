@@ -53,5 +53,11 @@
 
 # HIMA 2.3.0 (2024-10-28)
 * Coding optimization and bug fixes.
-* Rename hima to classicHIMA (hima will be retired by 2025-11-1).
+* Rename hima to classicHIMA.
 * Renmae hima2 to himaFit (hima2 will be retired by 2025-11-1) and improved parameter naming.
+
+# HIMA 2.3.1 (2025-01-21)
+* Fix errors when the number of covariates is 1.
+* Function naming convention update (e.g., himaFit is now called hima).
+* Allows contrast and subset in hima.
+

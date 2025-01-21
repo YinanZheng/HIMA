@@ -322,7 +322,7 @@ null_estimation <- function(input_pvalues, lambda = 0.5) {
 
 
 # Internal function: DLASSO_fun
-# A function perform de-biased lasso estimator used by function "microHIMA"
+# A function perform de-biased lasso estimator used by function "hima_microbiome"
 
 DLASSO_fun <- function(X, Y) {
   n <- dim(X)[1]
@@ -363,7 +363,7 @@ rdirichlet <- function(n = 1, alpha) {
 # Internal function: DACT
 # A function to perform Divide-Aggregate Composite-null Test (DACT) by Liu et al. (2020).
 # p value is corrected by JC method Jin and Cai (2007).
-# This function is used in eHIMA
+# This function is used in hima_efficient
 
 DACT <- function(p_a, p_b) {
   Z_a <- stats::qnorm(p_a, lower.tail = F)

@@ -1,6 +1,6 @@
 # Generate HIMA example dataset based on real-world dataset
 
-set.seed(1029)
+set.seed(881029)
 
 ######################################################
 # Dataset - 1 (linear outcome)

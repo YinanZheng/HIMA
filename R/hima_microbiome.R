@@ -1,7 +1,7 @@
 # This is the function for high-dimensional compositional microbiome mediation analysis
 #' High-dimensional mediation analysis for compositional microbiome data
 #'
-#' \code{microHIMA} is used to estimate and test high-dimensional mediation effects for compositional microbiome data.
+#' \code{hima_microbiome} is used to estimate and test high-dimensional mediation effects for compositional microbiome data.
 #'
 #' @param X a vector of exposure. Do not use \code{data.frame} or \code{matrix}.
 #' @param OTU a \code{data.frame} or \code{matrix} of high-dimensional Operational Taxonomic Unit (OTU) data (mediators).
@@ -37,7 +37,7 @@
 #'
 #' head(MicrobiomeData$PhenoData)
 #'
-#' microHIMA.fit <- microHIMA(
+#' hima_microbiome.fit <- hima_microbiome(
 #'   X = MicrobiomeData$PhenoData$Treatment,
 #'   Y = MicrobiomeData$PhenoData$Outcome,
 #'   OTU = MicrobiomeData$Mediator,
@@ -45,11 +45,11 @@
 #'   FDRcut = 0.05,
 #'   verbose = TRUE
 #' )
-#' microHIMA.fit
+#' hima_microbiome.fit
 #' }
 #'
 #' @export
-microHIMA <- function(X,
+hima_microbiome <- function(X,
                       OTU,
                       Y,
                       COV = NULL,
@@ -84,7 +84,7 @@ microHIMA <- function(X,
   P_raw_DLASSO <- matrix(0, 1, d)
   M1 <- t(t(M_raw[, 1]))
 
-  message("Step 1: Isometric Log-ratio Transformation and De-biased Lasso estimates ...", "  (", format(Sys.time(), "%X"), ")")
+  message("Step 1: ILR Transformation and De-biased Lasso estimates ...", "  (", format(Sys.time(), "%X"), ")")
 
   if (verbose) {
     if (is.null(COV)) {

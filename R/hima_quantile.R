@@ -1,7 +1,7 @@
 # This is the function for high-dimensional quantile mediation analysis
 #' High-dimensional quantile mediation analysis
 #'
-#' \code{qHIMA} is used to estimate and test high-dimensional quantile mediation effects.
+#' \code{hima_quantile} is used to estimate and test high-dimensional quantile mediation effects.
 #'
 #' @param X a vector of exposure. Do not use \code{data.frame} or \code{matrix}.
 #' @param M a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns
@@ -41,7 +41,7 @@
 #'
 #' head(QuantileData$PhenoData)
 #'
-#' qHIMA.fit <- qHIMA(
+#' hima_quantile.fit <- hima_quantile(
 #'   X = QuantileData$PhenoData$Treatment,
 #'   M = QuantileData$Mediator,
 #'   Y = QuantileData$PhenoData$Outcome,
@@ -51,11 +51,11 @@
 #'   Bonfcut = 0.05,
 #'   verbose = TRUE
 #' )
-#' qHIMA.fit
+#' hima_quantile.fit
 #' }
 #'
 #' @export
-qHIMA <- function(X, M, Y, COV = NULL,
+hima_quantile <- function(X, M, Y, COV = NULL,
                   penalty = c("MCP", "SCAD", "lasso"),
                   topN = NULL,
                   tau = 0.5,

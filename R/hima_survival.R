@@ -1,7 +1,7 @@
 # This is the function for our proposed method for high-dimensional Cox mediation analysis
 #' High-dimensional mediation analysis for survival data
 #'
-#' \code{survHIMA} is used to estimate and test high-dimensional mediation effects for survival data.
+#' \code{hima_survival} is used to estimate and test high-dimensional mediation effects for survival data.
 #'
 #' @param X a vector of exposure. Do not use \code{data.frame} or \code{matrix}.
 #' @param M a \code{data.frame} or \code{matrix} of high-dimensional mediators. Rows represent samples, columns
@@ -37,7 +37,7 @@
 #'
 #' head(SurvivalData$PhenoData)
 #'
-#' survHIMA.fit <- survHIMA(
+#' hima_survival.fit <- hima_survival(
 #'   X = SurvivalData$PhenoData$Treatment,
 #'   M = SurvivalData$Mediator,
 #'   OT = SurvivalData$PhenoData$Time,
@@ -47,11 +47,11 @@
 #'   FDRcut = 0.05,
 #'   verbose = TRUE
 #' )
-#' survHIMA.fit
+#' hima_survival.fit
 #' }
 #'
 #' @export
-survHIMA <- function(X, M, OT, status, COV = NULL,
+hima_survival <- function(X, M, OT, status, COV = NULL,
                      topN = NULL,
                      scale = TRUE,
                      FDRcut = 0.05,
