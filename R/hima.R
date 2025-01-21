@@ -343,7 +343,7 @@ hima <- function(formula,
 }
 
 #' @export
-summary.hima <- function(object, ...) {
+summary.hima <- function(object, desc = FALSE, ...) {
   if (is.null(object) || length(object$ID) == 0) {
     cat("No significant mediators identified.\n")
     return(invisible(NULL))
@@ -399,7 +399,7 @@ summary.hima <- function(object, ...) {
   sorted_result <- result[order(result$`p-value`), ]
   print(sorted_result)
   
-  if (!is.null(attr(object, "variable.labels"))) {
+  if (desc && !is.null(attr(object, "variable.labels"))) {
     cat("\nVariable Descriptions:\n")
     cat(paste(attr(object, "variable.labels"), collapse = "\n"))
   }
@@ -429,8 +429,8 @@ summary.hima <- function(object, ...) {
     "alpha: Effect of exposure on mediator",
     "beta: Effect of mediator on outcome",
     "alpha*beta: Mediation (indirect) effect",
-    "Relative Importance (%): Relative importance of the mediator out of all significant mediators",
-    paste0("p-value: Joint raw p-value of significant mediator selected based on ", method_text, " < ", sigcut)
+    "Relative Importance (%): Relative importance of the mediator \n  out of all significant mediators",
+    paste0("p-value: Joint raw p-value of significant mediator \n  selected based on ", method_text, " < ", sigcut)
   )
   if (q) {
     results <- data.frame(results,

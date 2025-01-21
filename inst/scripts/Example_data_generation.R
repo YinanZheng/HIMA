@@ -1,18 +1,18 @@
 # Generate HIMA example dataset based on real-world dataset
 
-set.seed(881029)
+
 
 ######################################################
 # Dataset - 1 (linear outcome)
 ######################################################
-
-p <- 300 # the dimension of mediators
+set.seed(1837)
+p <- 500 # the dimension of mediators
 q <- 2    # the dimension of covariates
-n <- 300  # sample size
+n <- 500  # sample size
 alpha <- matrix(0,1,p) # the coefficients for X -> M
 beta <- matrix(0,1,p) # the coefficients for M -> Y
-alpha[1:3] <- c(0.7, 0.8, -0.9)
-beta[1:3] <- c(0.9, 0.8, -0.7)
+alpha[1:3] <- c(0.5, 0.8, -1)
+beta[1:3] <- c(1, 0.8, -0.8)
 zeta <- matrix(0.01,p,q) # the coefficients of covariates for X -> M
 eta <- matrix(0.01,1,q) # the coefficients of covariates for M -> Y
 gamma <- 1 # the direct effect
@@ -36,17 +36,19 @@ usethis::use_data(ContinuousOutcome, overwrite = TRUE)
 
 
 
+
+
 ######################################################
 # Dataset - 2 (logistic outcome)
 ######################################################
-
-p <- 300 # the dimension of mediators
+set.seed(185)
+p <- 500 # the dimension of mediators
 q <- 2    # the dimension of covariates
-n <- 300  # sample size
+n <- 500  # sample size
 alpha <- matrix(0,1,p) # the coefficients for X -> M
 beta <- matrix(0,1,p) # the coefficients for M -> Y
-alpha[1:3] <- c(0.7, 0.8, -0.9)
-beta[1:3] <- c(0.9, 0.8, -0.7)
+alpha[1:3] <- c(0.8, 0.8, -0.9)
+beta[1:3] <- c(0.7, 0.7, -0.9)
 zeta <- matrix(0.01,p,q) # the coefficients of covariates for X -> M
 eta <- matrix(0.01,1,q) # the coefficients of covariates for M -> Y
 gamma <- 1 # the direct effect
@@ -73,12 +75,15 @@ usethis::use_data(BinaryOutcome, overwrite = TRUE)
 
 
 
+
+
+
 ######################################################
 # Dataset - 3 (survival outcome)
 ######################################################
-
-n <- 200 # sample size
-p <- 200 # the dimension of mediators
+set.seed(18675)
+n <- 300 # sample size
+p <- 150 # the dimension of mediators
 q <- 2    # the dimenson of covariates
 sigma_e <- matrix(0,p,p)
 for (i in 1:p){
@@ -88,13 +93,13 @@ for (i in 1:p){
   }
 }
 beta <- matrix(0,1,p)
-beta[1]  <- 0.7
+beta[1]  <- 0.8
 beta[2] <-  0.8
 beta[3]  <- -0.9
 alpha <- matrix(0,1,p)
 alpha[1]  <- 0.9
-alpha[2] <-  0.8
-alpha[3]  <- -0.7
+alpha[2] <-  0.9
+alpha[3]  <- -0.8
 eta <- matrix(0.01,1,q)
 zeta <- matrix(0.01,p,q)
 gamma <- matrix(1,1,1)
@@ -113,7 +118,7 @@ T <- matrix(0,n,1)
 for (i in 1:n){
   T[i] <- -log(1-u[i])*exp(-sum(beta_gamma*MZ[i,]))
 }
-C <- runif(n, min = 0, max = 1)  # generate censoring time
+C <- runif(n, min = 0, max = 1.5)  # generate censoring time
 status <-  T < C  # the censoring status
 censoring_rate  <-  1 -  mean(as.numeric(status))  #  censoring rate is about 20%
 OT <- apply(cbind(C,T),1,min) # the observed failure times
@@ -128,11 +133,15 @@ usethis::use_data(SurvivalData, overwrite = TRUE)
 
 
 
+
+
+
+
 ######################################################
 # Dataset - 4 (microbiome mediators)
 ######################################################
-
-n <- 100 # the sample size
+set.seed(1875)
+n <- 300 # the sample size
 p <- 100 # the dimension of mediator
 a <- matrix(0,1,p) # the coefficient a in Eq. (16)
 a[1] <- 1/3
@@ -185,10 +194,12 @@ usethis::use_data(MicrobiomeData, overwrite = TRUE)
 
 
 
+
+
 ######################################################
 # Dataset - 5 (quantile mediation analysis)
 ######################################################
-
+set.seed(1753)
 p <- 300 # the dimension of mediators
 q <- 2    # the dimension of covariates
 n <- 300  # sample size
