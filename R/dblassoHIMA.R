@@ -34,7 +34,6 @@
 #' @examples
 #' \dontrun{
 #' # Note: In the following examples, M1, M2, and M3 are true mediators.
-#' data(himaDat)
 #'
 #' # Y is continuous and normally distributed
 #' # Example:

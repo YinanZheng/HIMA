@@ -63,7 +63,6 @@
 #' @examples
 #' \dontrun{
 #' # Note: In the following examples, M1, M2, and M3 are true mediators.
-#' data(himaDat)
 #'
 #' # Example 1 (continuous outcome - linear HIMA):
 #' head(ContinuousOutcome$PhenoData)
