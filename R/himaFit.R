@@ -421,7 +421,7 @@ himaFit <- function(formula,
   X <- data.pheno[, ind_vars[1]]
 
   if (length(ind_vars) > 1) {
-    COV <- .convert_to_dummies(data.pheno[, ind_vars[-1]])
+    COV <- .convert_to_dummies(data.pheno[, ind_vars[-1], drop = FALSE])
   } else {
     COV <- NULL
   }

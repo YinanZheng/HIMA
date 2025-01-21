@@ -93,6 +93,14 @@ classicHIMA <- function(X, M, Y, COV.XM = NULL, COV.MY = COV.XM,
                         Bonfcut = 0.05,
                         verbose = FALSE,
                         ...) {
+  
+  if (!is.null(COV.XM) && !is.data.frame(COV.XM) && !is.matrix(COV.XM)) {
+    stop("COV.XM must be either a data.frame or a matrix when provided.")
+  }
+  if (!is.null(COV.MY) && !is.data.frame(COV.MY) && !is.matrix(COV.MY)) {
+    stop("COV.MY must be either a data.frame or a matrix when provided.")
+  }
+  
   Y.type <- match.arg(Y.type)
   Y.family <- switch(Y.type,
     continuous = "gaussian",
@@ -185,7 +193,7 @@ classicHIMA <- function(X, M, Y, COV.XM = NULL, COV.MY = COV.XM,
     fit <- ncvreg(XM_COV, Y,
       family = Y.family,
       penalty = penalty,
-      penalty.factor = c(rep(1, ncol(M_SIS)), rep(0, 1 + ncol(COV.MY))), ...
+      penalty.factor = c(rep(1, ncol(M_SIS)), rep(0, 1 + ncol(as.matrix(COV.MY)))), ...
     )
   }
   lam <- fit$lambda[which.min(BIC(fit))]

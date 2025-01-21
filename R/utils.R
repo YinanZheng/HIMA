@@ -82,13 +82,13 @@ himasis <- function(Y, M, X, COV, glm.family, modelstatement,
     modelstatement <- modelstatement
   } else {
     COV <- data.frame(COV)
-    COV <- data.frame(model.matrix(~., COV))[, -1]
+    COV <- data.frame(model.matrix(~., COV))[, -1, drop = FALSE]
     conf.names <- colnames(COV)
     if (verbose) message("    Adjusting for covariate(s): ", paste0(conf.names, collapse = ", "))
-    datarun <- data.frame(Y = Y, Mone = NA, X = X, COV = COV)
+    datarun <- data.frame(Y = Y, Mone = NA, X = X, COV)
     modelstatement <- eval(parse(text = (paste0(
       modelstatement, "+",
-      paste0(paste0("COV.", conf.names), collapse = "+")
+      paste0(colnames(COV), collapse = "+")
     ))))
   }
 
