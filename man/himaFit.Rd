@@ -73,11 +73,11 @@ A data.frame containing mediation testing results of selected mediators.
 data(himaDat)
 
 # Example 1 (continuous outcome - linear HIMA):
-head(himaDat$Example1$PhenoData)
+head(ContinuousOutcome$PhenoData)
 
 e1 <- himaFit(Outcome ~ Treatment + Sex + Age,
-  data.pheno = himaDat$Example1$PhenoData,
-  data.M = himaDat$Example1$Mediator,
+  data.pheno = ContinuousOutcome$PhenoData,
+  data.M = ContinuousOutcome$Mediator,
   mediator.type = "gaussian",
   penalty = "MCP", # Can be "DBlasso" for dblassoHIMA
   scale = FALSE
@@ -88,8 +88,8 @@ attributes(e1)$variable.labels
 # Efficient HIMA (only applicable to mediators and outcomes that are
 # both continuous and normally distributed.)
 e1e <- himaFit(Outcome ~ Treatment + Sex + Age,
-  data.pheno = himaDat$Example1$PhenoData,
-  data.M = himaDat$Example1$Mediator,
+  data.pheno = ContinuousOutcome$PhenoData,
+  data.M = ContinuousOutcome$Mediator,
   mediator.type = "gaussian",
   efficient = TRUE,
   penalty = "MCP", # Efficient HIMA does not support DBlasso
@@ -99,11 +99,11 @@ e1e
 attributes(e1e)$variable.labels
 
 # Example 2 (binary outcome - logistic HIMA):
-head(himaDat$Example2$PhenoData)
+head(BinaryOutcome$PhenoData)
 
 e2 <- himaFit(Disease ~ Treatment + Sex + Age,
-  data.pheno = himaDat$Example2$PhenoData,
-  data.M = himaDat$Example2$Mediator,
+  data.pheno = BinaryOutcome$PhenoData,
+  data.M = BinaryOutcome$Mediator,
   mediator.type = "gaussian",
   penalty = "MCP",
   scale = FALSE
@@ -112,11 +112,11 @@ e2
 attributes(e2)$variable.labels
 
 # Example 3 (time-to-event outcome - survival HIMA):
-head(himaDat$Example3$PhenoData)
+head(SurvivalData$PhenoData)
 
 e3 <- himaFit(Surv(Status, Time) ~ Treatment + Sex + Age,
-  data.pheno = himaDat$Example3$PhenoData,
-  data.M = himaDat$Example3$Mediator,
+  data.pheno = SurvivalData$PhenoData,
+  data.M = SurvivalData$Mediator,
   mediator.type = "gaussian",
   penalty = "DBlasso",
   scale = FALSE
@@ -125,11 +125,11 @@ e3
 attributes(e3)$variable.labels
 
 # Example 4 (compositional data as mediator, e.g., microbiome):
-head(himaDat$Example4$PhenoData)
+head(MicrobiomeData$PhenoData)
 
 e4 <- himaFit(Outcome ~ Treatment + Sex + Age,
-  data.pheno = himaDat$Example4$PhenoData,
-  data.M = himaDat$Example4$Mediator,
+  data.pheno = MicrobiomeData$PhenoData,
+  data.M = MicrobiomeData$Mediator,
   mediator.type = "compositional",
   penalty = "DBlasso"
 ) # Scaling is always enabled internally for microHIMA
@@ -137,12 +137,12 @@ e4
 attributes(e4)$variable.labels
 
 #' # Example 5 (quantile mediation anlaysis - quantile HIMA):
-head(himaDat$Example5$PhenoData)
+head(QuantileData$PhenoData)
 
 # Note that the function will prompt input for quantile level.
 e5 <- himaFit(Outcome ~ Treatment + Sex + Age,
-  data.pheno = himaDat$Example5$PhenoData,
-  data.M = himaDat$Example5$Mediator,
+  data.pheno = QuantileData$PhenoData,
+  data.M = QuantileData$Mediator,
   mediator.type = "gaussian",
   quantile = TRUE,
   penalty = "MCP", # Quantile HIMA does not support DBlasso

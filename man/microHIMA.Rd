@@ -42,13 +42,13 @@ A data.frame containing mediation testing results of significant mediators (FDR 
 # Note: In the following example, M1, M2, and M3 are true mediators.
 data(himaDat)
 
-head(himaDat$Example4$PhenoData)
+head(MicrobiomeData$PhenoData)
 
 microHIMA.fit <- microHIMA(
-  X = himaDat$Example4$PhenoData$Treatment,
-  Y = himaDat$Example4$PhenoData$Outcome,
-  OTU = himaDat$Example4$Mediator,
-  COV = himaDat$Example4$PhenoData[, c("Sex", "Age")],
+  X = MicrobiomeData$PhenoData$Treatment,
+  Y = MicrobiomeData$PhenoData$Outcome,
+  OTU = MicrobiomeData$Mediator,
+  COV = MicrobiomeData$PhenoData[, c("Sex", "Age")],
   FDRcut = 0.05,
   verbose = TRUE
 )

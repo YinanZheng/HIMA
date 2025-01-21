@@ -39,13 +39,13 @@
 #'
 #' # Y is continuous and normally distributed
 #' # Example (continuous outcome):
-#' head(himaDat$Example1$PhenoData)
+#' head(ContinuousOutcome$PhenoData)
 #'
 #' eHIMA.fit <- eHIMA(
-#'   X = himaDat$Example1$PhenoData$Treatment,
-#'   Y = himaDat$Example1$PhenoData$Outcome,
-#'   M = himaDat$Example1$Mediator,
-#'   COV = himaDat$Example1$PhenoData[, c("Sex", "Age")],
+#'   X = ContinuousOutcome$PhenoData$Treatment,
+#'   Y = ContinuousOutcome$PhenoData$Outcome,
+#'   M = ContinuousOutcome$Mediator,
+#'   COV = ContinuousOutcome$PhenoData[, c("Sex", "Age")],
 #'   scale = FALSE, # Disabled only for simulation data
 #'   FDRcut = 0.05,
 #'   verbose = TRUE

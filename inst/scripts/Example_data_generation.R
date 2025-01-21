@@ -31,7 +31,8 @@ rownames(M) <- paste0("S", 1:n)
 
 pheno <- data.frame(Treatment = X, Outcome = Y, Sex = Z[,1], Age = Z[,2])
 
-Example1 <- list(PhenoData = pheno, Mediator = M)
+ContinuousOutcome <- list(PhenoData = pheno, Mediator = M)
+usethis::use_data(ContinuousOutcome, overwrite = TRUE)
 
 
 
@@ -67,7 +68,8 @@ rownames(M) <- paste0("S", 1:n)
 
 pheno <- data.frame(Treatment = X, Disease = Y, Sex = Z[,1], Age = Z[,2])
 
-Example2 <- list(PhenoData = pheno, Mediator = M)
+BinaryOutcome <- list(PhenoData = pheno, Mediator = M)
+usethis::use_data(BinaryOutcome, overwrite = TRUE)
 
 
 
@@ -111,7 +113,7 @@ T <- matrix(0,n,1)
 for (i in 1:n){
   T[i] <- -log(1-u[i])*exp(-sum(beta_gamma*MZ[i,]))
 }
-C <- runif(n, min = 0, max = 50)  # generate censoring time
+C <- runif(n, min = 0, max = 1)  # generate censoring time
 status <-  T < C  # the censoring status
 censoring_rate  <-  1 -  mean(as.numeric(status))  #  censoring rate is about 20%
 OT <- apply(cbind(C,T),1,min) # the observed failure times
@@ -121,7 +123,8 @@ rownames(M) <- paste0("S", 1:n)
 
 pheno <- data.frame(Treatment = X, Status = status, Time = OT, Sex = Z[,1], Age = Z[,2])
 
-Example3 <- list(PhenoData = pheno, Mediator = M)
+SurvivalData <- list(PhenoData = pheno, Mediator = M)
+usethis::use_data(SurvivalData, overwrite = TRUE)
 
 
 
@@ -177,7 +180,8 @@ rownames(OTU) <- paste0("S", 1:n)
 
 pheno <- data.frame(Treatment = trt, Outcome = Y, Sex = Z[,1], Age = Z[,2])
 
-Example4 <- list(PhenoData = pheno, Mediator = OTU)
+MicrobiomeData <- list(PhenoData = pheno, Mediator = OTU)
+usethis::use_data(MicrobiomeData, overwrite = TRUE)
 
 
 
@@ -227,14 +231,5 @@ rownames(M) <- paste0("S", 1:n)
 
 pheno <- data.frame(Treatment = X, Outcome = Y, Sex = Z[,1], Age = Z[,2])
 
-Example5 <- list(PhenoData = pheno, Mediator = M)
-
-##########
-
-himaDat <- list(Example1=Example1, 
-                Example2=Example2, 
-                Example3=Example3, 
-                Example4=Example4, 
-                Example5=Example5)
-
-usethis::use_data(himaDat, overwrite = TRUE)
+QuantileData <- list(PhenoData = pheno, Mediator = M)
+usethis::use_data(QuantileData, overwrite = TRUE)

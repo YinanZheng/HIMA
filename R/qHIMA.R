@@ -40,13 +40,13 @@
 #' # Note: In the following example, M1, M2, and M3 are true mediators.
 #' data(himaDat)
 #'
-#' head(himaDat$Example5$PhenoData)
+#' head(QuantileData$PhenoData)
 #'
 #' qHIMA.fit <- qHIMA(
-#'   X = himaDat$Example5$PhenoData$Treatment,
-#'   M = himaDat$Example5$Mediator,
-#'   Y = himaDat$Example5$PhenoData$Outcome,
-#'   COV = himaDat$Example5$PhenoData[, c("Sex", "Age")],
+#'   X = QuantileData$PhenoData$Treatment,
+#'   M = QuantileData$Mediator,
+#'   Y = QuantileData$PhenoData$Outcome,
+#'   COV = QuantileData$PhenoData[, c("Sex", "Age")],
 #'   tau = c(0.3, 0.5, 0.7),
 #'   scale = FALSE, # Disabled only for simulation data
 #'   Bonfcut = 0.05,

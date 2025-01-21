@@ -1,55 +1,120 @@
-#' Example datasets for HIMA demo
+#' Continuous Outcome Dataset for HIMA Demo
 #'
-#' A \code{list} containing datasets for various scenarios of HIMA. Each dataset contains a phenotype
-#' data frame and a high-dimension mediator data matrix. The datasets are simulated using parameters generated
-#' from real datasets. The code used to generate the data can be found in "/inst/script" folder of the source package.
+#' A dataset containing phenotype data and high-dimensional mediators for continuous outcome analysis.
+#' The dataset was simulated using parameters generated from real data.
 #'
-#' @return A list of example datasets for HIMA demo and testing.\cr\cr
-#' -->>
-#' \bold{Example dataset 1 for HIMA: Continuous outcome}
-#' <<--
+#' @format A list with the following components:
 #' \describe{
-#'   \item{Treatment:}{treated (value = 1) or not treated (value = 0)}
-#'   \item{Outcome:}{outcome of the treatment- a normally distributed continuous variable}
-#'   \item{Sex:}{female (value = 1) or male (value = 0)}
-#'   \item{Age:}{Age of the participant}
-#' }
-#' -->>
-#' \bold{Example dataset 2 for HIMA: Binary outcome }
-#' <<--
-#' \describe{
-#'   \item{Treatment:}{treated (value = 1) or not treated (value = 0)}
-#'   \item{Disease:}{diseased (value = 1) or healthy (value = 0)}
-#'   \item{Sex:}{female (value = 1) or male (value = 0)}
-#'   \item{Age:}{Age of the participant}
-#' }
-#' -->>
-#' \bold{Example dataset 3 for HIMA: Survival data outcome}
-#' <<--
-#' \describe{
-#'   \item{Treatment:}{treated (value = 1) or not treated (value = 0)}
-#'   \item{Status:}{Status indicator: dead (value = 1) or alive (value = 0)}
-#'   \item{Time:}{time to event}
-#'   \item{Sex:}{female (value = 1) or male (value = 0)}
-#'   \item{Age:}{Age of the participant}
-#' }
-#' -->>
-#' \bold{Example dataset 4 for HIMA: Compositional mediator (e.g., microbiome)}
-#' <<--
-#' \describe{
-#'   \item{Treatment:}{treated (value = 1) or not treated (value = 0)}
-#'   \item{Outcome:}{outcome of the treatment- a normally distributed continuous variable}
-#'   \item{Sex:}{female (value = 1) or male (value = 0)}
-#'   \item{Age:}{Age of the participant}
-#' }
-#' -->>
-#' \bold{Example dataset 5 for HIMA: High-dimensional quantile mediation analysis}
-#' <<--
-#' \describe{
-#'   \item{Treatment:}{treated (value = 1) or not treated (value = 0)}
-#'   \item{Outcome:}{outcome of the treatment- abnormally distributed continuous variable}
-#'   \item{Sex:}{female (value = 1) or male (value = 0)}
-#'   \item{Age:}{Age of the participant}
+#'   \item{PhenoData}{A data frame containing:
+#'     \describe{
+#'       \item{Treatment}{treated (value = 1) or not treated (value = 0).}
+#'       \item{Outcome}{a normally distributed continuous outcome variable.}
+#'       \item{Sex}{female (value = 1) or male (value = 0).}
+#'       \item{Age}{age of the participant.}
+#'     }
+#'   }
+#'   \item{Mediator}{A matrix of high-dimensional mediators (rows: samples, columns: variables).}
 #' }
 #'
-"himaDat"
+#' @examples
+#' data(ContinuousOutcome)
+#' head(ContinuousOutcome$PhenoData)
+#'
+"ContinuousOutcome"
+
+#' Binary Outcome Dataset for HIMA Demo
+#'
+#' A dataset containing phenotype data and high-dimensional mediators for binary outcome analysis.
+#' The dataset was simulated using parameters generated from real data.
+#'
+#' @format A list with the following components:
+#' \describe{
+#'   \item{PhenoData}{A data frame containing:
+#'     \describe{
+#'       \item{Treatment}{treated (value = 1) or not treated (value = 0).}
+#'       \item{Disease}{binary outcome: diseased (value = 1) or healthy (value = 0).}
+#'       \item{Sex}{female (value = 1) or male (value = 0).}
+#'       \item{Age}{age of the participant.}
+#'     }
+#'   }
+#'   \item{Mediator}{A matrix of high-dimensional mediators (rows: samples, columns: variables).}
+#' }
+#'
+#' @examples
+#' data(BinaryOutcome)
+#' head(BinaryOutcome$PhenoData)
+#'
+"BinaryOutcome"
+
+#' Survival Outcome Dataset for HIMA Demo
+#'
+#' A dataset containing phenotype data and high-dimensional mediators for survival outcome analysis.
+#' The dataset was simulated using parameters generated from real data.
+#'
+#' @format A list with the following components:
+#' \describe{
+#'   \item{PhenoData}{A data frame containing:
+#'     \describe{
+#'       \item{Treatment}{treated (value = 1) or not treated (value = 0).}
+#'       \item{Status}{status indicator: dead (value = 1) or alive (value = 0).}
+#'       \item{Time}{time to the event or censoring.}
+#'       \item{Sex}{female (value = 1) or male (value = 0).}
+#'       \item{Age}{age of the participant.}
+#'     }
+#'   }
+#'   \item{Mediator}{A matrix of high-dimensional mediators (rows: samples, columns: variables).}
+#' }
+#'
+#' @examples
+#' data(SurvivalData)
+#' head(SurvivalData$PhenoData)
+#'
+"SurvivalData"
+
+#' Compositional Mediator Dataset for HIMA Demo
+#'
+#' A dataset containing phenotype data and high-dimensional compositional mediators (e.g., microbiome).
+#' The dataset was simulated using parameters generated from real data.
+#'
+#' @format A list with the following components:
+#' \describe{
+#'   \item{PhenoData}{A data frame containing:
+#'     \describe{
+#'       \item{Treatment}{treated (value = 1) or not treated (value = 0).}
+#'       \item{Outcome}{a normally distributed continuous outcome variable.}
+#'       \item{Sex}{female (value = 1) or male (value = 0).}
+#'       \item{Age}{age of the participant.}
+#'     }
+#'   }
+#'   \item{Mediator}{A matrix of high-dimensional compositional mediators (rows: samples, columns: variables).}
+#' }
+#'
+#' @examples
+#' data(MicrobiomeData)
+#' head(MicrobiomeData$PhenoData)
+#'
+"MicrobiomeData"
+
+#' Quantile Mediation Dataset for HIMA Demo
+#'
+#' A dataset containing phenotype data and high-dimensional mediators for quantile mediation analysis.
+#' The dataset was simulated using parameters generated from real data.
+#'
+#' @format A list with the following components:
+#' \describe{
+#'   \item{PhenoData}{A data frame containing:
+#'     \describe{
+#'       \item{Treatment}{treated (value = 1) or not treated (value = 0).}
+#'       \item{Outcome}{an abnormally distributed continuous outcome variable.}
+#'       \item{Sex}{female (value = 1) or male (value = 0).}
+#'       \item{Age}{age of the participant.}
+#'     }
+#'   }
+#'   \item{Mediator}{A matrix of high-dimensional mediators (rows: samples, columns: variables).}
+#' }
+#'
+#' @examples
+#' data(QuantileData)
+#' head(QuantileData$PhenoData)
+#'
+"QuantileData"
