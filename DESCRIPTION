@@ -36,6 +36,8 @@ Collate:
     hima_data.R
     onAttach.R
     HIMA-package.R
+VignetteBuilder: knitr
+Suggests: knitr, rmarkdown
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/YinanZheng/HIMA/
