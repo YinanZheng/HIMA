@@ -145,7 +145,7 @@ process_var <- function(var, scale) {
 # status: the censoring indicator I(T <= C)
 
 LDPE_func <- function(ID, X, OT, status) {
-  library(glmnet)
+  set.seed(1029)
 
   # Dimensions
   coi <- ID
@@ -281,37 +281,33 @@ null_estimation <- function(input_pvalues, lambda = 0.5) {
 }
 
 
-# Internal function: DLASSO_fun (optimized)
+# Internal function: DLASSO_fun
 # A function perform de-biased lasso estimator used by function "hima_microbiome"
 
 DLASSO_fun <- function(X, Y) {
-  n <- nrow(X)
-  p <- ncol(X)
+  set.seed(1029)
   
-  # Fit lasso model for the response
+  n <- dim(X)[1]
+  p <- dim(X)[2]
   fit <- glmnet(X, Y, alpha = 1)
   cv.fit <- cv.glmnet(X, Y, alpha = 1)
-  beta_0 <- coef(cv.fit, s = "lambda.min")[-1]  # Exclude intercept
+  beta_0 <- coef(fit, s = cv.fit$lambda.min)[2:(p + 1)]
+  #
+  fit <- glmnet(X[, 2:p], X[, 1], alpha = 1)
+  cv.fit <- cv.glmnet(X[, 2:p], X[, 1], alpha = 1)
+  phi_hat <- coef(fit, s = cv.fit$lambda.min)[2:p]
+  ##
+  R <- X[, 1] - X[, 2:p] %*% t(t(phi_hat))
+  E <- Y - X %*% t(t(beta_0))
+  beta_1_hat <- beta_0[1] + sum(R * E) / sum(R * X[, 1]) #  The de-biased lasso estimator
+  ##
+  sigma_e2 <- sum(E^2) / (n - length(which(beta_0 != 0)))
   
-  # Fit lasso model for the first column (X[, 1]) against the rest
-  fit_phi <- glmnet(X[, -1, drop = FALSE], X[, 1], alpha = 1)
-  cv.fit_phi <- cv.glmnet(X[, -1, drop = FALSE], X[, 1], alpha = 1)
-  phi_hat <- coef(cv.fit_phi, s = "lambda.min")[-1]  # Exclude intercept
+  sigma_beta1_hat <- sqrt(sigma_e2) * sqrt(sum(R^2)) / abs(sum(R * X[, 1]))
   
-  # Calculate residuals and errors
-  R <- X[, 1] - X[, -1] %*% phi_hat  # Residual of X[, 1] regression
-  E <- Y - X %*% beta_0              # Residual of Y regression
-  
-  # De-biased lasso estimate for beta_1
-  beta_1_hat <- beta_0[1] + sum(R * E) / sum(R * X[, 1])
-  
-  # Variance estimation
-  sigma_e2 <- sum(E^2) / (n - sum(beta_0 != 0))  # Variance of residuals
-  sigma_beta1_hat <- sqrt(sigma_e2 * sum(R^2)) / abs(sum(R * X[, 1]))
-  
-  return(c(beta_1_hat, sigma_beta1_hat))
+  results <- c(beta_1_hat, sigma_beta1_hat)
+  return(results)
 }
-
 
 # Internal function: rdirichlet
 # A function generate random number from Dirichlet distribution.

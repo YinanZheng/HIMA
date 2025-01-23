@@ -50,42 +50,39 @@
 #'
 #' @export
 hima_microbiome <- function(X,
-                      OTU,
-                      Y,
-                      COV = NULL,
-                      FDRcut = 0.05,
-                      verbose = FALSE) {
+                            OTU,
+                            Y,
+                            COV = NULL,
+                            FDRcut = 0.05,
+                            verbose = FALSE) {
   X <- matrix(X, ncol = 1)
-
+  
   M_raw <- as.matrix(OTU)
-
+  
   M_ID_name <- colnames(M_raw)
   if (is.null(M_ID_name)) M_ID_name <- seq_len(ncol(M_raw))
-
+  
   if (!is.null(COV)) {
     COV <- as.matrix(COV)
     X <- cbind(X, COV)
   }
-
+  
   X <- scale(X)
-
+  
   Y <- Y - mean(Y)
-
+  
   M <- M_raw
   n <- dim(M)[1]
   d <- dim(M)[2]
-  # Index_S <- matrix(0, 1, d)
-  # P_b_raw <- matrix(0, 1, d)
-  # P_a_raw <- matrix(0, 1, d)
   alpha_EST <- matrix(0, 1, d)
   alpha_SE <- matrix(0, 1, d)
   beta_EST <- matrix(0, 1, d)
   beta_SE <- matrix(0, 1, d)
   P_raw_DLASSO <- matrix(0, 1, d)
   M1 <- t(t(M_raw[, 1]))
-
+  
   message("Step 1: ILR Transformation and De-biased Lasso estimates ...", "  (", format(Sys.time(), "%X"), ")")
-
+  
   if (verbose) {
     if (is.null(COV)) {
       message("        No covariate was adjusted.")
@@ -93,7 +90,7 @@ hima_microbiome <- function(X,
       message("        Adjusting for covariate(s): ", paste0(colnames(COV), collapse = ", "))
     }
   }
-
+  
   for (k in 1:d) {
     M <- M_raw
     M[, 1] <- M[, k]
@@ -106,18 +103,18 @@ hima_microbiome <- function(X,
         MT[i, j] <- C_1 * log(M[i, j] / C_2)
       }
     }
-
+    
     MT <- scale(MT)
     MX <- cbind(MT, X)
-
+    
     fit.dlasso <- DLASSO_fun(MX, Y)
-
+    
     beta_est <- fit.dlasso[1]
     beta_se <- fit.dlasso[2]
     P_b <- 2 * (1 - pnorm(abs(beta_est / beta_se), 0, 1))
     beta_EST[k] <- beta_est
     beta_SE[k] <- beta_se
-
+    
     lm.fit <- stats::lm(MT[, 1] ~ X)
     lm.out <- summary(lm.fit)
     alpha_est <- lm.out$coefficients[2, 1]
@@ -127,28 +124,28 @@ hima_microbiome <- function(X,
     alpha_EST[k] <- alpha_est
     alpha_SE[k] <- alpha_se
   } # the end of k
-
+  
   P_adj_DLASSO <- as.numeric(P_raw_DLASSO)
-
+  
   message("Step 2: Closted testing-based procedure ...", "     (", format(Sys.time(), "%X"), ")")
-
+  
   ## The FDR method
   set <- which(P_adj_DLASSO < FDRcut)
   hom <- hommel::hommel(P_adj_DLASSO, simes = FALSE)
   N1 <- hommel::discoveries(hom, set, incremental = TRUE, alpha = 0.05)
-
+  
   if (length(set) > 0) {
     L <- length(set)
     N2 <- matrix(0, 1, L)
     N2[2:L] <- N1[1:(L - 1)]
   }
-
+  
   N0 <- N1 - N2
-
+  
   ID_FDR <- set[which(N0 > 0)]
-
+  
   IDE <- alpha_EST[ID_FDR] * beta_EST[ID_FDR]
-
+  
   if (length(ID_FDR) > 0) {
     out_result <- data.frame(
       Index = M_ID_name[ID_FDR],
@@ -165,8 +162,8 @@ hima_microbiome <- function(X,
     if (verbose) message("        No significant mediator identified.")
     out_result <- NULL
   }
-
+  
   message("Done!", "     (", format(Sys.time(), "%X"), ")")
-
+  
   return(out_result)
 }

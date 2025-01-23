@@ -66,5 +66,4 @@
 #' @importFrom MASS mvrnorm glm.nb
 #' @importFrom hommel hommel discoveries
 #' @importFrom stats contrasts<-
-#'
 NULL
