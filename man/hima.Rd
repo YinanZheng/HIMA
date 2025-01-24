@@ -116,7 +116,7 @@ summary(e2)
 # Example 3 (time-to-event outcome - survival HIMA):
 head(SurvivalData$PhenoData)
 
-e3 <- hima(Surv(Status, Time) ~ Treatment + Sex + Age,
+e3 <- hima(Surv(Time, Status) ~ Treatment + Sex + Age,
   data.pheno = SurvivalData$PhenoData,
   data.M = SurvivalData$Mediator,
   mediator.type = "gaussian",

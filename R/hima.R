@@ -105,7 +105,7 @@
 #' # Example 3 (time-to-event outcome - survival HIMA):
 #' head(SurvivalData$PhenoData)
 #'
-#' e3 <- hima(Surv(Status, Time) ~ Treatment + Sex + Age,
+#' e3 <- hima(Surv(Time, Status) ~ Treatment + Sex + Age,
 #'   data.pheno = SurvivalData$PhenoData,
 #'   data.M = SurvivalData$Mediator,
 #'   mediator.type = "gaussian",
@@ -503,8 +503,8 @@ summary.hima <- function(object, desc = FALSE, ...) {
     response_vars <- as.character(f[[2]])[c(2, 3)]
     ind_vars <- all.vars(f)[-c(1, 2)]
     Y <- list(
-      status = data.pheno[, response_vars[1]],
-      OT = data.pheno[, response_vars[2]]
+      OT = data.pheno[, response_vars[1]],
+      status = data.pheno[, response_vars[2]]
     )
     type <- "survival"
   } else {

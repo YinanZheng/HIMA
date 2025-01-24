@@ -4,14 +4,11 @@ subtitle: "A Guide to Using the HIMA Package"
 author: "The HIMA Development Team"
 date: "`r Sys.Date()`"
 output:
-  html_document:
-    theme: spacelab
+  rmarkdown::html_vignette:
     toc: true
     toc_depth: 3
-    toc_float: true
-    code_folding: none
 vignette: >
-  %\VignetteIndexEntry{High-Dimensional Mediation Analysis with HIMA}
+  %\VignetteIndexEntry{High-Dimensional Mediation Analysis}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -20,8 +17,6 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.width = 7,
-  fig.height = 5,
   eval = TRUE,
   echo = TRUE # Ensures all code is displayed by default
 )
@@ -75,13 +70,10 @@ To use the `hima` function, ensure your data is prepared according to the follow
 
 ### 1. Formula Argument (`formula`)
 
-- **General Form**: Use the format `Outcome ~ Exposure + Covariates`. Note that the `Exposure` variable represents the exposure of interest (e.g., "Treatment" in the demo examples) and it has to be listed as the first independent variable in the formula. Covariates are optional.
-- **Interaction Terms**: Optionally include interaction terms if required by your analysis.
-- **Survival Data**: For survival analysis, use the format `Surv(Status, Time) ~ Exposure + Covariates`. See data examples `SurvivalData$PhenoData` for more details.
 Define the model formula to specify the relationship between the outcome, treatment, and covariates. Ensure the following:
-- **General Form**: Use the format `Outcome ~ Exposure + Covariates`. Note that the `Exposure` variable represents the exposure of interest (e.g., "Treatment" in the demo examples) and it has to be listed as the first independent variable in the formula. Covariates are optional.
+- **General Form**: Use the format `Outcome ~ Exposure + Covariates`. Note that the `Exposure` variable represents the exposure of interest (e.g., "Treatment" in the demo examples) and it has to be listed as the first independent variable in the formula. `Covariates` are optional.
 - **Interaction Terms**: Optionally include interaction terms if required by your analysis.
-- **Survival Data**: For survival analysis, use the format `Surv(Status, Time) ~ Exposure + Covariates`. See data examples `SurvivalData$PhenoData` for more details.
+- **Survival Data**: For survival analysis, use the format `Surv(time, event) ~ Exposure + Covariates`. See data examples `SurvivalData$PhenoData` for more details.
 
 ### 2. Phenotype Data (`data.pheno`)
 
@@ -183,7 +175,7 @@ For survival data, `HIMA` incorporates a Cox proportional hazards approach. Here
 ```{r survival-example}
 data(SurvivalData)
 hima_survival.fit <- hima(
-  Surv(Status, Time) ~ Treatment + Sex + Age,
+  Surv(Time, Status) ~ Treatment + Sex + Age,
   data.pheno = SurvivalData$PhenoData,
   data.M = SurvivalData$Mediator,
   mediator.type = "gaussian",
