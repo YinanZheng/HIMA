@@ -126,8 +126,8 @@ survival, and compositional data. Below is an overview of the
 </h4>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/hima.html">hima</a></span><span class="op">(</span></span>
-<span>  <span class="va">formula</span>,          <span class="co"># The model formula specifying outcome, exposure, and covariates</span></span>
-<span>  <span class="va">data.pheno</span>,       <span class="co"># Data frame with outcome, exposure, and covariates</span></span>
+<span>  <span class="va">formula</span>,          <span class="co"># The model formula specifying outcome, exposure, and covariate(s)</span></span>
+<span>  <span class="va">data.pheno</span>,       <span class="co"># Data frame with outcome, exposure, and covariate(s)</span></span>
 <span>  <span class="va">data.M</span>,           <span class="co"># Data frame or matrix of high-dimensional mediators</span></span>
 <span>  <span class="va">mediator.type</span>,    <span class="co"># Type of mediators: "gaussian", "negbin", or "compositional"</span></span>
 <span>  penalty <span class="op">=</span> <span class="st">"DBlasso"</span>,  <span class="co"># Penalty method: "DBlasso", "MCP", "SCAD", or "lasso"</span></span>
@@ -135,7 +135,7 @@ survival, and compositional data. Below is an overview of the
 <span>  efficient <span class="op">=</span> <span class="cn">FALSE</span>,<span class="co"># Use efficient mediation analysis (default: FALSE)</span></span>
 <span>  scale <span class="op">=</span> <span class="cn">TRUE</span>,     <span class="co"># Scale data (default: TRUE)</span></span>
 <span>  sigcut <span class="op">=</span> <span class="fl">0.05</span>,    <span class="co"># Significance cutoff for mediator selection</span></span>
-<span>  contrast <span class="op">=</span> <span class="cn">NULL</span>,  <span class="co"># Named list of contrasts for factor covariates</span></span>
+<span>  contrast <span class="op">=</span> <span class="cn">NULL</span>,  <span class="co"># Named list of contrasts for factor covariate(s)</span></span>
 <span>  subset <span class="op">=</span> <span class="cn">NULL</span>,    <span class="co"># Optional subset of observations</span></span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>   <span class="co"># Display progress messages (default: FALSE)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -155,8 +155,6 @@ according to the following guidelines:</p>
 (e.g., “Treatment” in the demo examples) and it has to be listed as the
 first independent variable in the formula. <code>Covariate(s)</code> are
 optional.</p></li>
-<li><p><strong>Interaction Terms</strong>: Optionally include
-interaction terms if required by your analysis.</p></li>
 <li><p><strong>Survival Data</strong>: For survival analysis, use the
 format <code>Surv(time, event) ~ Exposure + Covariate(s)</code>. See
 data examples <code>SurvivalData$PhenoData</code> for more
