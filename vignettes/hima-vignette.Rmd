@@ -111,6 +111,12 @@ Please note that in actual data analysis, `scale` is almost always `TRUE`. If th
 
 # Examples
 
+## Load the `HIMA` Package
+
+```{r load-HIMA}
+library(HIMA)
+```
+
 ## Continuous Outcome Analysis
 
 We begin with an example of analyzing continuous outcomes using the `HIMA` package. The following code snippet demonstrates how to perform a high-dimensional mediation analysis with continuous outcomes:
