@@ -227,7 +227,10 @@ hima <- function(formula,
   # hima_efficient / hima_quantile
   if (efficient || quantile) {
     if (efficient) {
-      message("Running efficient HIMA with ", penalty, " penalty...")
+      if (penalty != "MCP") {
+        message("Note: Efficient HIMA works best with 'MCP' penalty. Switching penalty to 'MCP'...")
+      }
+      message("Running efficient HIMA with 'MCP' penalty...")
       if (d$type != "continuous" || mediator.type != "gaussian") {
         stop("Efficient HIMA is only applicable to mediators and outcomes that are BOTH \ncontinuous and normally distributed.")
       }
