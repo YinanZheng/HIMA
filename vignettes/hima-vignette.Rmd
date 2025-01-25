@@ -77,9 +77,6 @@ Define the model formula to specify the relationship between the outcome, treatm
 
 ### 2. Phenotype Data (`data.pheno`)
 
-- **Rows**: Represent samples.
-- **Columns**: Include variables such as the outcome, treatment, and optional covariates.
-- **Formula Consistency**: Ensure that all variables specified in the `formula` argument (e.g., `Outcome`, `Treatment`, and `Covariates`) are present in `data.pheno`.
 The `data.pheno` object should be a `data.frame` or `matrix` containing the phenotype information for the analysis. Key requirements include:
 - **Rows:** Represent samples.
 - **Columns:** Include variables such as the outcome, treatment, and optional covariates.
@@ -87,12 +84,6 @@ The `data.pheno` object should be a `data.frame` or `matrix` containing the phen
 
 ### 3. Mediator Data (`data.M`)
 
-- **Rows**: Represent samples, aligned with the rows in `data.pheno`.
-- **Columns**: Represent mediators (e.g., CpGs, genes, or other molecular features).
-- **Mediator Type**: Specify the type of mediators in the `mediator.type` argument. Supported types include (more supporting types will be added in the future):
-  - `"gaussian"` for continuous mediators (default, e.g., DNA methylation data).
-  - `"negbin"` for count data (e.g., transcriptomic data).
-  - `"compositional"` for microbiome or other compositional data.
 The `data.M` object should be a `data.frame` or `matrix` containing high-dimensional mediators. Key requirements include:
 - **Rows:** Represent samples, aligned with the rows in `data.pheno`.
 - **Columns:** Represent mediators (e.g., CpGs, genes, or other molecular features).
@@ -103,9 +94,7 @@ The `data.M` object should be a `data.frame` or `matrix` containing high-dimensi
 
 ### 4. About data scaling
 
-- In actual data analysis, `scale` is almost always `TRUE`.
-- If the `HIMA` package is used for simulation studies, the `scale` function should be set to `FALSE`, as applying the scale transformation would alter the true values of the model's parameters.
-Please note that in actual data analysis, `scale` is almost always `TRUE`. If the `HIMA` package is used for simulation studies, the `scale` function should be set to `FALSE`, as applying the scale transformation would alter the true values of the model's parameters.
+In most real-world data analysis scenarios, `scale` is typically set to `TRUE`, ensuring that the exposure (variable of interest), mediators, and covariates (if included) are standardized to a mean of zero and a variance of one. However, if your data is already pre-standardized—such as in simulation studies or when using our demo dataset-`scale` should be set to `FALSE` to prevent introducing biases or altering the original data structure. When applying `HIMA` to simulated data, if `scale` is set to `TRUE`, it is imperative to preprocess the mediators by scaling them to have a mean of zero and a variance of one prior to generating the outcome variables.
 
 
 

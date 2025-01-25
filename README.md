@@ -25,6 +25,11 @@ if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 BiocManager::install("qvalue")
 ```
+## Documentation
+
+Explore the tutorial for the `HIMA` package, which provides detailed usage examples and guidelines, at the following tutorial link:
+
+[HIMA Tutorial](https://YinanZheng.github.io/HIMA/articles/hima-vignette.html)
 
 ## Citation:
 
