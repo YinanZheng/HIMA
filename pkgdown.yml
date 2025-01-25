@@ -3,7 +3,7 @@ pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   hima-vignette: hima-vignette.html
-last_built: 2025-01-25T08:29Z
+last_built: 2025-01-25T09:38Z
 urls:
   reference: https://github.com/YinanZheng/HIMA/reference
   article: https://github.com/YinanZheng/HIMA/articles

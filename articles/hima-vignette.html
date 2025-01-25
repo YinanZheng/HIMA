@@ -163,100 +163,46 @@ examples <code>SurvivalData$PhenoData</code> for more details.</p>
 <div class="section level4">
 <h4 id="phenotype-data-data-pheno">2. Phenotype Data (<code>data.pheno</code>)<a class="anchor" aria-label="anchor" href="#phenotype-data-data-pheno"></a>
 </h4>
-<ul>
-<li>
-<strong>Rows</strong>: Represent samples.</li>
-<li>
-<strong>Columns</strong>: Include variables such as the outcome,
-treatment, and optional covariates.</li>
-<li>
-<strong>Formula Consistency</strong>: Ensure that all variables
-specified in the <code>formula</code> argument (e.g.,
+<p>The <code>data.pheno</code> object should be a
+<code>data.frame</code> or <code>matrix</code> containing the phenotype
+information for the analysis. Key requirements include: -
+<strong>Rows:</strong> Represent samples. - <strong>Columns:</strong>
+Include variables such as the outcome, treatment, and optional
+covariates. - <strong>Formula Consistency:</strong> Ensure that all
+variables specified in the <code>formula</code> argument (e.g.,
 <code>Outcome</code>, <code>Treatment</code>, and
-<code>Covariates</code>) are present in <code>data.pheno</code>. The
-<code>data.pheno</code> object should be a <code>data.frame</code> or
-<code>matrix</code> containing the phenotype information for the
-analysis. Key requirements include:</li>
-<li>
-<strong>Rows:</strong> Represent samples.</li>
-<li>
-<strong>Columns:</strong> Include variables such as the outcome,
-treatment, and optional covariates.</li>
-<li>
-<strong>Formula Consistency:</strong> Ensure that all variables
-specified in the <code>formula</code> argument (e.g.,
-<code>Outcome</code>, <code>Treatment</code>, and
-<code>Covariates</code>) are present in <code>data.pheno</code>.</li>
-</ul>
+<code>Covariates</code>) are present in <code>data.pheno</code>.</p>
 </div>
 <div class="section level4">
 <h4 id="mediator-data-data-m">3. Mediator Data (<code>data.M</code>)<a class="anchor" aria-label="anchor" href="#mediator-data-data-m"></a>
 </h4>
-<ul>
-<li>
-<strong>Rows</strong>: Represent samples, aligned with the rows in
-<code>data.pheno</code>.</li>
-<li>
-<strong>Columns</strong>: Represent mediators (e.g., CpGs, genes, or
-other molecular features).</li>
-<li>
-<strong>Mediator Type</strong>: Specify the type of mediators in the
-<code>mediator.type</code> argument. Supported types include (more
-supporting types will be added in the future):
-<ul>
-<li>
-<code>"gaussian"</code> for continuous mediators (default, e.g., DNA
-methylation data).</li>
-<li>
-<code>"negbin"</code> for count data (e.g., transcriptomic
-data).</li>
-<li>
-<code>"compositional"</code> for microbiome or other compositional
-data. The <code>data.M</code> object should be a <code>data.frame</code>
-or <code>matrix</code> containing high-dimensional mediators. Key
-requirements include:</li>
-</ul>
-</li>
-<li>
-<strong>Rows:</strong> Represent samples, aligned with the rows in
-<code>data.pheno</code>.</li>
-<li>
+<p>The <code>data.M</code> object should be a <code>data.frame</code> or
+<code>matrix</code> containing high-dimensional mediators. Key
+requirements include: - <strong>Rows:</strong> Represent samples,
+aligned with the rows in <code>data.pheno</code>. -
 <strong>Columns:</strong> Represent mediators (e.g., CpGs, genes, or
-other molecular features).</li>
-<li>
-<strong>Mediator Type:</strong> Specify the type of mediators in the
-<code>mediator.type</code> argument. Supported types include (more
-supporting types will be added in the future):
-<ul>
-<li>
+other molecular features). - <strong>Mediator Type:</strong> Specify the
+type of mediators in the <code>mediator.type</code> argument. Supported
+types include (more supporting types will be added in the future): -
 <code>"gaussian"</code> for continuous mediators (default, e.g., DNA
-methylation data).</li>
-<li>
-<code>"negbin"</code> for count data (e.g., transcriptomic
-data).</li>
-<li>
-<code>"compositional"</code> for microbiome or other compositional
-data.</li>
-</ul>
-</li>
-</ul>
+methylation data). - <code>"negbin"</code> for count data (e.g.,
+transcriptomic data). - <code>"compositional"</code> for microbiome or
+other compositional data.</p>
 </div>
 <div class="section level4">
 <h4 id="about-data-scaling">4. About data scaling<a class="anchor" aria-label="anchor" href="#about-data-scaling"></a>
 </h4>
-<ul>
-<li>In actual data analysis, <code>scale</code> is almost always
-<code>TRUE</code>.</li>
-<li>If the <code>HIMA</code> package is used for simulation studies, the
-<code>scale</code> function should be set to <code>FALSE</code>, as
-applying the scale transformation would alter the true values of the
-model’s parameters. Please note that in actual data analysis,
-<code>scale</code> is almost always <code>TRUE</code>. If the
-<code>HIMA</code> package is used for simulation studies, the
-<code>scale</code> function should be set to <code>FALSE</code>, as
-applying the scale transformation would alter the true values of the
-model’s parameters.</li>
-</ul>
+<p>In most real-world data analysis scenarios, <code>scale</code> is
+typically set to <code>TRUE</code>, ensuring that the exposure (variable
+of interest), mediators, and covariates (if included) are standardized
+to a mean of zero and a variance of one. However, if your data is
+already pre-standardized—such as in simulation studies or when using our
+demo dataset-<code>scale</code> should be set to <code>FALSE</code> to
+prevent introducing biases or altering the original data structure. When
+applying <code>HIMA</code> to simulated data, if <code>scale</code> is
+set to <code>TRUE</code>, it is imperative to preprocess the mediators
+by scaling them to have a mean of zero and a variance of one prior to
+generating the outcome variables.</p>
 </div>
 </div>
 <div class="section level2">
@@ -286,10 +232,10 @@ outcomes:</p>
 <span>  scale <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Running linear HIMA with MCP penalty...</span></span>
-<span><span class="co">#&gt; Step 1: Sure Independent Screening ...     (2:29:15 AM)</span></span>
-<span><span class="co">#&gt; Step 2: Penalized estimate (MCP) ...     (2:29:16 AM)</span></span>
-<span><span class="co">#&gt; Step 3: Joint significance test ...     (2:29:16 AM)</span></span>
-<span><span class="co">#&gt; Done!     (2:29:16 AM)</span></span>
+<span><span class="co">#&gt; Step 1: Sure Independent Screening ...     (3:38:50 AM)</span></span>
+<span><span class="co">#&gt; Step 2: Penalized estimate (MCP) ...     (3:38:52 AM)</span></span>
+<span><span class="co">#&gt; Step 3: Joint significance test ...     (3:38:52 AM)</span></span>
+<span><span class="co">#&gt; Done!     (3:38:52 AM)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">hima_continuous.fit</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Summary of HIMA results:</span></span>
 <span><span class="co">#&gt; -----------------------------------</span></span>
@@ -344,10 +290,10 @@ efficient HIMA analysis:</p>
 <span>  scale <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Running efficient HIMA with MCP penalty...</span></span>
-<span><span class="co">#&gt; Step 1: Sure Independent Screening + minimax concave penalty (MCP) ...     (2:29:16 AM)</span></span>
-<span><span class="co">#&gt; Step 2: Refitted partial regression ...     (2:29:16 AM)</span></span>
-<span><span class="co">#&gt; Step 3: Divide-aggregate composite-null test (DACT) ...     (2:29:17 AM)</span></span>
-<span><span class="co">#&gt; Done!     (2:29:17 AM)</span></span>
+<span><span class="co">#&gt; Step 1: Sure Independent Screening + minimax concave penalty (MCP) ...     (3:38:52 AM)</span></span>
+<span><span class="co">#&gt; Step 2: Refitted partial regression ...     (3:38:52 AM)</span></span>
+<span><span class="co">#&gt; Step 3: Divide-aggregate composite-null test (DACT) ...     (3:38:53 AM)</span></span>
+<span><span class="co">#&gt; Done!     (3:38:53 AM)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">hima_efficient.fit</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Summary of HIMA results:</span></span>
 <span><span class="co">#&gt; -----------------------------------</span></span>
@@ -375,11 +321,11 @@ binary outcome analysis using <code>HIMA</code>:</p>
 <span>  scale <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Running logistic HIMA with MCP penalty...</span></span>
-<span><span class="co">#&gt; Step 1: Sure Independent Screening ...     (2:29:17 AM)</span></span>
-<span><span class="co">#&gt; Step 2: Penalized estimate (MCP) ...     (2:29:18 AM)</span></span>
-<span><span class="co">#&gt;     Using alpha estimated in Step 1 ...   (2:29:18 AM)</span></span>
-<span><span class="co">#&gt; Step 3: Joint significance test ...     (2:29:18 AM)</span></span>
-<span><span class="co">#&gt; Done!     (2:29:18 AM)</span></span>
+<span><span class="co">#&gt; Step 1: Sure Independent Screening ...     (3:38:53 AM)</span></span>
+<span><span class="co">#&gt; Step 2: Penalized estimate (MCP) ...     (3:38:55 AM)</span></span>
+<span><span class="co">#&gt;     Using alpha estimated in Step 1 ...   (3:38:55 AM)</span></span>
+<span><span class="co">#&gt; Step 3: Joint significance test ...     (3:38:55 AM)</span></span>
+<span><span class="co">#&gt; Done!     (3:38:55 AM)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">hima_binary.fit</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Summary of HIMA results:</span></span>
 <span><span class="co">#&gt; -----------------------------------</span></span>
@@ -408,10 +354,10 @@ hazards approach. Here is an example of survival outcome analysis using
 <span>  scale <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Running survival HIMA with de-biased Lasso penalty...</span></span>
-<span><span class="co">#&gt; Step 1: Sure Independent Screening ...     (2:29:18 AM)</span></span>
-<span><span class="co">#&gt; Step 2: De-biased Lasso estimates ...     (2:29:19 AM)</span></span>
-<span><span class="co">#&gt; Step 3: Multiple-testing procedure ...     (2:29:42 AM)</span></span>
-<span><span class="co">#&gt; Done!     (2:29:42 AM)</span></span>
+<span><span class="co">#&gt; Step 1: Sure Independent Screening ...     (3:38:55 AM)</span></span>
+<span><span class="co">#&gt; Step 2: De-biased Lasso estimates ...     (3:38:55 AM)</span></span>
+<span><span class="co">#&gt; Step 3: Multiple-testing procedure ...     (3:39:21 AM)</span></span>
+<span><span class="co">#&gt; Done!     (3:39:21 AM)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">hima_survival.fit</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Summary of HIMA results:</span></span>
 <span><span class="co">#&gt; -----------------------------------</span></span>
@@ -439,9 +385,9 @@ analysis using <code>HIMA</code>:</p>
 <span>  penalty <span class="op">=</span> <span class="st">"DBlasso"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Running compositional HIMA with de-biased Lasso penalty...</span></span>
-<span><span class="co">#&gt; Step 1: ILR Transformation and De-biased Lasso estimates ...  (2:29:42 AM)</span></span>
-<span><span class="co">#&gt; Step 2: Closted testing-based procedure ...     (2:30:34 AM)</span></span>
-<span><span class="co">#&gt; Done!     (2:30:34 AM)</span></span>
+<span><span class="co">#&gt; Step 1: ILR Transformation and De-biased Lasso estimates ...  (3:39:21 AM)</span></span>
+<span><span class="co">#&gt; Step 2: Closted testing-based procedure ...     (3:40:14 AM)</span></span>
+<span><span class="co">#&gt; Done!     (3:40:14 AM)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">hima_microbiome.fit</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Summary of HIMA results:</span></span>
 <span><span class="co">#&gt; -----------------------------------</span></span>
@@ -472,22 +418,22 @@ mediation analysis using <code>HIMA</code>:</p>
 <span>  scale <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Running quantile HIMA with MCP penalty...</span></span>
-<span><span class="co">#&gt; Running penalized quantile regression with tau = 0.3 ...     (2:30:34 AM)</span></span>
-<span><span class="co">#&gt; Step 1: Sure Independent Screening ...     (2:30:34 AM)</span></span>
-<span><span class="co">#&gt; Step 2: Penalized estimate (MCP) ...     (2:30:34 AM)</span></span>
-<span><span class="co">#&gt; Step 3: Joint significance test ...     (2:30:36 AM)</span></span>
+<span><span class="co">#&gt; Running penalized quantile regression with tau = 0.3 ...     (3:40:14 AM)</span></span>
+<span><span class="co">#&gt; Step 1: Sure Independent Screening ...     (3:40:14 AM)</span></span>
+<span><span class="co">#&gt; Step 2: Penalized estimate (MCP) ...     (3:40:14 AM)</span></span>
+<span><span class="co">#&gt; Step 3: Joint significance test ...     (3:40:16 AM)</span></span>
 <span><span class="co">#&gt;  </span></span>
-<span><span class="co">#&gt; Running penalized quantile regression with tau = 0.5 ...     (2:30:38 AM)</span></span>
-<span><span class="co">#&gt; Step 1: Sure Independent Screening ...     (2:30:38 AM)</span></span>
-<span><span class="co">#&gt; Step 2: Penalized estimate (MCP) ...     (2:30:38 AM)</span></span>
-<span><span class="co">#&gt; Step 3: Joint significance test ...     (2:30:40 AM)</span></span>
+<span><span class="co">#&gt; Running penalized quantile regression with tau = 0.5 ...     (3:40:18 AM)</span></span>
+<span><span class="co">#&gt; Step 1: Sure Independent Screening ...     (3:40:18 AM)</span></span>
+<span><span class="co">#&gt; Step 2: Penalized estimate (MCP) ...     (3:40:18 AM)</span></span>
+<span><span class="co">#&gt; Step 3: Joint significance test ...     (3:40:20 AM)</span></span>
 <span><span class="co">#&gt;  </span></span>
-<span><span class="co">#&gt; Running penalized quantile regression with tau = 0.7 ...     (2:30:41 AM)</span></span>
-<span><span class="co">#&gt; Step 1: Sure Independent Screening ...     (2:30:41 AM)</span></span>
-<span><span class="co">#&gt; Step 2: Penalized estimate (MCP) ...     (2:30:42 AM)</span></span>
-<span><span class="co">#&gt; Step 3: Joint significance test ...     (2:30:44 AM)</span></span>
+<span><span class="co">#&gt; Running penalized quantile regression with tau = 0.7 ...     (3:40:21 AM)</span></span>
+<span><span class="co">#&gt; Step 1: Sure Independent Screening ...     (3:40:21 AM)</span></span>
+<span><span class="co">#&gt; Step 2: Penalized estimate (MCP) ...     (3:40:22 AM)</span></span>
+<span><span class="co">#&gt; Step 3: Joint significance test ...     (3:40:24 AM)</span></span>
 <span><span class="co">#&gt;  </span></span>
-<span><span class="co">#&gt; Done!     (2:30:46 AM)</span></span>
+<span><span class="co">#&gt; Done!     (3:40:26 AM)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">hima_quantile.fit</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Summary of HIMA results:</span></span>
 <span><span class="co">#&gt; -----------------------------------</span></span>
