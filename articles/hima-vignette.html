@@ -225,31 +225,8 @@ mediators, we can use the following code snippet:</p>
 <span>  penalty <span class="op">=</span> <span class="st">"MCP"</span>,</span>
 <span>  scale <span class="op">=</span> <span class="cn">FALSE</span> <span class="co"># Demo data is already standardized</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running linear HIMA with MCP penalty...</span></span>
-<span><span class="co">#&gt; Step 1: Sure Independent Screening ...     (5:40:22 AM)</span></span>
-<span><span class="co">#&gt; Step 2: Penalized estimate (MCP) ...     (5:40:23 AM)</span></span>
-<span><span class="co">#&gt; Step 3: Joint significance test ...     (5:40:23 AM)</span></span>
-<span><span class="co">#&gt; Done!     (5:40:23 AM)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">hima_continuous.fit</span>, desc<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="co"># `desc = TRUE` option to show the description of the output results</span></span>
-<span><span class="co">#&gt; Summary of HIMA results:</span></span>
-<span><span class="co">#&gt; -----------------------------------</span></span>
-<span><span class="co">#&gt; Number of significant mediators: 3 </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Top mediators (sorted by p-value):</span></span>
-<span><span class="co">#&gt;   ID      alpha       beta alpha*beta Relative Importance (%)      p-value</span></span>
-<span><span class="co">#&gt; 1 M3 -0.9803014 -0.7848679  0.7694071                39.51341 2.049845e-12</span></span>
-<span><span class="co">#&gt; 2 M2  0.8627820  0.8556704  0.7382570                37.91367 1.203775e-09</span></span>
-<span><span class="co">#&gt; 3 M1  0.4507821  0.9750634  0.4395411                22.57292 1.109704e-03</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Variable Descriptions:</span></span>
-<span><span class="co">#&gt; ID: Mediator ID</span></span>
-<span><span class="co">#&gt; alpha: Effect of exposure on mediator</span></span>
-<span><span class="co">#&gt; beta: Effect of mediator on outcome</span></span>
-<span><span class="co">#&gt; alpha*beta: Mediation (indirect) effect</span></span>
-<span><span class="co">#&gt; Relative Importance (%): Relative importance of the mediator </span></span>
-<span><span class="co">#&gt;   out of all significant mediators</span></span>
-<span><span class="co">#&gt; p-value: Joint raw p-value of significant mediator </span></span>
-<span><span class="co">#&gt;   selected based on Bonferroni-adjusted p &lt; 0.05</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">hima_continuous.fit</span>, desc<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> </span>
+<span><span class="co"># `desc = TRUE` option to show the description of the output results</span></span></code></pre></div>
 <p>The <code>penaly</code> can be set to <code>DBlasso</code> which may
 help detect more mediators with weaker signals.</p>
 </div>
@@ -271,31 +248,8 @@ power to detect mediators with weaker signals.</p>
 <span>  penalty <span class="op">=</span> <span class="st">"lasso"</span>,</span>
 <span>  scale <span class="op">=</span> <span class="cn">FALSE</span> <span class="co"># Demo data is already standardized</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running efficient HIMA with lasso penalty...</span></span>
-<span><span class="co">#&gt; Step 1: Sure Independent Screening + minimax concave penalty (MCP) ...     (5:40:23 AM)</span></span>
-<span><span class="co">#&gt; Step 2: Refitted partial regression ...     (5:40:23 AM)</span></span>
-<span><span class="co">#&gt; Step 3: Divide-aggregate composite-null test (DACT) ...     (5:40:24 AM)</span></span>
-<span><span class="co">#&gt; Done!     (5:40:24 AM)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">hima_efficient.fit</span>, desc<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="co"># Note that the efficient HIMA is controlling FDR</span></span>
-<span><span class="co">#&gt; Summary of HIMA results:</span></span>
-<span><span class="co">#&gt; -----------------------------------</span></span>
-<span><span class="co">#&gt; Number of significant mediators: 3 </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Top mediators (sorted by p-value):</span></span>
-<span><span class="co">#&gt;   ID      alpha       beta alpha*beta Relative Importance (%)      p-value</span></span>
-<span><span class="co">#&gt; 1 M3 -0.9803014 -0.7848679  0.7694071                39.51341 3.311590e-15</span></span>
-<span><span class="co">#&gt; 2 M2  0.8627820  0.8556704  0.7382570                37.91367 4.874037e-12</span></span>
-<span><span class="co">#&gt; 3 M1  0.4507821  0.9750634  0.4395411                22.57292 1.865340e-05</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Variable Descriptions:</span></span>
-<span><span class="co">#&gt; ID: Mediator ID</span></span>
-<span><span class="co">#&gt; alpha: Effect of exposure on mediator</span></span>
-<span><span class="co">#&gt; beta: Effect of mediator on outcome</span></span>
-<span><span class="co">#&gt; alpha*beta: Mediation (indirect) effect</span></span>
-<span><span class="co">#&gt; Relative Importance (%): Relative importance of the mediator </span></span>
-<span><span class="co">#&gt;   out of all significant mediators</span></span>
-<span><span class="co">#&gt; p-value: Joint raw p-value of significant mediator </span></span>
-<span><span class="co">#&gt;   selected based on DACT method with BH-FDR &lt; 0.05</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">hima_efficient.fit</span>, desc<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> </span>
+<span><span class="co"># Note that the efficient HIMA is controlling FDR</span></span></code></pre></div>
 <p>It is recommended to try different <code>penalty</code> options and
 <code>efficient</code> option to find the best one for your data.</p>
 </div>
@@ -314,22 +268,7 @@ regression:</p>
 <span>  penalty <span class="op">=</span> <span class="st">"MCP"</span>,</span>
 <span>  scale <span class="op">=</span> <span class="cn">FALSE</span> <span class="co"># Demo data is already standardized</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running logistic HIMA with MCP penalty...</span></span>
-<span><span class="co">#&gt; Step 1: Sure Independent Screening ...     (5:40:24 AM)</span></span>
-<span><span class="co">#&gt; Step 2: Penalized estimate (MCP) ...     (5:40:25 AM)</span></span>
-<span><span class="co">#&gt;     Using alpha estimated in Step 1 ...   (5:40:25 AM)</span></span>
-<span><span class="co">#&gt; Step 3: Joint significance test ...     (5:40:25 AM)</span></span>
-<span><span class="co">#&gt; Done!     (5:40:25 AM)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">hima_binary.fit</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Summary of HIMA results:</span></span>
-<span><span class="co">#&gt; -----------------------------------</span></span>
-<span><span class="co">#&gt; Number of significant mediators: 3 </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Top mediators (sorted by p-value):</span></span>
-<span><span class="co">#&gt;   ID      alpha       beta alpha*beta Relative Importance (%)      p-value</span></span>
-<span><span class="co">#&gt; 1 M3 -0.8669016 -0.8239994  0.7143264                38.63434 1.610871e-09</span></span>
-<span><span class="co">#&gt; 2 M1  0.7948203  0.7513698  0.5972039                32.29977 8.570595e-09</span></span>
-<span><span class="co">#&gt; 3 M2  0.7731996  0.6950487  0.5374114                29.06589 2.984815e-08</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">hima_binary.fit</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="survival-outcome-analysis">Survival Outcome Analysis<a class="anchor" aria-label="anchor" href="#survival-outcome-analysis"></a>
@@ -347,21 +286,7 @@ hazards approach. Here is an example of survival outcome analysis using
 <span>  penalty <span class="op">=</span> <span class="st">"DBlasso"</span>,</span>
 <span>  scale <span class="op">=</span> <span class="cn">FALSE</span> <span class="co"># Demo data is already standardized</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running survival HIMA with de-biased Lasso penalty...</span></span>
-<span><span class="co">#&gt; Step 1: Sure Independent Screening ...     (5:40:25 AM)</span></span>
-<span><span class="co">#&gt; Step 2: De-biased Lasso estimates ...     (5:40:26 AM)</span></span>
-<span><span class="co">#&gt; Step 3: Multiple-testing procedure ...     (5:40:51 AM)</span></span>
-<span><span class="co">#&gt; Done!     (5:40:51 AM)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">hima_survival.fit</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Summary of HIMA results:</span></span>
-<span><span class="co">#&gt; -----------------------------------</span></span>
-<span><span class="co">#&gt; Number of significant mediators: 3 </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Top mediators (sorted by p-value):</span></span>
-<span><span class="co">#&gt;   ID      alpha       beta alpha*beta Relative Importance (%)      p-value</span></span>
-<span><span class="co">#&gt; 1 M2  0.7630170  0.7278533  0.5553644                28.00395 3.365552e-11</span></span>
-<span><span class="co">#&gt; 2 M3 -0.8212199 -0.8958534  0.7356926                37.09690 4.325473e-11</span></span>
-<span><span class="co">#&gt; 3 M1  0.8215721  0.8424184  0.6921075                34.89915 1.134386e-10</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">hima_survival.fit</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="microbiome-mediation-analysis">Microbiome Mediation Analysis<a class="anchor" aria-label="anchor" href="#microbiome-mediation-analysis"></a>
@@ -378,20 +303,7 @@ mediation analysis using <code>HIMA</code>:</p>
 <span>  mediator.type <span class="op">=</span> <span class="st">"compositional"</span>,</span>
 <span>  penalty <span class="op">=</span> <span class="st">"DBlasso"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running compositional HIMA with de-biased Lasso penalty...</span></span>
-<span><span class="co">#&gt; Step 1: ILR Transformation and De-biased Lasso estimates ...  (5:40:51 AM)</span></span>
-<span><span class="co">#&gt; Step 2: Closted testing-based procedure ...     (5:41:44 AM)</span></span>
-<span><span class="co">#&gt; Done!     (5:41:44 AM)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">hima_microbiome.fit</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Summary of HIMA results:</span></span>
-<span><span class="co">#&gt; -----------------------------------</span></span>
-<span><span class="co">#&gt; Number of significant mediators: 3 </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Top mediators (sorted by p-value):</span></span>
-<span><span class="co">#&gt;   ID     alpha      beta alpha*beta Relative Importance (%) p-value</span></span>
-<span><span class="co">#&gt; 1 M1 0.8161109  3.910193   3.191151                50.11182       0</span></span>
-<span><span class="co">#&gt; 2 M2 0.8171704 -2.250231  -1.838822                28.87570       0</span></span>
-<span><span class="co">#&gt; 3 M3 0.7920133 -1.689476  -1.338088                21.01248       0</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">hima_microbiome.fit</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="quantile-mediation-analysis">Quantile Mediation Analysis<a class="anchor" aria-label="anchor" href="#quantile-mediation-analysis"></a>
@@ -411,39 +323,7 @@ desired quantile(s):</p>
 <span>  tau <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">0.5</span>, <span class="fl">0.7</span><span class="op">)</span>,</span>
 <span>  scale <span class="op">=</span> <span class="cn">FALSE</span> <span class="co"># Demo data is already standardized</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running quantile HIMA with MCP penalty...</span></span>
-<span><span class="co">#&gt; Running penalized quantile regression with tau = 0.3 ...     (5:41:44 AM)</span></span>
-<span><span class="co">#&gt; Step 1: Sure Independent Screening ...     (5:41:44 AM)</span></span>
-<span><span class="co">#&gt; Step 2: Penalized estimate (MCP) ...     (5:41:45 AM)</span></span>
-<span><span class="co">#&gt; Step 3: Joint significance test ...     (5:41:47 AM)</span></span>
-<span><span class="co">#&gt;  </span></span>
-<span><span class="co">#&gt; Running penalized quantile regression with tau = 0.5 ...     (5:41:48 AM)</span></span>
-<span><span class="co">#&gt; Step 1: Sure Independent Screening ...     (5:41:48 AM)</span></span>
-<span><span class="co">#&gt; Step 2: Penalized estimate (MCP) ...     (5:41:49 AM)</span></span>
-<span><span class="co">#&gt; Step 3: Joint significance test ...     (5:41:51 AM)</span></span>
-<span><span class="co">#&gt;  </span></span>
-<span><span class="co">#&gt; Running penalized quantile regression with tau = 0.7 ...     (5:41:52 AM)</span></span>
-<span><span class="co">#&gt; Step 1: Sure Independent Screening ...     (5:41:52 AM)</span></span>
-<span><span class="co">#&gt; Step 2: Penalized estimate (MCP) ...     (5:41:53 AM)</span></span>
-<span><span class="co">#&gt; Step 3: Joint significance test ...     (5:41:55 AM)</span></span>
-<span><span class="co">#&gt;  </span></span>
-<span><span class="co">#&gt; Done!     (5:41:56 AM)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">hima_quantile.fit</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Summary of HIMA results:</span></span>
-<span><span class="co">#&gt; -----------------------------------</span></span>
-<span><span class="co">#&gt; Number of significant mediators: 9 </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Top mediators (sorted by p-value):</span></span>
-<span><span class="co">#&gt;   ID      alpha       beta alpha*beta Relative Importance (%)      p-value tau</span></span>
-<span><span class="co">#&gt; 1 M1  0.6736350  1.0942312  0.7371124                35.46531 0.000000e+00 0.3</span></span>
-<span><span class="co">#&gt; 2 M1  0.6736350  0.9697600  0.6532642                32.24338 0.000000e+00 0.3</span></span>
-<span><span class="co">#&gt; 3 M2  0.8626021  0.8213064  0.7084607                34.96773 0.000000e+00 0.3</span></span>
-<span><span class="co">#&gt; 4 M3 -0.8483933 -0.7830286  0.6643162                32.78888 0.000000e+00 0.5</span></span>
-<span><span class="co">#&gt; 5 M1  0.6736350  0.9957785  0.6707912                31.38334 0.000000e+00 0.5</span></span>
-<span><span class="co">#&gt; 6 M2  0.8626021  0.8103886  0.6990429                32.70512 0.000000e+00 0.5</span></span>
-<span><span class="co">#&gt; 7 M3 -0.8483933 -0.9047423  0.7675774                35.91154 0.000000e+00 0.7</span></span>
-<span><span class="co">#&gt; 8 M2  0.8626021  0.8281415  0.7143566                34.37044 2.318146e-13 0.7</span></span>
-<span><span class="co">#&gt; 9 M3 -0.8483933 -0.7389671  0.6269348                30.16424 2.896923e-10 0.7</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">hima_quantile.fit</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -486,50 +366,7 @@ Statistics in Biosciences. 2024. DOI:
 <h2 id="session-information">Session Information<a class="anchor" aria-label="anchor" href="#session-information"></a>
 </h2>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; R version 4.4.2 (2024-10-31 ucrt)</span></span>
-<span><span class="co">#&gt; Platform: x86_64-w64-mingw32/x64</span></span>
-<span><span class="co">#&gt; Running under: Windows 10 x64 (build 19045)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Matrix products: default</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; locale:</span></span>
-<span><span class="co">#&gt; [1] LC_COLLATE=English_United States.utf8 </span></span>
-<span><span class="co">#&gt; [2] LC_CTYPE=English_United States.utf8   </span></span>
-<span><span class="co">#&gt; [3] LC_MONETARY=English_United States.utf8</span></span>
-<span><span class="co">#&gt; [4] LC_NUMERIC=C                          </span></span>
-<span><span class="co">#&gt; [5] LC_TIME=English_United States.utf8    </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; time zone: America/Chicago</span></span>
-<span><span class="co">#&gt; tzcode source: internal</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; attached base packages:</span></span>
-<span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] HIMA_2.3.1    glmnet_4.1-8  Matrix_1.7-1  ncvreg_3.14.3</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
-<span><span class="co">#&gt;  [1] gtable_0.3.6       shape_1.4.6.1      xfun_0.49          bslib_0.8.0       </span></span>
-<span><span class="co">#&gt;  [5] ggplot2_3.5.1      htmlwidgets_1.6.4  lattice_0.22-6     vctrs_0.6.5       </span></span>
-<span><span class="co">#&gt;  [9] tools_4.4.2        generics_0.1.3     parallel_4.4.2     tibble_3.2.1      </span></span>
-<span><span class="co">#&gt; [13] fansi_1.0.6        pkgconfig_2.0.3    desc_1.4.3         linprog_0.9-4     </span></span>
-<span><span class="co">#&gt; [17] lifecycle_1.0.4    compiler_4.4.2     stringr_1.5.1      MatrixModels_0.5-3</span></span>
-<span><span class="co">#&gt; [21] textshaping_0.4.0  munsell_0.5.1      codetools_0.2-20   SparseM_1.84-2    </span></span>
-<span><span class="co">#&gt; [25] quantreg_5.99.1    htmltools_0.5.8.1  sass_0.4.9         fdrtool_1.2.18    </span></span>
-<span><span class="co">#&gt; [29] yaml_2.3.10        pillar_1.9.0       pkgdown_2.1.1      jquerylib_0.1.4   </span></span>
-<span><span class="co">#&gt; [33] MASS_7.3-61        cachem_1.1.0       iterators_1.0.14   foreach_1.5.2     </span></span>
-<span><span class="co">#&gt; [37] tidyselect_1.2.1   digest_0.6.37      stringi_1.8.4      dplyr_1.1.4       </span></span>
-<span><span class="co">#&gt; [41] reshape2_1.4.4     splines_4.4.2      fastmap_1.2.0      grid_4.4.2        </span></span>
-<span><span class="co">#&gt; [45] colorspace_2.1-1   cli_3.6.3          magrittr_2.0.3     survival_3.7-0    </span></span>
-<span><span class="co">#&gt; [49] utf8_1.2.4         conquer_1.3.3      scales_1.3.0       rmarkdown_2.29    </span></span>
-<span><span class="co">#&gt; [53] matrixStats_1.5.0  qvalue_2.36.0      hdi_0.1-9          ragg_1.3.3        </span></span>
-<span><span class="co">#&gt; [57] HDMT_1.0.5         evaluate_1.0.1     lpSolve_5.6.23     knitr_1.49        </span></span>
-<span><span class="co">#&gt; [61] scalreg_1.0.1      doParallel_1.0.17  lars_1.3           rlang_1.1.4       </span></span>
-<span><span class="co">#&gt; [65] Rcpp_1.0.14        hommel_1.8         glue_1.8.0         rstudioapi_0.17.1 </span></span>
-<span><span class="co">#&gt; [69] jsonlite_1.8.9     R6_2.5.1           plyr_1.8.9         systemfonts_1.1.0 </span></span>
-<span><span class="co">#&gt; [73] fs_1.6.5</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
