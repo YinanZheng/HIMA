@@ -76,68 +76,41 @@ Development Team</h4>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>Mediation analysis is a statistical methodology employed to
-investigate the underlying mechanisms through which an independent
-variable influences a dependent variable through an intermediary
-variable (mediator). This approach typically involves evaluating
-indirect, direct, and total effects within a specified statistical
-framework. A key objective of mediation analysis is to test the
-mediation hypothesis, which suggests that the impact of the independent
-variable on the dependent variable is transmitted through one or more
-mediating variables. By investigating these pathways, we can achieve a
-more comprehensive understanding of the causal relationships among the
-variables. For instance, mediation analysis can enhance the refinement
-of interventions to improve their efficacy in clinical trials. In
-observational studies, mediation analysis can serve to pinpoint
-intervention targets and elucidate the underlying mechanisms of
+<p>Mediation analysis is a statistical method used to explore the
+mechanisms by which an independent variable influences a dependent
+variable through one or more intermediary variables, known as mediators.
+This process involves assessing the indirect, direct, and total effects
+within a defined statistical framework. The primary goal of mediation
+analysis is to test the mediation hypothesis, which posits that the
+effect of an independent variable on a dependent variable is partially
+or fully mediated by intermediate variables. By examining these
+pathways, researchers can gain a deeper understanding of the causal
+relationships among variables. Mediation analysis is particularly
+valuable in refining interventions to enhance their effectiveness in
+clinical trials and in observational studies, where it helps identify
+key intervention targets and elucidate the mechanisms underlying complex
 diseases.</p>
 </div>
 <div class="section level2">
 <h2 id="package-overview">Package Overview<a class="anchor" aria-label="anchor" href="#package-overview"></a>
 </h2>
-<p>The <code>HIMA</code> package provides tools for estimating and
-testing high-dimensional mediation effects, tailored for modern
-<code>omic</code> data such as epigenetics, transcriptomics, and
-microbiomics. The function, <code>hima</code>, serves as a comprehensive
-wrapper function designed to implement various high-dimensional
-mediation analysis methods for both estimating and testing mediation
-effects. <code>hima</code> can automatically select the appropriate
-method based on the outcome and mediator data type. The
-<code>hima</code> function is designed to be extensible, allowing future
-features and methods to seamlessly integrate within its framework,
-ensuring a consistent and user-friendly experience.</p>
-<div class="section level4">
-<h4 id="key-features">Key Features<a class="anchor" aria-label="anchor" href="#key-features"></a>
-</h4>
-<ul>
-<li>High-dimensional mediation analysis for continuous, binary, and
-survival outcomes.</li>
-<li>Specialized methods for compositional microbiome and quantile
-mediation analysis.</li>
-<li>Flexible penalty options including <code>DBlasso</code>,
-<code>MCP</code>, and <code>SCAD</code>.</li>
-<li>High-level wrapper function <code>hima</code> for easy
-implementation.</li>
-</ul>
-</div>
-</div>
-<div class="section level2">
-<h2 id="package-installation">Package Installation<a class="anchor" aria-label="anchor" href="#package-installation"></a>
-</h2>
-<p>HIMA is now available in the R CRAN repository. To install from
-CRAN:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"HIMA"</span><span class="op">)</span></span></code></pre></div>
-<p>To install the development version from GitHub:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"yinanzheng/HIMA"</span><span class="op">)</span></span></code></pre></div>
-<p>If the package “qvalue” is not found, please first install the
-“qvalue” package through Bioconductor:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://bioconductor.github.io/BiocManager/" class="external-link">"BiocManager"</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
-<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"qvalue"</span><span class="op">)</span></span></code></pre></div>
+<p>The <code>HIMA</code> package provides robust tools for estimating
+and testing high-dimensional mediation effects, specifically designed
+for modern <code>omic</code> data, including epigenetics,
+transcriptomics, and microbiomics. It supports high-dimensional
+mediation analysis across continuous, binary, and survival outcomes,
+with specialized methods tailored for compositional microbiome data and
+quantile mediation analysis.</p>
+<p>At the core of the package is the <code>hima</code> function, a
+flexible and powerful wrapper that integrates various high-dimensional
+mediation analysis methods for both effect estimation and hypothesis
+testing. The <code>hima</code> function automatically selects the most
+suitable analytical approach based on the outcome and mediator data
+type, streamlining complex workflows and reducing user burden.</p>
+<p><code>hima</code> is designed with extensibility in mind, allowing
+seamless integration of future features and methods. This ensures a
+consistent, user-friendly interface while staying adaptable to evolving
+analytical needs.</p>
 </div>
 <div class="section level2">
 <h2 id="data-preparation-and-settings">Data Preparation and Settings<a class="anchor" aria-label="anchor" href="#data-preparation-and-settings"></a>
@@ -148,16 +121,17 @@ according to the following guidelines:</p>
 <h4 id="formula-argument-formula">1. Formula Argument (<code>formula</code>)<a class="anchor" aria-label="anchor" href="#formula-argument-formula"></a>
 </h4>
 <p>Define the model formula to specify the relationship between the
-outcome, treatment, and covariates. Ensure the following: -
-<strong>General Form</strong>: Use the format
-<code>Outcome ~ Exposure + Covariates</code>. Note that the
+<code>Outcome</code>, <code>Exposure</code>, and
+<code>Covariate(s)</code>. Ensure the following: - <strong>General
+Form</strong>: Use the format
+<code>Outcome ~ Exposure + Covariate(s)</code>. Note that the
 <code>Exposure</code> variable represents the exposure of interest
 (e.g., “Treatment” in the demo examples) and it has to be listed as the
-first independent variable in the formula. <code>Covariates</code> are
+first independent variable in the formula. <code>Covariate(s)</code> are
 optional. - <strong>Interaction Terms</strong>: Optionally include
 interaction terms if required by your analysis. - <strong>Survival
 Data</strong>: For survival analysis, use the format
-<code>Surv(time, event) ~ Exposure + Covariates</code>. See data
+<code>Surv(time, event) ~ Exposure + Covariate(s)</code>. See data
 examples <code>SurvivalData$PhenoData</code> for more details.</p>
 </div>
 <div class="section level4">
@@ -165,21 +139,22 @@ examples <code>SurvivalData$PhenoData</code> for more details.</p>
 </h4>
 <p>The <code>data.pheno</code> object should be a
 <code>data.frame</code> or <code>matrix</code> containing the phenotype
-information for the analysis. Key requirements include: -
-<strong>Rows:</strong> Represent samples. - <strong>Columns:</strong>
-Include variables such as the outcome, treatment, and optional
-covariates. - <strong>Formula Consistency:</strong> Ensure that all
-variables specified in the <code>formula</code> argument (e.g.,
-<code>Outcome</code>, <code>Treatment</code>, and
-<code>Covariates</code>) are present in <code>data.pheno</code>.</p>
+information for the analysis (without missing values). Key requirements
+include: - <strong>Rows:</strong> Represent samples. -
+<strong>Columns:</strong> Include variables such as the outcome,
+treatment, and optional covariate(s). - <strong>Formula
+Consistency:</strong> Ensure that all variables specified in the
+<code>formula</code> argument (e.g., <code>Outcome</code>,
+<code>Treatment</code>, and <code>Covariate(s)</code>) are present in
+<code>data.pheno</code>.</p>
 </div>
 <div class="section level4">
 <h4 id="mediator-data-data-m">3. Mediator Data (<code>data.M</code>)<a class="anchor" aria-label="anchor" href="#mediator-data-data-m"></a>
 </h4>
 <p>The <code>data.M</code> object should be a <code>data.frame</code> or
-<code>matrix</code> containing high-dimensional mediators. Key
-requirements include: - <strong>Rows:</strong> Represent samples,
-aligned with the rows in <code>data.pheno</code>. -
+<code>matrix</code> containing high-dimensional mediators (without
+missing values). Key requirements include: - <strong>Rows:</strong>
+Represent samples, aligned with the rows in <code>data.pheno</code>. -
 <strong>Columns:</strong> Represent mediators (e.g., CpGs, genes, or
 other molecular features). - <strong>Mediator Type:</strong> Specify the
 type of mediators in the <code>mediator.type</code> argument. Supported
@@ -194,34 +169,33 @@ other compositional data.</p>
 </h4>
 <p>In most real-world data analysis scenarios, <code>scale</code> is
 typically set to <code>TRUE</code>, ensuring that the exposure (variable
-of interest), mediators, and covariates (if included) are standardized
-to a mean of zero and a variance of one. However, if your data is
-already pre-standardized—such as in simulation studies or when using our
-demo dataset-<code>scale</code> should be set to <code>FALSE</code> to
-prevent introducing biases or altering the original data structure. When
-applying <code>HIMA</code> to simulated data, if <code>scale</code> is
-set to <code>TRUE</code>, it is imperative to preprocess the mediators
-by scaling them to have a mean of zero and a variance of one prior to
-generating the outcome variables.</p>
+of interest), mediators, and covariate(s) (if included) are standardized
+to a mean of zero and a variance of one. No scaling will be applied to
+<code>Outcome</code>. However, if your data is already
+pre-standardized—such as in simulation studies or when using our demo
+dataset-<code>scale</code> should be set to <code>FALSE</code> to
+prevent introducing biases or altering the original data structure.</p>
+<p>When applying <code>HIMA</code> to simulated data, if
+<code>scale</code> is set to <code>TRUE</code>, it is imperative to
+preprocess the mediators by scaling them to have a mean of zero and a
+variance of one prior to generating the outcome variables.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
+<h2 id="applications-and-examples">Applications and Examples<a class="anchor" aria-label="anchor" href="#applications-and-examples"></a>
 </h2>
 <div class="section level3">
 <h3 id="load-the-hima-package">Load the <code>HIMA</code> Package<a class="anchor" aria-label="anchor" href="#load-the-hima-package"></a>
 </h3>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/YinanZheng/HIMA/">HIMA</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="continuous-outcome-analysis">Continuous Outcome Analysis<a class="anchor" aria-label="anchor" href="#continuous-outcome-analysis"></a>
 </h3>
-<p>We begin with an example of analyzing continuous outcomes using the
-<code>HIMA</code> package. The following code snippet demonstrates how
-to perform a high-dimensional mediation analysis with continuous
-outcomes:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<p>When analyzing continuous and normally distributed outcomes and
+mediators, we can use the following code snippet:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">ContinuousOutcome</span><span class="op">)</span></span>
 <span><span class="va">hima_continuous.fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hima.html">hima</a></span><span class="op">(</span></span>
 <span>  <span class="va">Outcome</span> <span class="op">~</span> <span class="va">Treatment</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">Age</span>,</span>
@@ -229,37 +203,23 @@ outcomes:</p>
 <span>  data.M <span class="op">=</span> <span class="va">ContinuousOutcome</span><span class="op">$</span><span class="va">Mediator</span>,</span>
 <span>  mediator.type <span class="op">=</span> <span class="st">"gaussian"</span>,</span>
 <span>  penalty <span class="op">=</span> <span class="st">"MCP"</span>,</span>
-<span>  scale <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  scale <span class="op">=</span> <span class="cn">FALSE</span> <span class="co"># Demo data is already standardized</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Running linear HIMA with MCP penalty...</span></span>
-<span><span class="co">#&gt; Step 1: Sure Independent Screening ...     (3:38:50 AM)</span></span>
-<span><span class="co">#&gt; Step 2: Penalized estimate (MCP) ...     (3:38:52 AM)</span></span>
-<span><span class="co">#&gt; Step 3: Joint significance test ...     (3:38:52 AM)</span></span>
-<span><span class="co">#&gt; Done!     (3:38:52 AM)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">hima_continuous.fit</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Step 1: Sure Independent Screening ...     (5:27:13 AM)</span></span>
+<span><span class="co">#&gt; Step 2: Penalized estimate (MCP) ...     (5:27:14 AM)</span></span>
+<span><span class="co">#&gt; Step 3: Joint significance test ...     (5:27:14 AM)</span></span>
+<span><span class="co">#&gt; Done!     (5:27:14 AM)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">hima_continuous.fit</span>, desc<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="co"># `desc = TRUE` option to show the description of the output results</span></span>
 <span><span class="co">#&gt; Summary of HIMA results:</span></span>
 <span><span class="co">#&gt; -----------------------------------</span></span>
 <span><span class="co">#&gt; Number of significant mediators: 3 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Top mediators (sorted by p-value):</span></span>
-<span><span class="co">#&gt;   ID      alpha      beta alpha*beta Relative Importance (%)      p-value</span></span>
-<span><span class="co">#&gt; 1 M3 -0.3041928 -1.249628  0.3801277                39.51341 2.049845e-12</span></span>
-<span><span class="co">#&gt; 2 M2  0.2659784  1.371307  0.3647379                37.91367 1.203775e-09</span></span>
-<span><span class="co">#&gt; 3 M1  0.1448829  1.498841  0.2171565                22.57292 1.109704e-03</span></span></code></pre></div>
-<p>We can use the <code>summary</code> function with the
-<code>desc = TRUE</code> option to show the description of the output
-results:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">hima_continuous.fit</span>, desc<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Summary of HIMA results:</span></span>
-<span><span class="co">#&gt; -----------------------------------</span></span>
-<span><span class="co">#&gt; Number of significant mediators: 3 </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Top mediators (sorted by p-value):</span></span>
-<span><span class="co">#&gt;   ID      alpha      beta alpha*beta Relative Importance (%)      p-value</span></span>
-<span><span class="co">#&gt; 1 M3 -0.3041928 -1.249628  0.3801277                39.51341 2.049845e-12</span></span>
-<span><span class="co">#&gt; 2 M2  0.2659784  1.371307  0.3647379                37.91367 1.203775e-09</span></span>
-<span><span class="co">#&gt; 3 M1  0.1448829  1.498841  0.2171565                22.57292 1.109704e-03</span></span>
+<span><span class="co">#&gt;   ID      alpha       beta alpha*beta Relative Importance (%)      p-value</span></span>
+<span><span class="co">#&gt; 1 M3 -0.9803014 -0.7848679  0.7694071                39.51341 2.049845e-12</span></span>
+<span><span class="co">#&gt; 2 M2  0.8627820  0.8556704  0.7382570                37.91367 1.203775e-09</span></span>
+<span><span class="co">#&gt; 3 M1  0.4507821  0.9750634  0.4395411                22.57292 1.109704e-03</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Variable Descriptions:</span></span>
 <span><span class="co">#&gt; ID: Mediator ID</span></span>
@@ -270,47 +230,61 @@ results:</p>
 <span><span class="co">#&gt;   out of all significant mediators</span></span>
 <span><span class="co">#&gt; p-value: Joint raw p-value of significant mediator </span></span>
 <span><span class="co">#&gt;   selected based on Bonferroni-adjusted p &lt; 0.05</span></span></code></pre></div>
+<p>The <code>penaly</code> can be set to <code>DBlasso</code> which may
+help detect more mediators with weaker signals.</p>
 </div>
 <div class="section level3">
 <h3 id="efficient-hima">Efficient HIMA<a class="anchor" aria-label="anchor" href="#efficient-hima"></a>
 </h3>
-<p>For continuous mediators and outcomes, use the efficient HIMA method
-with the <code>efficient = TRUE</code> option. This method is
-computationally efficient for large datasets and high-dimensional
-mediators. For example, consider the following code snippet for an
-efficient HIMA analysis:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<p>For continuous and normally distributed mediators and outcomes, an
+efficient HIMA method can be activated with the
+<code>efficient = TRUE</code> option (penalty should be <code>MCP</code>
+for the best results). This method may also provide greater statistical
+power to detect mediators with weaker signals.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hima_efficient.fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hima.html">hima</a></span><span class="op">(</span></span>
 <span>  <span class="va">Outcome</span> <span class="op">~</span> <span class="va">Treatment</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">Age</span>,</span>
 <span>  data.pheno <span class="op">=</span> <span class="va">ContinuousOutcome</span><span class="op">$</span><span class="va">PhenoData</span>,</span>
 <span>  data.M <span class="op">=</span> <span class="va">ContinuousOutcome</span><span class="op">$</span><span class="va">Mediator</span>,</span>
 <span>  mediator.type <span class="op">=</span> <span class="st">"gaussian"</span>,</span>
 <span>  efficient <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  penalty <span class="op">=</span> <span class="st">"MCP"</span>,</span>
-<span>  scale <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  penalty <span class="op">=</span> <span class="st">"lasso"</span>,</span>
+<span>  scale <span class="op">=</span> <span class="cn">FALSE</span> <span class="co"># Demo data is already standardized</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running efficient HIMA with MCP penalty...</span></span>
-<span><span class="co">#&gt; Step 1: Sure Independent Screening + minimax concave penalty (MCP) ...     (3:38:52 AM)</span></span>
-<span><span class="co">#&gt; Step 2: Refitted partial regression ...     (3:38:52 AM)</span></span>
-<span><span class="co">#&gt; Step 3: Divide-aggregate composite-null test (DACT) ...     (3:38:53 AM)</span></span>
-<span><span class="co">#&gt; Done!     (3:38:53 AM)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">hima_efficient.fit</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Running efficient HIMA with lasso penalty...</span></span>
+<span><span class="co">#&gt; Step 1: Sure Independent Screening + minimax concave penalty (MCP) ...     (5:27:14 AM)</span></span>
+<span><span class="co">#&gt; Step 2: Refitted partial regression ...     (5:27:14 AM)</span></span>
+<span><span class="co">#&gt; Step 3: Divide-aggregate composite-null test (DACT) ...     (5:27:15 AM)</span></span>
+<span><span class="co">#&gt; Done!     (5:27:15 AM)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">hima_efficient.fit</span>, desc<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="co"># Note that the efficient HIMA is controlling FDR</span></span>
 <span><span class="co">#&gt; Summary of HIMA results:</span></span>
 <span><span class="co">#&gt; -----------------------------------</span></span>
 <span><span class="co">#&gt; Number of significant mediators: 3 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Top mediators (sorted by p-value):</span></span>
-<span><span class="co">#&gt;   ID      alpha      beta alpha*beta Relative Importance (%)      p-value</span></span>
-<span><span class="co">#&gt; 1 M3 -0.3041928 -1.249628  0.3801277                39.51341 3.311590e-15</span></span>
-<span><span class="co">#&gt; 2 M2  0.2659784  1.371307  0.3647379                37.91367 4.874037e-12</span></span>
-<span><span class="co">#&gt; 3 M1  0.1448829  1.498841  0.2171565                22.57292 1.865340e-05</span></span></code></pre></div>
+<span><span class="co">#&gt;   ID      alpha       beta alpha*beta Relative Importance (%)      p-value</span></span>
+<span><span class="co">#&gt; 1 M3 -0.9803014 -0.7848679  0.7694071                39.51341 3.311590e-15</span></span>
+<span><span class="co">#&gt; 2 M2  0.8627820  0.8556704  0.7382570                37.91367 4.874037e-12</span></span>
+<span><span class="co">#&gt; 3 M1  0.4507821  0.9750634  0.4395411                22.57292 1.865340e-05</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Variable Descriptions:</span></span>
+<span><span class="co">#&gt; ID: Mediator ID</span></span>
+<span><span class="co">#&gt; alpha: Effect of exposure on mediator</span></span>
+<span><span class="co">#&gt; beta: Effect of mediator on outcome</span></span>
+<span><span class="co">#&gt; alpha*beta: Mediation (indirect) effect</span></span>
+<span><span class="co">#&gt; Relative Importance (%): Relative importance of the mediator </span></span>
+<span><span class="co">#&gt;   out of all significant mediators</span></span>
+<span><span class="co">#&gt; p-value: Joint raw p-value of significant mediator </span></span>
+<span><span class="co">#&gt;   selected based on DACT method with BH-FDR &lt; 0.05</span></span></code></pre></div>
+<p>It is recommended to try different <code>penalty</code> options and
+<code>efficient</code> option to find the best one for your data.</p>
 </div>
 <div class="section level3">
 <h3 id="binary-outcome-analysis">Binary Outcome Analysis<a class="anchor" aria-label="anchor" href="#binary-outcome-analysis"></a>
 </h3>
-<p>The package can also handle binary outcomes. Here is an example of
-binary outcome analysis using <code>HIMA</code>:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<p>The package can handle binary outcomes based on logistic
+regression:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">BinaryOutcome</span><span class="op">)</span></span>
 <span><span class="va">hima_binary.fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hima.html">hima</a></span><span class="op">(</span></span>
 <span>  <span class="va">Disease</span> <span class="op">~</span> <span class="va">Treatment</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">Age</span>,</span>
@@ -318,24 +292,24 @@ binary outcome analysis using <code>HIMA</code>:</p>
 <span>  data.M <span class="op">=</span> <span class="va">BinaryOutcome</span><span class="op">$</span><span class="va">Mediator</span>,</span>
 <span>  mediator.type <span class="op">=</span> <span class="st">"gaussian"</span>,</span>
 <span>  penalty <span class="op">=</span> <span class="st">"MCP"</span>,</span>
-<span>  scale <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  scale <span class="op">=</span> <span class="cn">FALSE</span> <span class="co"># Demo data is already standardized</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Running logistic HIMA with MCP penalty...</span></span>
-<span><span class="co">#&gt; Step 1: Sure Independent Screening ...     (3:38:53 AM)</span></span>
-<span><span class="co">#&gt; Step 2: Penalized estimate (MCP) ...     (3:38:55 AM)</span></span>
-<span><span class="co">#&gt;     Using alpha estimated in Step 1 ...   (3:38:55 AM)</span></span>
-<span><span class="co">#&gt; Step 3: Joint significance test ...     (3:38:55 AM)</span></span>
-<span><span class="co">#&gt; Done!     (3:38:55 AM)</span></span>
+<span><span class="co">#&gt; Step 1: Sure Independent Screening ...     (5:27:15 AM)</span></span>
+<span><span class="co">#&gt; Step 2: Penalized estimate (MCP) ...     (5:27:16 AM)</span></span>
+<span><span class="co">#&gt;     Using alpha estimated in Step 1 ...   (5:27:16 AM)</span></span>
+<span><span class="co">#&gt; Step 3: Joint significance test ...     (5:27:16 AM)</span></span>
+<span><span class="co">#&gt; Done!     (5:27:16 AM)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">hima_binary.fit</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Summary of HIMA results:</span></span>
 <span><span class="co">#&gt; -----------------------------------</span></span>
 <span><span class="co">#&gt; Number of significant mediators: 3 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Top mediators (sorted by p-value):</span></span>
-<span><span class="co">#&gt;   ID      alpha      beta alpha*beta Relative Importance (%)      p-value</span></span>
-<span><span class="co">#&gt; 1 M3 -0.2638030 -1.336908  0.3526802                38.63434 1.610871e-09</span></span>
-<span><span class="co">#&gt; 2 M1  0.2490828  1.183759  0.2948540                32.29977 8.570595e-09</span></span>
-<span><span class="co">#&gt; 3 M2  0.2446872  1.084376  0.2653330                29.06589 2.984815e-08</span></span></code></pre></div>
+<span><span class="co">#&gt;   ID      alpha       beta alpha*beta Relative Importance (%)      p-value</span></span>
+<span><span class="co">#&gt; 1 M3 -0.8669016 -0.8239994  0.7143264                38.63434 1.610871e-09</span></span>
+<span><span class="co">#&gt; 2 M1  0.7948203  0.7513698  0.5972039                32.29977 8.570595e-09</span></span>
+<span><span class="co">#&gt; 3 M2  0.7731996  0.6950487  0.5374114                29.06589 2.984815e-08</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="survival-outcome-analysis">Survival Outcome Analysis<a class="anchor" aria-label="anchor" href="#survival-outcome-analysis"></a>
@@ -343,7 +317,7 @@ binary outcome analysis using <code>HIMA</code>:</p>
 <p>For survival data, <code>HIMA</code> incorporates a Cox proportional
 hazards approach. Here is an example of survival outcome analysis using
 <code>HIMA</code>:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">SurvivalData</span><span class="op">)</span></span>
 <span><span class="va">hima_survival.fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hima.html">hima</a></span><span class="op">(</span></span>
 <span>  <span class="fu">Surv</span><span class="op">(</span><span class="va">Time</span>, <span class="va">Status</span><span class="op">)</span> <span class="op">~</span> <span class="va">Treatment</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">Age</span>,</span>
@@ -351,13 +325,13 @@ hazards approach. Here is an example of survival outcome analysis using
 <span>  data.M <span class="op">=</span> <span class="va">SurvivalData</span><span class="op">$</span><span class="va">Mediator</span>,</span>
 <span>  mediator.type <span class="op">=</span> <span class="st">"gaussian"</span>,</span>
 <span>  penalty <span class="op">=</span> <span class="st">"DBlasso"</span>,</span>
-<span>  scale <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  scale <span class="op">=</span> <span class="cn">FALSE</span> <span class="co"># Demo data is already standardized</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Running survival HIMA with de-biased Lasso penalty...</span></span>
-<span><span class="co">#&gt; Step 1: Sure Independent Screening ...     (3:38:55 AM)</span></span>
-<span><span class="co">#&gt; Step 2: De-biased Lasso estimates ...     (3:38:55 AM)</span></span>
-<span><span class="co">#&gt; Step 3: Multiple-testing procedure ...     (3:39:21 AM)</span></span>
-<span><span class="co">#&gt; Done!     (3:39:21 AM)</span></span>
+<span><span class="co">#&gt; Step 1: Sure Independent Screening ...     (5:27:16 AM)</span></span>
+<span><span class="co">#&gt; Step 2: De-biased Lasso estimates ...     (5:27:17 AM)</span></span>
+<span><span class="co">#&gt; Step 3: Multiple-testing procedure ...     (5:27:42 AM)</span></span>
+<span><span class="co">#&gt; Done!     (5:27:42 AM)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">hima_survival.fit</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Summary of HIMA results:</span></span>
 <span><span class="co">#&gt; -----------------------------------</span></span>
@@ -365,17 +339,17 @@ hazards approach. Here is an example of survival outcome analysis using
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Top mediators (sorted by p-value):</span></span>
 <span><span class="co">#&gt;   ID      alpha       beta alpha*beta Relative Importance (%)      p-value</span></span>
-<span><span class="co">#&gt; 1 M2  0.7630170  0.7480588  0.5707815                26.44027 3.365552e-11</span></span>
-<span><span class="co">#&gt; 2 M3 -0.8212199 -0.9569047  0.7858292                36.40191 4.325473e-11</span></span>
-<span><span class="co">#&gt; 3 M1  0.8215721  0.9763566  0.8021474                37.15782 1.134386e-10</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 M2  0.7630170  0.7278533  0.5553644                28.00395 3.365552e-11</span></span>
+<span><span class="co">#&gt; 2 M3 -0.8212199 -0.8958534  0.7356926                37.09690 4.325473e-11</span></span>
+<span><span class="co">#&gt; 3 M1  0.8215721  0.8424184  0.6921075                34.89915 1.134386e-10</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="microbiome-mediation-analysis">Microbiome Mediation Analysis<a class="anchor" aria-label="anchor" href="#microbiome-mediation-analysis"></a>
 </h3>
 <p>For compositional microbiome data, <code>HIMA</code> employs
-specialized transformations. Here is an example of microbiome mediation
-analysis using <code>HIMA</code>:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+isometric Log-Ratio transformations. Here is an example of microbiome
+mediation analysis using <code>HIMA</code>:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">MicrobiomeData</span><span class="op">)</span></span>
 <span><span class="va">hima_microbiome.fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hima.html">hima</a></span><span class="op">(</span></span>
 <span>  <span class="va">Outcome</span> <span class="op">~</span> <span class="va">Treatment</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">Age</span>,</span>
@@ -385,9 +359,9 @@ analysis using <code>HIMA</code>:</p>
 <span>  penalty <span class="op">=</span> <span class="st">"DBlasso"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Running compositional HIMA with de-biased Lasso penalty...</span></span>
-<span><span class="co">#&gt; Step 1: ILR Transformation and De-biased Lasso estimates ...  (3:39:21 AM)</span></span>
-<span><span class="co">#&gt; Step 2: Closted testing-based procedure ...     (3:40:14 AM)</span></span>
-<span><span class="co">#&gt; Done!     (3:40:14 AM)</span></span>
+<span><span class="co">#&gt; Step 1: ILR Transformation and De-biased Lasso estimates ...  (5:27:42 AM)</span></span>
+<span><span class="co">#&gt; Step 2: Closted testing-based procedure ...     (5:28:33 AM)</span></span>
+<span><span class="co">#&gt; Done!     (5:28:33 AM)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">hima_microbiome.fit</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Summary of HIMA results:</span></span>
 <span><span class="co">#&gt; -----------------------------------</span></span>
@@ -403,9 +377,9 @@ analysis using <code>HIMA</code>:</p>
 <h3 id="quantile-mediation-analysis">Quantile Mediation Analysis<a class="anchor" aria-label="anchor" href="#quantile-mediation-analysis"></a>
 </h3>
 <p>Perform quantile mediation analysis using the
-<code>quantile = TRUE</code> option. Here is an example of quantile
-mediation analysis using <code>HIMA</code>:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code>quantile = TRUE</code> option and specify <code>tau</code> for
+desired quantile(s):</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">QuantileData</span><span class="op">)</span></span>
 <span><span class="va">hima_quantile.fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hima.html">hima</a></span><span class="op">(</span></span>
 <span>  <span class="va">Outcome</span> <span class="op">~</span> <span class="va">Treatment</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">Age</span>,</span>
@@ -415,41 +389,41 @@ mediation analysis using <code>HIMA</code>:</p>
 <span>  quantile <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  penalty <span class="op">=</span> <span class="st">"MCP"</span>,</span>
 <span>  tau <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">0.5</span>, <span class="fl">0.7</span><span class="op">)</span>,</span>
-<span>  scale <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  scale <span class="op">=</span> <span class="cn">FALSE</span> <span class="co"># Demo data is already standardized</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Running quantile HIMA with MCP penalty...</span></span>
-<span><span class="co">#&gt; Running penalized quantile regression with tau = 0.3 ...     (3:40:14 AM)</span></span>
-<span><span class="co">#&gt; Step 1: Sure Independent Screening ...     (3:40:14 AM)</span></span>
-<span><span class="co">#&gt; Step 2: Penalized estimate (MCP) ...     (3:40:14 AM)</span></span>
-<span><span class="co">#&gt; Step 3: Joint significance test ...     (3:40:16 AM)</span></span>
+<span><span class="co">#&gt; Running penalized quantile regression with tau = 0.3 ...     (5:28:33 AM)</span></span>
+<span><span class="co">#&gt; Step 1: Sure Independent Screening ...     (5:28:33 AM)</span></span>
+<span><span class="co">#&gt; Step 2: Penalized estimate (MCP) ...     (5:28:34 AM)</span></span>
+<span><span class="co">#&gt; Step 3: Joint significance test ...     (5:28:36 AM)</span></span>
 <span><span class="co">#&gt;  </span></span>
-<span><span class="co">#&gt; Running penalized quantile regression with tau = 0.5 ...     (3:40:18 AM)</span></span>
-<span><span class="co">#&gt; Step 1: Sure Independent Screening ...     (3:40:18 AM)</span></span>
-<span><span class="co">#&gt; Step 2: Penalized estimate (MCP) ...     (3:40:18 AM)</span></span>
-<span><span class="co">#&gt; Step 3: Joint significance test ...     (3:40:20 AM)</span></span>
+<span><span class="co">#&gt; Running penalized quantile regression with tau = 0.5 ...     (5:28:38 AM)</span></span>
+<span><span class="co">#&gt; Step 1: Sure Independent Screening ...     (5:28:38 AM)</span></span>
+<span><span class="co">#&gt; Step 2: Penalized estimate (MCP) ...     (5:28:38 AM)</span></span>
+<span><span class="co">#&gt; Step 3: Joint significance test ...     (5:28:40 AM)</span></span>
 <span><span class="co">#&gt;  </span></span>
-<span><span class="co">#&gt; Running penalized quantile regression with tau = 0.7 ...     (3:40:21 AM)</span></span>
-<span><span class="co">#&gt; Step 1: Sure Independent Screening ...     (3:40:21 AM)</span></span>
-<span><span class="co">#&gt; Step 2: Penalized estimate (MCP) ...     (3:40:22 AM)</span></span>
-<span><span class="co">#&gt; Step 3: Joint significance test ...     (3:40:24 AM)</span></span>
+<span><span class="co">#&gt; Running penalized quantile regression with tau = 0.7 ...     (5:28:41 AM)</span></span>
+<span><span class="co">#&gt; Step 1: Sure Independent Screening ...     (5:28:41 AM)</span></span>
+<span><span class="co">#&gt; Step 2: Penalized estimate (MCP) ...     (5:28:42 AM)</span></span>
+<span><span class="co">#&gt; Step 3: Joint significance test ...     (5:28:44 AM)</span></span>
 <span><span class="co">#&gt;  </span></span>
-<span><span class="co">#&gt; Done!     (3:40:26 AM)</span></span>
+<span><span class="co">#&gt; Done!     (5:28:45 AM)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">hima_quantile.fit</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Summary of HIMA results:</span></span>
 <span><span class="co">#&gt; -----------------------------------</span></span>
 <span><span class="co">#&gt; Number of significant mediators: 9 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Top mediators (sorted by p-value):</span></span>
-<span><span class="co">#&gt;   ID      alpha      beta alpha*beta Relative Importance (%)      p-value tau</span></span>
-<span><span class="co">#&gt; 1 M1  0.8061352  1.755566   1.415224                35.46531 0.000000e+00 0.3</span></span>
-<span><span class="co">#&gt; 2 M1  0.8061352  1.555867   1.254239                32.24338 0.000000e+00 0.3</span></span>
-<span><span class="co">#&gt; 3 M2  0.8485185  1.603046   1.360214                34.96773 0.000000e+00 0.3</span></span>
-<span><span class="co">#&gt; 4 M3 -0.8608720 -1.481589   1.275458                32.78888 0.000000e+00 0.5</span></span>
-<span><span class="co">#&gt; 5 M1  0.8061352  1.597611   1.287890                31.38334 0.000000e+00 0.5</span></span>
-<span><span class="co">#&gt; 6 M2  0.8485185  1.581736   1.342132                32.70512 0.000000e+00 0.5</span></span>
-<span><span class="co">#&gt; 7 M3 -0.8608720 -1.711887   1.473715                35.91154 0.000000e+00 0.7</span></span>
-<span><span class="co">#&gt; 8 M2  0.8485185  1.616386   1.371534                34.37044 2.318146e-13 0.7</span></span>
-<span><span class="co">#&gt; 9 M3 -0.8608720 -1.398219   1.203688                30.16424 2.896883e-10 0.7</span></span></code></pre></div>
+<span><span class="co">#&gt;   ID      alpha       beta alpha*beta Relative Importance (%)      p-value tau</span></span>
+<span><span class="co">#&gt; 1 M1  0.6736350  1.0942312  0.7371124                35.46531 0.000000e+00 0.3</span></span>
+<span><span class="co">#&gt; 2 M1  0.6736350  0.9697600  0.6532642                32.24338 0.000000e+00 0.3</span></span>
+<span><span class="co">#&gt; 3 M2  0.8626021  0.8213064  0.7084607                34.96773 0.000000e+00 0.3</span></span>
+<span><span class="co">#&gt; 4 M3 -0.8483933 -0.7830286  0.6643162                32.78888 0.000000e+00 0.5</span></span>
+<span><span class="co">#&gt; 5 M1  0.6736350  0.9957785  0.6707912                31.38334 0.000000e+00 0.5</span></span>
+<span><span class="co">#&gt; 6 M2  0.8626021  0.8103886  0.6990429                32.70512 0.000000e+00 0.5</span></span>
+<span><span class="co">#&gt; 7 M3 -0.8483933 -0.9047423  0.7675774                35.91154 0.000000e+00 0.7</span></span>
+<span><span class="co">#&gt; 8 M2  0.8626021  0.8281415  0.7143566                34.37044 2.318146e-13 0.7</span></span>
+<span><span class="co">#&gt; 9 M3 -0.8483933 -0.7389671  0.6269348                30.16424 2.896923e-10 0.7</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -491,7 +465,7 @@ Statistics in Biosciences. 2024. DOI:
 <div class="section level2">
 <h2 id="session-information">Session Information<a class="anchor" aria-label="anchor" href="#session-information"></a>
 </h2>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.4.2 (2024-10-31 ucrt)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-w64-mingw32/x64</span></span>
