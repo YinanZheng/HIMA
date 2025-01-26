@@ -1,4 +1,4 @@
-# HIMA 2.3.1 (2025-01-21)
+# HIMA 2.3.1 (2025-01-26)
 * Code optimization and bug fixes.
 * Function naming convention update.
 * Allows contrast and subset in `hima`.
