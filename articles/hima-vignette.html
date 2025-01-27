@@ -250,8 +250,10 @@ mediators, we can use the following code snippet:</p>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">hima_continuous.fit</span>, desc<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> </span>
 <span><span class="co"># `desc = TRUE` option to show the description of the output results</span></span></code></pre></div>
-<p>The <code>penaly</code> can be set to <code>DBlasso</code> which may
-help detect more mediators with weaker signals.</p>
+<p><code>penalty = "DBlasso"</code> is particularly effective at
+identifying mediators with weaker signals compared to
+<code>penalty = "MCP"</code>. However, using <code>DBlasso</code>
+requires more computational time.</p>
 </div>
 <div class="section level3">
 <h3 id="efficient-hima">Efficient HIMA<a class="anchor" aria-label="anchor" href="#efficient-hima"></a>
