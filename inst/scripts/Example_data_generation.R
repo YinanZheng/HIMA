@@ -6,7 +6,7 @@
 # Dataset - 1 (linear outcome)
 ######################################################
 set.seed(1837)
-p <- 500 # the dimension of mediators
+p <- 100 # the dimension of mediators
 q <- 2    # the dimension of covariates
 n <- 500  # sample size
 alpha <- matrix(0,1,p) # the coefficients for X -> M
@@ -42,7 +42,7 @@ usethis::use_data(ContinuousOutcome, overwrite = TRUE)
 # Dataset - 2 (logistic outcome)
 ######################################################
 set.seed(185)
-p <- 500 # the dimension of mediators
+p <- 100 # the dimension of mediators
 q <- 2    # the dimension of covariates
 n <- 500  # sample size
 alpha <- matrix(0,1,p) # the coefficients for X -> M
@@ -83,7 +83,7 @@ usethis::use_data(BinaryOutcome, overwrite = TRUE)
 ######################################################
 set.seed(18675)
 n <- 300 # sample size
-p <- 150 # the dimension of mediators
+p <- 100 # the dimension of mediators
 q <- 2    # the dimenson of covariates
 sigma_e <- matrix(0,p,p)
 for (i in 1:p){
@@ -200,9 +200,9 @@ usethis::use_data(MicrobiomeData, overwrite = TRUE)
 # Dataset - 5 (quantile mediation analysis)
 ######################################################
 set.seed(1753)
-p <- 300 # the dimension of mediators
+p <- 100 # the dimension of mediators
 q <- 2    # the dimension of covariates
-n <- 300  # sample size
+n <- 500  # sample size
 alpha <- matrix(0,1,p) # the coefficients for X -> M
 beta <- matrix(0,1,p) # the coefficients for M -> Y
 
