@@ -119,14 +119,14 @@ hima_continuous.fit <- hima(
   data.pheno = ContinuousOutcome$PhenoData,
   data.M = ContinuousOutcome$Mediator,
   mediator.type = "gaussian",
-  penalty = "MCP",
+  penalty = "DBlasso",
   scale = FALSE # Demo data is already standardized
 )
 summary(hima_continuous.fit, desc=TRUE) 
 # `desc = TRUE` option to show the description of the output results
 ```
 
-The `penaly` can be set to `DBlasso` which may help detect more mediators with weaker signals. 
+`penalty = "DBlasso"` is particularly effective at identifying mediators with weaker signals compared to `penalty = "MCP"`. However, using `DBlasso` requires more computational time.
 
 ## Efficient HIMA
 
@@ -139,7 +139,7 @@ hima_efficient.fit <- hima(
   data.M = ContinuousOutcome$Mediator,
   mediator.type = "gaussian",
   efficient = TRUE,
-  penalty = "lasso",
+  penalty = "MCP",
   scale = FALSE # Demo data is already standardized
 )
 summary(hima_efficient.fit, desc=TRUE) 
