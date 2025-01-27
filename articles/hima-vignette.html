@@ -245,7 +245,7 @@ mediators, we can use the following code snippet:</p>
 <span>  data.pheno <span class="op">=</span> <span class="va">ContinuousOutcome</span><span class="op">$</span><span class="va">PhenoData</span>,</span>
 <span>  data.M <span class="op">=</span> <span class="va">ContinuousOutcome</span><span class="op">$</span><span class="va">Mediator</span>,</span>
 <span>  mediator.type <span class="op">=</span> <span class="st">"gaussian"</span>,</span>
-<span>  penalty <span class="op">=</span> <span class="st">"MCP"</span>,</span>
+<span>  penalty <span class="op">=</span> <span class="st">"DBlasso"</span>,</span>
 <span>  scale <span class="op">=</span> <span class="cn">FALSE</span> <span class="co"># Demo data is already standardized</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">hima_continuous.fit</span>, desc<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> </span>
@@ -268,7 +268,7 @@ power to detect mediators with weaker signals.</p>
 <span>  data.M <span class="op">=</span> <span class="va">ContinuousOutcome</span><span class="op">$</span><span class="va">Mediator</span>,</span>
 <span>  mediator.type <span class="op">=</span> <span class="st">"gaussian"</span>,</span>
 <span>  efficient <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  penalty <span class="op">=</span> <span class="st">"lasso"</span>,</span>
+<span>  penalty <span class="op">=</span> <span class="st">"MCP"</span>,</span>
 <span>  scale <span class="op">=</span> <span class="cn">FALSE</span> <span class="co"># Demo data is already standardized</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">hima_efficient.fit</span>, desc<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> </span>
