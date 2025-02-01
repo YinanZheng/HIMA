@@ -216,3 +216,4 @@ hima_quantile.fit <- hima(
 )
 summary(hima_quantile.fit)
 ```
+
