@@ -188,7 +188,7 @@ hima_survival <- function(X, M, OT, status, COV = NULL,
 
   if (length(ID_fdr) > 0) {
     out_result <- data.frame(
-      Index = M_ID_name[ID_fdr],
+      Index = M_ID_name[ID_SIS][ID_fdr],
       alpha_hat = alpha_SIS_est[ID_fdr],
       alpha_se = alpha_SIS_SE[ID_fdr],
       beta_hat = beta_DLASSO_SIS_est[ID_fdr],
