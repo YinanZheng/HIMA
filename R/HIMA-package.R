@@ -7,7 +7,7 @@
 #' HIMA can also handle survival data mediation analysis and perform quantile mediation analysis.
 #'
 #' \tabular{ll}{ Package: \tab HIMA\cr Type: \tab Package\cr
-#' Version: \tab 2.3.0\cr Date: \tab 2025-01-27\cr License: \tab GPL-3\cr }
+#' Version: \tab 2.3.2\cr Date: \tab 2025-05-24\cr License: \tab GPL-3\cr }
 #'
 #' @name HIMA-package
 #'

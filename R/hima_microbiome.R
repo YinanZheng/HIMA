@@ -83,7 +83,7 @@ hima_microbiome <- function(X,
   P_raw_DLASSO <- matrix(0, 1, d)
   M1 <- t(t(M_raw[, 1]))
   
-  message("Step 1: ILR Transformation and De-biased Lasso estimates ...", "  (", format(Sys.time(), "%X"), ")")
+  if (verbose) message("Step 1: ILR Transformation and De-biased Lasso estimates ...", "  (", format(Sys.time(), "%X"), ")")
   
   if (verbose) {
     if (is.null(COV)) {
@@ -129,7 +129,7 @@ hima_microbiome <- function(X,
   
   P_adj_DLASSO <- as.numeric(P_raw_DLASSO)
   
-  message("Step 2: Closted testing-based procedure ...", "     (", format(Sys.time(), "%X"), ")")
+  if (verbose) message("Step 2: Closted testing-based procedure ...", "     (", format(Sys.time(), "%X"), ")")
   
   ## The FDR method
   set <- which(P_adj_DLASSO < FDRcut)
@@ -165,7 +165,7 @@ hima_microbiome <- function(X,
     out_result <- NULL
   }
   
-  message("Done!", "     (", format(Sys.time(), "%X"), ")")
+  if (verbose) message("Done!", "     (", format(Sys.time(), "%X"), ")")
   
   return(out_result)
 }

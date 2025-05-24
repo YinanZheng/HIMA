@@ -82,7 +82,7 @@ hima_survival <- function(X, M, OT, status, COV = NULL,
   #########################################################################
   ################################ STEP 1 #################################
   #########################################################################
-  message("Step 1: Sure Independent Screening ...", "     (", format(Sys.time(), "%X"), ")")
+  if (verbose) message("Step 1: Sure Independent Screening ...", "     (", format(Sys.time(), "%X"), ")")
 
   if (is.null(topN)) d_0 <- ceiling(n / log(n)) else d_0 <- topN # the number of top mediators that associated with exposure (X)
   d_0 <- min(p, d_0) # if d_0 > p select all mediators
@@ -114,7 +114,7 @@ hima_survival <- function(X, M, OT, status, COV = NULL,
   #########################################################################
   ################################ STEP 2 #################################
   #########################################################################
-  message("Step 2: De-biased Lasso estimates ...", "     (", format(Sys.time(), "%X"), ")")
+  if (verbose) message("Step 2: De-biased Lasso estimates ...", "     (", format(Sys.time(), "%X"), ")")
 
   if (verbose) {
     if (is.null(COV)) {
@@ -163,7 +163,7 @@ hima_survival <- function(X, M, OT, status, COV = NULL,
   #########################################################################
   ################################ STEP 3 #################################
   #########################################################################
-  message("Step 3: Multiple-testing procedure ...", "     (", format(Sys.time(), "%X"), ")")
+  if (verbose) message("Step 3: Multiple-testing procedure ...", "     (", format(Sys.time(), "%X"), ")")
 
   PA <- cbind(t(P_alpha_SIS), t(P_beta_SIS))
   P_value <- apply(PA, 1, max) # the joint p-values for SIS variable
@@ -205,7 +205,7 @@ hima_survival <- function(X, M, OT, status, COV = NULL,
     out_result <- NULL
   }
 
-  message("Done!", "     (", format(Sys.time(), "%X"), ")")
+  if (verbose) message("Done!", "     (", format(Sys.time(), "%X"), ")")
 
   return(out_result)
 }

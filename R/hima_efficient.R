@@ -89,7 +89,7 @@ hima_efficient <- function(X, M, Y, COV = NULL,
   if (is.null(M_ID_name)) M_ID_name <- seq_len(p)
 
   #------------- Step 1:  mediator screening ---------------------------
-  message("Step 1: Sure Independent Screening + minimax concave penalty (MCP) ...", "     (", format(Sys.time(), "%X"), ")")
+  if (verbose) message("Step 1: Sure Independent Screening + minimax concave penalty (MCP) ...", "     (", format(Sys.time(), "%X"), ")")
 
   beta_SIS <- matrix(0, 1, p)
   for (i in 1:p) {
@@ -127,7 +127,7 @@ hima_efficient <- function(X, M, Y, COV = NULL,
   id_non <- ID_SIS[which(beta_penalty != 0)] # the ID of non-zero
 
   #----------- Step 2: Refitted partial regression ----------------------
-  message("Step 2: Refitted partial regression ...", "     (", format(Sys.time(), "%X"), ")")
+  if (verbose) message("Step 2: Refitted partial regression ...", "     (", format(Sys.time(), "%X"), ")")
   ## beta_est ########
   MZX_penalty <- MZX[, c(id_non, (p + 1):(p + q + 1))]
   fit <- lsfit(MZX_penalty, Y, intercept = TRUE)
@@ -201,7 +201,7 @@ hima_efficient <- function(X, M, Y, COV = NULL,
   }
 
   #---------- Step 3: DACT  -------------------------
-  message("Step 3: Divide-aggregate composite-null test (DACT) ...", "     (", format(Sys.time(), "%X"), ")")
+  if (verbose) message("Step 3: Divide-aggregate composite-null test (DACT) ...", "     (", format(Sys.time(), "%X"), ")")
 
   # Mediator selection
   P_oracle_alpha[P_oracle_alpha == 0] <- 10^(-17)
@@ -242,6 +242,6 @@ hima_efficient <- function(X, M, Y, COV = NULL,
     out_result <- NULL
   }
 
-  message("Done!", "     (", format(Sys.time(), "%X"), ")")
+  if (verbose) message("Done!", "     (", format(Sys.time(), "%X"), ")")
   return(out_result)
 }

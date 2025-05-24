@@ -91,10 +91,10 @@ hima_quantile <- function(X, M, Y, COV = NULL,
 
   for (tau_temp in tau)
   {
-    message("Running penalized quantile regression with tau = ", tau_temp, " ...", "     (", format(Sys.time(), "%X"), ")")
+    if (verbose) message("Running penalized quantile regression with tau = ", tau_temp, " ...", "     (", format(Sys.time(), "%X"), ")")
 
     #------------- Step 1: Mediator screening ---------------------------
-    message("Step 1: Sure Independent Screening ...", "     (", format(Sys.time(), "%X"), ")")
+    if (verbose) message("Step 1: Sure Independent Screening ...", "     (", format(Sys.time(), "%X"), ")")
 
     alpha_est <- matrix(0, 1, p) # the OLS estimator of alpha
     alpha_SE <- matrix(0, 1, p) # the SE of alpha-OLS
@@ -117,7 +117,7 @@ hima_quantile <- function(X, M, Y, COV = NULL,
 
 
     #----------- Step 2: Penalized estimate in Quantile Regression model
-    message("Step 2: Penalized estimate (", penalty, ") ...", "     (", format(Sys.time(), "%X"), ")")
+    if (verbose) message("Step 2: Penalized estimate (", penalty, ") ...", "     (", format(Sys.time(), "%X"), ")")
 
     if (verbose) {
       if (is.null(COV)) {
@@ -133,7 +133,7 @@ hima_quantile <- function(X, M, Y, COV = NULL,
     beta.penalty <- fit.penalty$coeff.min[2:(d + 1)]
 
     #---------- Step 3: Mediator significance testing
-    message("Step 3: Joint significance test ...", "     (", format(Sys.time(), "%X"), ")")
+    if (verbose) message("Step 3: Joint significance test ...", "     (", format(Sys.time(), "%X"), ")")
 
     beta_fit_penalty <- matrix(0, 1, p)
     ID_penalty <- ID_SIS[which(beta.penalty != 0)] # the index of nonzero mediators
@@ -176,9 +176,9 @@ hima_quantile <- function(X, M, Y, COV = NULL,
     } else {
       if (verbose) message("        No significant mediator identified.")
     }
-    message("\t")
+    if (verbose) message("\t")
   }
 
-  message("Done!", "     (", format(Sys.time(), "%X"), ")")
+  if (verbose) message("Done!", "     (", format(Sys.time(), "%X"), ")")
   return(out_result)
 }

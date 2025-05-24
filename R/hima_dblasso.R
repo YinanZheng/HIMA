@@ -90,7 +90,7 @@ hima_dblasso <- function(X, M, Y, COV = NULL,
   #########################################################################
   ########################### (Step 1) SIS step ###########################
   #########################################################################
-  message("Step 1: Sure Independent Screening ...", "  (", format(Sys.time(), "%X"), ")")
+  if (verbose) message("Step 1: Sure Independent Screening ...", "  (", format(Sys.time(), "%X"), ")")
 
   # the number of top mediators that associated with exposure (X)
   if (is.null(topN)) d_0 <- ceiling(2 * n / log(n)) else d_0 <- topN
@@ -125,7 +125,7 @@ hima_dblasso <- function(X, M, Y, COV = NULL,
   #########################################################################
   ################### (Step 2) De-biased Lasso Estimates ##################
   #########################################################################
-  message("Step 2: De-biased Lasso Estimates ...", "   (", format(Sys.time(), "%X"), ")")
+  if (verbose) message("Step 2: De-biased Lasso Estimates ...", "   (", format(Sys.time(), "%X"), ")")
 
   if (verbose) {
     if (is.null(COV)) {
@@ -163,7 +163,7 @@ hima_dblasso <- function(X, M, Y, COV = NULL,
   #########################################################################
   ################ (step 3) The multiple-testing  procedure ###############
   #########################################################################
-  message("Step 3: Joint significance test ...", "     (", format(Sys.time(), "%X"), ")")
+  if (verbose) message("Step 3: Joint significance test ...", "     (", format(Sys.time(), "%X"), ")")
 
   PA <- cbind(t(P_alpha_SIS), (t(P_beta_SIS)))
   P_value <- apply(PA, 1, max) # The joint p-values for SIS variable
@@ -225,7 +225,7 @@ hima_dblasso <- function(X, M, Y, COV = NULL,
     results <- NULL
   }
 
-  message("Done!", "     (", format(Sys.time(), "%X"), ")")
+  if (verbose) message("Done!", "     (", format(Sys.time(), "%X"), ")")
 
   return(results)
 }

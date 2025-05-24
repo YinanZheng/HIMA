@@ -115,8 +115,8 @@ hima_classic <- function(X, M, Y, COV.XM = NULL, COV.MY = COV.XM,
   M.type <- match.arg(M.type)
   penalty <- match.arg(penalty)
   
-  if (Y.family == "gaussian") message("Running linear HIMA with ", penalty, " penalty...")
-  if (Y.family == "binomial") message("Running logistic HIMA with ", penalty, " penalty...")
+  if (Y.family == "gaussian" && verbose) message("Running linear HIMA with ", penalty, " penalty...")
+  if (Y.family == "binomial" && verbose) message("Running logistic HIMA with ", penalty, " penalty...")
   
   if (parallel && (ncore == 1)) ncore <- parallel::detectCores()
   if (!parallel && (ncore > 1)) parallel <- TRUE
@@ -145,7 +145,7 @@ hima_classic <- function(X, M, Y, COV.XM = NULL, COV.MY = COV.XM,
   #########################################################################
   ################################ STEP 1 #################################
   #########################################################################
-  message("Step 1: Sure Independent Screening ...", "     (", format(Sys.time(), "%X"), ")")
+  if (verbose) message("Step 1: Sure Independent Screening ...", "     (", format(Sys.time(), "%X"), ")")
 
   if (Y.type == "binary") {
     # Screen M using X given the limited information provided by Y (binary)
@@ -179,7 +179,7 @@ hima_classic <- function(X, M, Y, COV.XM = NULL, COV.MY = COV.XM,
   #########################################################################
   ################################ STEP 2 #################################
   #########################################################################
-  message("Step 2: Penalized estimate (", penalty, ") ...", "     (", format(Sys.time(), "%X"), ")")
+  if (verbose) message("Step 2: Penalized estimate (", penalty, ") ...", "     (", format(Sys.time(), "%X"), ")")
 
   ## Based on the screening results in step 1. We will find the most influential M on Y.
   if (is.null(COV.MY)) {
@@ -218,7 +218,7 @@ hima_classic <- function(X, M, Y, COV.XM = NULL, COV.MY = COV.XM,
     if (Y.type == "binary") {
       ## This has been done in step 1 (when Y is binary, alpha is estimated in M ~ X)
       alpha <- alpha[, ID_test, drop = FALSE]
-      message("    Using alpha estimated in Step 1 ...   (", format(Sys.time(), "%X"), ")")
+      if (verbose) message("    Using alpha estimated in Step 1 ...   (", format(Sys.time(), "%X"), ")")
     } else if (Y.type == "continuous") {
       if (verbose) message("    Estimating alpha (effect of X on M): ", appendLF = FALSE)
       alpha <- himasis(NA, M[, ID_test, drop = FALSE], X, COV.XM,
@@ -233,7 +233,7 @@ hima_classic <- function(X, M, Y, COV.XM = NULL, COV.MY = COV.XM,
     #########################################################################
     ################################ STEP 3 #################################
     #########################################################################
-    message("Step 3: Joint significance test ...", "     (", format(Sys.time(), "%X"), ")")
+    if (verbose) message("Step 3: Joint significance test ...", "     (", format(Sys.time(), "%X"), ")")
 
     alpha_est_ID_test <- as.numeric(alpha[1, ]) #  the estimator for alpha
     P_alpha <- alpha[2, ] # the raw p-value for alpha
@@ -282,7 +282,7 @@ hima_classic <- function(X, M, Y, COV.XM = NULL, COV.MY = COV.XM,
       pmax = Pmax[sig_ind], check.names = FALSE
     )
 
-    message("Done!", "     (", format(Sys.time(), "%X"), ")")
+    if (verbose) message("Done!", "     (", format(Sys.time(), "%X"), ")")
 
     doParallel::stopImplicitCluster()
 

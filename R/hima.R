@@ -350,9 +350,7 @@ hima <- function(formula,
     }
   }
 
-  if (is.null(results)) {
-    if (verbose) message("No significant mediator found!")
-  }
+  if (is.null(results) && verbose) message("No significant mediator found!")
 
   return(structure(results, class = "hima"))
 }
