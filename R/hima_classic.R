@@ -51,13 +51,15 @@
 #'
 #' # When Y is continuous and normally distributed
 #' # Example 1 (continuous outcome):
-#' head(ContinuousOutcome$PhenoData)
+#' data(ContinuousOutcome)
+#' pheno_data <- ContinuousOutcome$PhenoData
+#' mediator_data <- ContinuousOutcome$Mediator
 #'
 #' hima.fit <- hima_classic(
-#'   X = ContinuousOutcome$PhenoData$Treatment,
-#'   Y = ContinuousOutcome$PhenoData$Outcome,
-#'   M = ContinuousOutcome$Mediator,
-#'   COV.XM = ContinuousOutcome$PhenoData[, c("Sex", "Age")],
+#'   X = pheno_data$Treatment,
+#'   Y = pheno_data$Outcome,
+#'   M = mediator_data,
+#'   COV.XM = pheno_data[, c("Sex", "Age")],
 #'   Y.type = "continuous",
 #'   scale = FALSE, # Disabled only for simulation data
 #'   verbose = TRUE
@@ -66,13 +68,15 @@
 #'
 #' # When Y is binary
 #' # Example 2 (binary outcome):
-#' head(BinaryOutcome$PhenoData)
+#' data(BinaryOutcome$PhenoData)
+#' pheno_data <- BinaryOutcome$PhenoData
+#' mediator_data <- BinaryOutcome$Mediator
 #'
 #' hima.logistic.fit <- hima_classic(
-#'   X = BinaryOutcome$PhenoData$Treatment,
-#'   Y = BinaryOutcome$PhenoData$Disease,
-#'   M = BinaryOutcome$Mediator,
-#'   COV.XM = BinaryOutcome$PhenoData[, c("Sex", "Age")],
+#'   X = pheno_data$Treatment,
+#'   Y = pheno_data$Disease,
+#'   M = mediator_data,
+#'   COV.XM = pheno_data[, c("Sex", "Age")],
 #'   Y.type = "binary",
 #'   scale = FALSE, # Disabled only for simulation data
 #'   verbose = TRUE

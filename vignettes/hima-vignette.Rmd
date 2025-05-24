@@ -114,10 +114,13 @@ When analyzing continuous and normally distributed outcomes and mediators, we ca
 
 ```{r continuous-example}
 data(ContinuousOutcome)
+pheno_data <- ContinuousOutcome$PhenoData
+mediator_data <- ContinuousOutcome$Mediator
+
 hima_continuous.fit <- hima(
   Outcome ~ Treatment + Sex + Age,
-  data.pheno = ContinuousOutcome$PhenoData,
-  data.M = ContinuousOutcome$Mediator,
+  data.pheno = pheno_data,
+  data.M = mediator_data,
   mediator.type = "gaussian",
   penalty = "DBlasso",
   scale = FALSE # Demo data is already standardized
@@ -135,8 +138,8 @@ For continuous and normally distributed mediators and outcomes, an efficient HIM
 ```{r efficient-example}
 hima_efficient.fit <- hima(
   Outcome ~ Treatment + Sex + Age,
-  data.pheno = ContinuousOutcome$PhenoData,
-  data.M = ContinuousOutcome$Mediator,
+  data.pheno = pheno_data,
+  data.M = mediator_data,
   mediator.type = "gaussian",
   efficient = TRUE,
   penalty = "MCP",
@@ -154,10 +157,13 @@ The package can handle binary outcomes based on logistic regression:
 
 ```{r binary-example}
 data(BinaryOutcome)
+pheno_data <- BinaryOutcome$PhenoData
+mediator_data <- BinaryOutcome$Mediator
+
 hima_binary.fit <- hima(
   Disease ~ Treatment + Sex + Age,
-  data.pheno = BinaryOutcome$PhenoData,
-  data.M = BinaryOutcome$Mediator,
+  data.pheno = pheno_data,
+  data.M = mediator_data,
   mediator.type = "gaussian",
   penalty = "MCP",
   scale = FALSE # Demo data is already standardized
@@ -171,10 +177,13 @@ For survival data, `HIMA` incorporates a Cox proportional hazards approach. Here
 
 ```{r survival-example}
 data(SurvivalData)
+pheno_data <- SurvivalData$PhenoData
+mediator_data <- SurvivalData$Mediator
+
 hima_survival.fit <- hima(
   Surv(Time, Status) ~ Treatment + Sex + Age,
-  data.pheno = SurvivalData$PhenoData,
-  data.M = SurvivalData$Mediator,
+  data.pheno = pheno_data,
+  data.M = mediator_data,
   mediator.type = "gaussian",
   penalty = "DBlasso",
   scale = FALSE # Demo data is already standardized
@@ -188,10 +197,13 @@ For compositional microbiome data, `HIMA` employs isometric Log-Ratio transforma
 
 ```{r microbiome-example}
 data(MicrobiomeData)
+pheno_data <- MicrobiomeData$PhenoData
+mediator_data <- MicrobiomeData$Mediator
+
 hima_microbiome.fit <- hima(
   Outcome ~ Treatment + Sex + Age,
-  data.pheno = MicrobiomeData$PhenoData,
-  data.M = MicrobiomeData$Mediator,
+  data.pheno = pheno_data,
+  data.M = mediator_data,
   mediator.type = "compositional",
   penalty = "DBlasso"
 )
@@ -204,10 +216,13 @@ Perform quantile mediation analysis using the `quantile = TRUE` option and speci
 
 ```{r quantile-example}
 data(QuantileData)
+pheno_data <- QuantileData$PhenoData
+mediator_data <- QuantileData$Mediator
+
 hima_quantile.fit <- hima(
   Outcome ~ Treatment + Sex + Age,
-  data.pheno = QuantileData$PhenoData,
-  data.M = QuantileData$Mediator,
+  data.pheno = pheno_data,
+  data.M = mediator_data,
   mediator.type = "gaussian",
   quantile = TRUE,
   penalty = "MCP",

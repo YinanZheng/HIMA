@@ -58,14 +58,16 @@ A data.frame containing mediation testing results of significant mediators (FDR 
 \dontrun{
 # Note: In the following example, M1, M2, and M3 are true mediators.
 
-head(SurvivalData$PhenoData)
+data(SurvivalData)
+pheno_data <- SurvivalData$PhenoData
+mediator_data <- SurvivalData$Mediator
 
 hima_survival.fit <- hima_survival(
-  X = SurvivalData$PhenoData$Treatment,
-  M = SurvivalData$Mediator,
-  OT = SurvivalData$PhenoData$Time,
-  status = SurvivalData$PhenoData$Status,
-  COV = SurvivalData$PhenoData[, c("Sex", "Age")],
+  X = pheno_data$Treatment,
+  OT = pheno_data$Time,
+  status = pheno_data$Status,
+  M = mediator_data,
+  COV = pheno_data[, c("Sex", "Age")],
   scale = FALSE, # Disabled only for simulation data
   FDRcut = 0.05,
   verbose = TRUE

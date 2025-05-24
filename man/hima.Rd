@@ -64,7 +64,7 @@ A data.frame containing mediation testing results of selected mediators.
     \item{alpha: }{Coefficient estimates of exposure (X) --> mediators (M) (adjusted for covariates).}
     \item{beta: }{Coefficient estimates of mediators (M) --> outcome (Y) (adjusted for covariates and exposure).}
     \item{alpha*beta: }{The estimated indirect (mediation) effect of exposure on outcome through each mediator.}
-    \item{Relative Importance: }{The proportion of each mediator's mediation effect relative to the sum of the absolute mediation effects of all significant mediators.}
+    \item{rimp: }{Relaive importance- the proportion of each mediator's mediation effect relative to the sum of the absolute mediation effects of all significant mediators.}
     \item{p-value: }{The joint p-value assessing the significance of each mediator's indirect effect, calculated based on the corresponding statistical approach.}
     \item{tau: }{The quantile level of the outcome (applicable only when using the quantile mediation model).}
 }
@@ -78,11 +78,13 @@ A data.frame containing mediation testing results of selected mediators.
 # Note: In the following examples, M1, M2, and M3 are true mediators.
 
 # Example 1 (continuous outcome - linear HIMA):
-head(ContinuousOutcome$PhenoData)
+data(ContinuousOutcome)
+pheno_data <- ContinuousOutcome$PhenoData
+mediator_data <- ContinuousOutcome$Mediator
 
 e1 <- hima(Outcome ~ Treatment + Sex + Age,
-  data.pheno = ContinuousOutcome$PhenoData,
-  data.M = ContinuousOutcome$Mediator,
+  data.pheno = pheno_data,
+  data.M = mediator_data,
   mediator.type = "gaussian",
   penalty = "MCP", # Can be "DBlasso" for hima_dblasso
   scale = FALSE
@@ -92,8 +94,8 @@ summary(e1)
 # Efficient HIMA (only applicable to mediators and outcomes that are
 # both continuous and normally distributed.)
 e1e <- hima(Outcome ~ Treatment + Sex + Age,
-  data.pheno = ContinuousOutcome$PhenoData,
-  data.M = ContinuousOutcome$Mediator,
+  data.pheno = pheno_data,
+  data.M = mediator_data,
   mediator.type = "gaussian",
   efficient = TRUE,
   penalty = "MCP", # Efficient HIMA does not support DBlasso
@@ -102,11 +104,13 @@ e1e <- hima(Outcome ~ Treatment + Sex + Age,
 summary(e1e)
 
 # Example 2 (binary outcome - logistic HIMA):
-head(BinaryOutcome$PhenoData)
+data(BinaryOutcome)
+pheno_data <- BinaryOutcome$PhenoData
+mediator_data <- BinaryOutcome$Mediator
 
 e2 <- hima(Disease ~ Treatment + Sex + Age,
-  data.pheno = BinaryOutcome$PhenoData,
-  data.M = BinaryOutcome$Mediator,
+  data.pheno = pheno_data,
+  data.M = mediator_data,
   mediator.type = "gaussian",
   penalty = "MCP",
   scale = FALSE
@@ -114,11 +118,13 @@ e2 <- hima(Disease ~ Treatment + Sex + Age,
 summary(e2)
 
 # Example 3 (time-to-event outcome - survival HIMA):
-head(SurvivalData$PhenoData)
+data(SurvivalData)
+pheno_data <- SurvivalData$PhenoData
+mediator_data <- SurvivalData$Mediator
 
 e3 <- hima(Surv(Time, Status) ~ Treatment + Sex + Age,
-  data.pheno = SurvivalData$PhenoData,
-  data.M = SurvivalData$Mediator,
+  data.pheno = pheno_data,
+  data.M = mediator_data,
   mediator.type = "gaussian",
   penalty = "DBlasso",
   scale = FALSE
@@ -126,23 +132,27 @@ e3 <- hima(Surv(Time, Status) ~ Treatment + Sex + Age,
 summary(e3)
 
 # Example 4 (compositional data as mediator, e.g., microbiome):
-head(MicrobiomeData$PhenoData)
+data(MicrobiomeData)
+pheno_data <- MicrobiomeData$PhenoData
+mediator_data <- MicrobiomeData$Mediator
 
 e4 <- hima(Outcome ~ Treatment + Sex + Age,
-  data.pheno = MicrobiomeData$PhenoData,
-  data.M = MicrobiomeData$Mediator,
+  data.pheno = pheno_data,
+  data.M = mediator_data,
   mediator.type = "compositional",
   penalty = "DBlasso"
 ) # Scaling is always enabled internally for hima_microbiome
 summary(e4)
 
 #' # Example 5 (quantile mediation anlaysis - quantile HIMA):
-head(QuantileData$PhenoData)
+data(QuantileData)
+pheno_data <- QuantileData$PhenoData
+mediator_data <- QuantileData$Mediator
 
 # Note that the function will prompt input for quantile level.
 e5 <- hima(Outcome ~ Treatment + Sex + Age,
-  data.pheno = QuantileData$PhenoData,
-  data.M = QuantileData$Mediator,
+  data.pheno = pheno_data,
+  data.M = mediator_data,
   mediator.type = "gaussian",
   quantile = TRUE,
   penalty = "MCP", # Quantile HIMA does not support DBlasso

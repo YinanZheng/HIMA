@@ -57,13 +57,15 @@ A data.frame containing mediation testing results of significant mediators (FDR 
 
 # Y is continuous and normally distributed
 # Example:
-head(ContinuousOutcome$PhenoData)
+data(ContinuousOutcome)
+pheno_data <- ContinuousOutcome$PhenoData
+mediator_data <- ContinuousOutcome$Mediator
 
 hima_dblasso.fit <- hima_dblasso(
-  X = ContinuousOutcome$PhenoData$Treatment,
-  Y = ContinuousOutcome$PhenoData$Outcome,
-  M = ContinuousOutcome$Mediator,
-  COV = ContinuousOutcome$PhenoData[, c("Sex", "Age")],
+  X = pheno_data$Treatment,
+  Y = pheno_data$Outcome,
+  M = mediator_data,
+  COV = pheno_data[, c("Sex", "Age")],
   scale = FALSE, # Disabled only for simulation data
   FDRcut = 0.05,
   verbose = TRUE

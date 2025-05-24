@@ -39,13 +39,15 @@
 #' \dontrun{
 #' # Note: In the following example, M1, M2, and M3 are true mediators.
 #'
-#' head(QuantileData$PhenoData)
+#' data(QuantileData)
+#' pheno_data <- QuantileData$PhenoData
+#' mediator_data <- QuantileData$Mediator
 #'
 #' hima_quantile.fit <- hima_quantile(
-#'   X = QuantileData$PhenoData$Treatment,
-#'   M = QuantileData$Mediator,
-#'   Y = QuantileData$PhenoData$Outcome,
-#'   COV = QuantileData$PhenoData[, c("Sex", "Age")],
+#'   X = pheno_data$Treatment,
+#'   Y = pheno_data$Outcome,
+#'   M = mediator_data,
+#'   COV = pheno_data[, c("Sex", "Age")],
 #'   tau = c(0.3, 0.5, 0.7),
 #'   scale = FALSE, # Disabled only for simulation data
 #'   Bonfcut = 0.05,

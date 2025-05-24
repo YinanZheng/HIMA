@@ -59,13 +59,15 @@ are both continuous and normally distributed.
 
 # Y is continuous and normally distributed
 # Example (continuous outcome):
-head(ContinuousOutcome$PhenoData)
+data(ContinuousOutcome)
+pheno_data <- ContinuousOutcome$PhenoData
+mediator_data <- ContinuousOutcome$Mediator
 
 hima_efficient.fit <- hima_efficient(
-  X = ContinuousOutcome$PhenoData$Treatment,
-  Y = ContinuousOutcome$PhenoData$Outcome,
-  M = ContinuousOutcome$Mediator,
-  COV = ContinuousOutcome$PhenoData[, c("Sex", "Age")],
+  X = pheno_data$Treatment,
+  Y = pheno_data$Outcome,
+  M = mediator_data,
+  COV = pheno_data[, c("Sex", "Age")],
   scale = FALSE, # Disabled only for simulation data
   FDRcut = 0.05,
   verbose = TRUE

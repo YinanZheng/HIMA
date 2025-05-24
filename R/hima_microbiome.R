@@ -35,13 +35,15 @@
 #' \dontrun{
 #' # Note: In the following example, M1, M2, and M3 are true mediators.
 #'
-#' head(MicrobiomeData$PhenoData)
-#'
+#' data(MicrobiomeData)
+#' pheno_data <- MicrobiomeData$PhenoData
+#' mediator_data <- MicrobiomeData$Mediator
+#' 
 #' hima_microbiome.fit <- hima_microbiome(
-#'   X = MicrobiomeData$PhenoData$Treatment,
-#'   Y = MicrobiomeData$PhenoData$Outcome,
-#'   OTU = MicrobiomeData$Mediator,
-#'   COV = MicrobiomeData$PhenoData[, c("Sex", "Age")],
+#'   X = pheno_data$Treatment,
+#'   Y = pheno_data$Outcome,
+#'   OTU = mediator_data,
+#'   COV = pheno_data[, c("Sex", "Age")],
 #'   FDRcut = 0.05,
 #'   verbose = TRUE
 #' )
