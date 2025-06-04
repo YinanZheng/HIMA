@@ -4,8 +4,10 @@
 #' \code{hima} is a wrapper function designed to perform various HIMA methods for estimating and testing high-dimensional mediation effects.
 #' \code{hima} can automatically select the appropriate HIMA method based on the outcome and mediator data type.
 #'
-#' @param formula an object of class \code{formula} representing the overall effect model to be fitted, specified as \code{outcome ~ exposure + covariates}. 
+#' @param formula an object of class \code{formula} representing the overall effect model to be fitted, specified as \code{outcome ~ exposure + covariates}.
 #' The "exposure" variable (the variable of interest) must be listed first on the right-hand side of the formula.
+#' For survival outcomes specified using \code{Surv()}, the exposure should be the first
+#' variable after the \code{\link[base:tilde]{~}}.
 #' @param data.pheno a data frame containing the exposure, outcome, and covariates specified in the formula. Variable names in \code{data.pheno} must match those 
 #' in the formula. When \code{scale = TRUE}, the exposure and covariates will be scaled (the outcome retains its original scale).
 #' @param data.M a \code{data.frame} or \code{matrix} of high-dimensional mediators, with rows representing samples and columns representing mediator variables. 
@@ -177,7 +179,12 @@ hima <- function(formula,
   }
   
   # Identify the variable of interest (first term on the right-hand side of the formula)
-  var_of_interest <- all.vars(formula)[2]
+  if (as.character(formula[[2]])[1] == "Surv") {
+    rhs_vars <- all.vars(formula[[3]])
+    var_of_interest <- rhs_vars[1]
+  } else {
+    var_of_interest <- all.vars(formula)[2]
+  }
   
   # Apply contrasts only to covariates (not to the variable of interest)
   if (!is.null(contrast)) {
