@@ -21,9 +21,10 @@ hima(
 )
 }
 \arguments{
-\item{formula}{an object of class \code{formula} representing the overall effect model to be fitted, specified as \code{outcome ~ exposure + covariates}. 
+\item{formula}{an object of class \code{formula} representing the overall effect model to be fitted, specified as \code{outcome ~ exposure + covariates}.
 The "exposure" variable (the variable of interest) must be listed first on the right-hand side of the formula.
-For survival outcomes specified using \code{Surv()}, the exposure should be the first variable after the \code{~}.}
+For survival outcomes specified using \code{Surv()}, the exposure should be the first
+variable after the \code{\link[base:tilde]{~}}.}
 
 \item{data.pheno}{a data frame containing the exposure, outcome, and covariates specified in the formula. Variable names in \code{data.pheno} must match those 
 in the formula. When \code{scale = TRUE}, the exposure and covariates will be scaled (the outcome retains its original scale).}
