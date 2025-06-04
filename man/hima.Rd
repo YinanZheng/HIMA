@@ -64,7 +64,7 @@ A data.frame containing mediation testing results of selected mediators.
     \item{alpha: }{Coefficient estimates of exposure (X) --> mediators (M) (adjusted for covariates).}
     \item{beta: }{Coefficient estimates of mediators (M) --> outcome (Y) (adjusted for covariates and exposure).}
     \item{alpha*beta: }{The estimated indirect (mediation) effect of exposure on outcome through each mediator.}
-    \item{rimp: }{Relaive importance- the proportion of each mediator's mediation effect relative to the sum of the absolute mediation effects of all significant mediators.}
+    \item{rimp: }{Relative importance- the proportion of each mediator's mediation effect relative to the sum of the absolute mediation effects of all significant mediators.}
     \item{p-value: }{The joint p-value assessing the significance of each mediator's indirect effect, calculated based on the corresponding statistical approach.}
     \item{tau: }{The quantile level of the outcome (applicable only when using the quantile mediation model).}
 }
