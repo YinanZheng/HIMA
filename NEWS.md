@@ -1,3 +1,7 @@
+# HIMA 2.3.2 (2025-06-10)
+* Code optimization and bug fixes.
+* Allows parallel computing.
+
 # HIMA 2.3.1 (2025-01-27)
 * Code optimization and bug fixes.
 * Function naming convention update.
