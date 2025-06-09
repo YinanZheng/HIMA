@@ -15,6 +15,9 @@
 #' @param scale logical. Should the function scale the data? Default = \code{TRUE}.
 #' @param FDRcut HDMT pointwise FDR cutoff applied to select significant mediators. Default = \code{0.05}.
 #' @param verbose logical. Should the function be verbose? Default = \code{FALSE}.
+#' @param parallel logical. Enable parallel computing feature? Default = \code{FALSE}.
+#' @param ncore number of cores to run parallel computing Valid when \code{parallel = TRUE}.
+#'   By default max number of cores available in the machine will be utilized.
 #'
 #' @return A data.frame containing mediation testing results of significant mediators (FDR <\code{FDRcut}).
 #' \describe{
@@ -47,7 +50,9 @@
 #'   COV = pheno_data[, c("Sex", "Age")],
 #'   scale = FALSE, # Disabled only for simulation data
 #'   FDRcut = 0.05,
-#'   verbose = TRUE
+#'   verbose = TRUE,
+#'   parallel = TRUE,
+#'   ncore = 2
 #' )
 #' hima_survival.fit
 #' }
@@ -57,7 +62,9 @@ hima_survival <- function(X, M, OT, status, COV = NULL,
                      topN = NULL,
                      scale = TRUE,
                      FDRcut = 0.05,
-                     verbose = FALSE) {
+                     verbose = FALSE,
+                     parallel = FALSE,
+                     ncore = 1) {
   X <- matrix(X, ncol = 1)
   M <- as.matrix(M)
 
@@ -79,6 +86,8 @@ hima_survival <- function(X, M, OT, status, COV = NULL,
   MZ <- process_var(MZ, scale)
   if (scale && verbose) message("Data scaling is completed.")
 
+  checkParallel("hima_survival", parallel, ncore, verbose)
+
   #########################################################################
   ################################ STEP 1 #################################
   #########################################################################
@@ -87,21 +96,16 @@ hima_survival <- function(X, M, OT, status, COV = NULL,
   if (is.null(topN)) d_0 <- ceiling(n / log(n)) else d_0 <- topN # the number of top mediators that associated with exposure (X)
   d_0 <- min(p, d_0) # if d_0 > p select all mediators
 
-  beta_SIS <- matrix(0, 1, p)
-
-  for (i in 1:p) {
+  beta_SIS <- foreach(i = seq_len(p), .combine = "c") %dopar% {
     ID_S <- c(i, (p + 1):(p + q + 1))
     MZ_SIS <- MZ[, ID_S]
     fit <- survival::coxph(survival::Surv(OT, status) ~ MZ_SIS)
-    beta_SIS[i] <- fit$coefficients[1]
+    fit$coefficients[1]
   }
 
-  alpha_SIS <- matrix(0, 1, p)
-  XZ <- cbind(X, COV)
-  for (i in 1:p) {
-    fit_a <- lsfit(XZ, M[, i], intercept = TRUE)
-    est_a <- matrix(coef(fit_a))[2]
-    alpha_SIS[i] <- est_a
+  alpha_SIS <- foreach(i = seq_len(p), .combine = "c") %dopar% {
+    fit_a <- lsfit(cbind(X, COV), M[, i], intercept = TRUE)
+    as.numeric(coef(fit_a))[2]
   }
 
   ab_SIS <- alpha_SIS * beta_SIS
@@ -125,13 +129,13 @@ hima_survival <- function(X, M, OT, status, COV = NULL,
   }
 
   ## estimation of beta
-  P_beta_SIS <- matrix(0, 1, d)
-  beta_DLASSO_SIS_est <- matrix(0, 1, d)
-  beta_DLASSO_SIS_SE <- matrix(0, 1, d)
+  P_beta_SIS <- numeric(d)
+  beta_DLASSO_SIS_est <- numeric(d)
+  beta_DLASSO_SIS_SE <- numeric(d)
   MZ_SIS <- MZ[, c(ID_SIS, (p + 1):(p + q + 1))]
   MZ_SIS_1 <- t(t(MZ_SIS[, 1]))
 
-  for (i in 1:d) {
+  beta_results <- foreach(i = seq_len(d), .combine = rbind) %dopar% {
     V <- MZ_SIS
     V[, 1] <- V[, i]
     V[, i] <- MZ_SIS_1
@@ -139,26 +143,24 @@ hima_survival <- function(X, M, OT, status, COV = NULL,
     beta_LDPE_est <- LDPE_res[1]
     beta_LDPE_SE <- LDPE_res[2]
     V1_P <- abs(beta_LDPE_est) / beta_LDPE_SE
-    P_beta_SIS[i] <- 2 * (1 - pnorm(V1_P, 0, 1))
-    beta_DLASSO_SIS_est[i] <- beta_LDPE_est
-    beta_DLASSO_SIS_SE[i] <- beta_LDPE_SE
+    c(beta_LDPE_est, beta_LDPE_SE, 2 * (1 - pnorm(V1_P, 0, 1)))
   }
+  beta_DLASSO_SIS_est <- beta_results[, 1]
+  beta_DLASSO_SIS_SE <- beta_results[, 2]
+  P_beta_SIS <- beta_results[, 3]
 
   ## estimation of alpha
-  alpha_SIS_est <- matrix(0, 1, d)
-  alpha_SIS_SE <- matrix(0, 1, d)
-  P_alpha_SIS <- matrix(0, 1, d)
   XZ <- cbind(X, COV)
-
-  for (i in 1:d) {
+  alpha_results <- foreach(i = seq_len(d), .combine = rbind) %dopar% {
     fit_a <- lsfit(XZ, M[, ID_SIS[i]], intercept = TRUE)
     est_a <- matrix(coef(fit_a))[2]
     se_a <- ls.diag(fit_a)$std.err[2]
     sd_1 <- abs(est_a) / se_a
-    P_alpha_SIS[i] <- 2 * (1 - pnorm(sd_1, 0, 1)) ## the SIS for alpha
-    alpha_SIS_est[i] <- est_a
-    alpha_SIS_SE[i] <- se_a
+    c(est_a, se_a, 2 * (1 - pnorm(sd_1, 0, 1)))
   }
+  alpha_SIS_est <- alpha_results[, 1]
+  alpha_SIS_SE <- alpha_results[, 2]
+  P_alpha_SIS <- alpha_results[, 3]
 
   #########################################################################
   ################################ STEP 3 #################################
@@ -206,6 +208,8 @@ hima_survival <- function(X, M, OT, status, COV = NULL,
   }
 
   if (verbose) message("Done!", "     (", format(Sys.time(), "%X"), ")")
+
+  doParallel::stopImplicitCluster()
 
   return(out_result)
 }
