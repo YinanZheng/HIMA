@@ -145,6 +145,7 @@ hima_survival <- function(X, M, OT, status, COV = NULL,
     V1_P <- abs(beta_LDPE_est) / beta_LDPE_SE
     c(beta_LDPE_est, beta_LDPE_SE, 2 * (1 - pnorm(V1_P, 0, 1)))
   }
+  if (is.null(dim(beta_results))) beta_results <- matrix(beta_results, nrow = 1)
   beta_DLASSO_SIS_est <- beta_results[, 1]
   beta_DLASSO_SIS_SE <- beta_results[, 2]
   P_beta_SIS <- beta_results[, 3]
@@ -158,6 +159,7 @@ hima_survival <- function(X, M, OT, status, COV = NULL,
     sd_1 <- abs(est_a) / se_a
     c(est_a, se_a, 2 * (1 - pnorm(sd_1, 0, 1)))
   }
+  if (is.null(dim(alpha_results))) alpha_results <- matrix(alpha_results, nrow = 1)
   alpha_SIS_est <- alpha_results[, 1]
   alpha_SIS_SE <- alpha_results[, 2]
   P_alpha_SIS <- alpha_results[, 3]
