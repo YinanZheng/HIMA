@@ -169,7 +169,7 @@ hima_survival <- function(X, M, OT, status, COV = NULL,
   #########################################################################
   if (verbose) message("Step 3: Multiple-testing procedure ...", "     (", format(Sys.time(), "%X"), ")")
 
-  PA <- cbind(t(P_alpha_SIS), t(P_beta_SIS))
+  PA <- cbind(P_alpha_SIS, P_beta_SIS)
   P_value <- apply(PA, 1, max) # the joint p-values for SIS variable
 
   ## the multiple-testing  procedure
