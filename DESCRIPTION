@@ -37,7 +37,7 @@ Collate:
     onAttach.R
     HIMA-package.R
 VignetteBuilder: knitr
-Suggests: knitr, rmarkdown
+Suggests: knitr, rmarkdown, testthat
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/YinanZheng/HIMA/
