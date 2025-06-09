@@ -28,6 +28,8 @@
 #' @param contrast a named list of contrasts to be applied to factor variables in the covariates (cannot be the variable of interest).
 #' @param subset an optional vector specifying a subset of observations to use in the analysis.
 #' @param verbose logical. Determines whether the function displays progress messages. Default is \code{FALSE}.
+#' @param parallel logical. Enable parallel computing feature? Default = \code{FALSE}.
+#' @param ncore number of cores to run parallel computing Valid when \code{parallel = TRUE}.
 #' @param ... reserved passing parameter (or for future use).
 #'
 #' @return A data.frame containing mediation testing results of selected mediators.
@@ -166,6 +168,8 @@ hima <- function(formula,
                  contrast = NULL,
                  subset = NULL,
                  verbose = FALSE,
+                 parallel = FALSE,
+                 ncore = 1,
                  ...) {
   
   # Handle subset
@@ -331,7 +335,9 @@ hima <- function(formula,
           topN = NULL,
           scale = scale,
           FDRcut = sigcut,
-          verbose = verbose
+          verbose = verbose,
+          parallel = parallel,
+          ncore = ncore
         )
 
         results <- .res_prep(res, method_text = "HDMT pointwise FDR", sigcut = sigcut)
@@ -346,11 +352,11 @@ hima <- function(formula,
         M.type = mediator.type,
         penalty = penalty,
         topN = NULL,
-        parallel = FALSE,
-        ncore = 1,
         scale = scale,
         Bonfcut = sigcut,
-        verbose = verbose
+        verbose = verbose,
+        parallel = parallel,
+        ncore = ncore
       )
 
       results <- .res_prep(res, method_text = "Bonferroni-adjusted p", sigcut = sigcut)

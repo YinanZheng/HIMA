@@ -17,6 +17,8 @@ hima(
   contrast = NULL,
   subset = NULL,
   verbose = FALSE,
+  parallel = FALSE,
+  ncore = 1,
   ...
 )
 }
@@ -56,6 +58,10 @@ HIMA can only be performed with \code{'DBlasso'}. Quantile HIMA and efficient HI
 \item{subset}{an optional vector specifying a subset of observations to use in the analysis.}
 
 \item{verbose}{logical. Determines whether the function displays progress messages. Default is \code{FALSE}.}
+
+\item{parallel}{logical. Enable parallel computing feature? Default = \code{FALSE}.}
+
+\item{ncore}{number of cores to run parallel computing Valid when \code{parallel = TRUE}.}
 
 \item{...}{reserved passing parameter (or for future use).}
 }
