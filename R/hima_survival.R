@@ -198,7 +198,8 @@ hima_survival <- function(X, M, OT, status, COV = NULL,
       beta_se = beta_DLASSO_SIS_SE[ID_fdr],
       IDE = IDE,
       rimp = abs(IDE) / sum(abs(IDE)) * 100,
-      pmax = P_value[ID_fdr]
+      pmax = P_value[ID_fdr],
+      row.names = NULL
     )
     if (verbose) message(paste0("        ", length(ID_fdr), " significant mediator(s) identified."))
   } else {
