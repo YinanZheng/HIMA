@@ -42,8 +42,7 @@ If the sample size is greater than topN (pre-specified or calculated), all media
 
 \item{parallel}{logical. Enable parallel computing feature? Default = \code{FALSE}.}
 
-\item{ncore}{number of cores to run parallel computing Valid when \code{parallel = TRUE}.
-By default max number of cores available in the machine will be utilized.}
+\item{ncore}{number of cores to run parallel computing Valid when \code{parallel = TRUE}.}
 }
 \value{
 A data.frame containing mediation testing results of significant mediators (FDR <\code{FDRcut}).
@@ -77,9 +76,7 @@ hima_survival.fit <- hima_survival(
   COV = pheno_data[, c("Sex", "Age")],
   scale = FALSE, # Disabled only for simulation data
   FDRcut = 0.05,
-  verbose = TRUE,
-  parallel = TRUE,
-  ncore = 2
+  verbose = TRUE
 )
 hima_survival.fit
 }

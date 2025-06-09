@@ -17,7 +17,6 @@
 #' @param verbose logical. Should the function be verbose? Default = \code{FALSE}.
 #' @param parallel logical. Enable parallel computing feature? Default = \code{FALSE}.
 #' @param ncore number of cores to run parallel computing Valid when \code{parallel = TRUE}.
-#'   By default max number of cores available in the machine will be utilized.
 #'
 #' @return A data.frame containing mediation testing results of significant mediators (FDR <\code{FDRcut}).
 #' \describe{
@@ -50,9 +49,7 @@
 #'   COV = pheno_data[, c("Sex", "Age")],
 #'   scale = FALSE, # Disabled only for simulation data
 #'   FDRcut = 0.05,
-#'   verbose = TRUE,
-#'   parallel = TRUE,
-#'   ncore = 2
+#'   verbose = TRUE
 #' )
 #' hima_survival.fit
 #' }

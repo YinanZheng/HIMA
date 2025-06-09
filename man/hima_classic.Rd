@@ -14,11 +14,11 @@ hima_classic(
   M.type = c("gaussian", "negbin"),
   penalty = c("MCP", "SCAD", "lasso"),
   topN = NULL,
-  parallel = FALSE,
-  ncore = 1,
   scale = TRUE,
   Bonfcut = 0.05,
   verbose = FALSE,
+  parallel = FALSE,
+  ncore = 1,
   ...
 )
 }
@@ -51,16 +51,15 @@ Default = \code{NULL}. If \code{NULL}, \code{topN} will be either \code{ceiling(
 or \code{ceiling(n/(2*log(n)))} for binary outcome, where \code{n} is the sample size. If the sample size is greater
 than topN (pre-specified or calculated), all mediators will be included in the test (i.e. low-dimensional scenario).}
 
-\item{parallel}{logical. Enable parallel computing feature? Default = \code{FALSE}.}
-
-\item{ncore}{number of cores to run parallel computing Valid when \code{parallel = TRUE}.
-By default max number of cores available in the machine will be utilized.}
-
 \item{scale}{logical. Should the function scale the data? Default = \code{TRUE}.}
 
 \item{Bonfcut}{Bonferroni-corrected p value cutoff applied to select significant mediators. Default = \code{0.05}.}
 
 \item{verbose}{logical. Should the function be verbose? Default = \code{FALSE}.}
+
+\item{parallel}{logical. Enable parallel computing feature? Default = \code{FALSE}.}
+
+\item{ncore}{number of cores to run parallel computing Valid when \code{parallel = TRUE}.}
 
 \item{...}{other arguments passed to \code{ncvreg}.}
 }

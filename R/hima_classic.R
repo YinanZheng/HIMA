@@ -22,12 +22,11 @@
 #' Default = \code{NULL}. If \code{NULL}, \code{topN} will be either \code{ceiling(n/log(n))} for continuous outcome,
 #' or \code{ceiling(n/(2*log(n)))} for binary outcome, where \code{n} is the sample size. If the sample size is greater
 #' than topN (pre-specified or calculated), all mediators will be included in the test (i.e. low-dimensional scenario).
-#' @param parallel logical. Enable parallel computing feature? Default = \code{FALSE}.
-#' @param ncore number of cores to run parallel computing Valid when \code{parallel = TRUE}.
-#' By default max number of cores available in the machine will be utilized.
 #' @param scale logical. Should the function scale the data? Default = \code{TRUE}.
 #' @param Bonfcut Bonferroni-corrected p value cutoff applied to select significant mediators. Default = \code{0.05}.
 #' @param verbose logical. Should the function be verbose? Default = \code{FALSE}.
+#' @param parallel logical. Enable parallel computing feature? Default = \code{FALSE}.
+#' @param ncore number of cores to run parallel computing Valid when \code{parallel = TRUE}.
 #' @param ... other arguments passed to \code{ncvreg}.
 #'
 #' @return A data.frame containing mediation testing results of selected mediators.
@@ -91,11 +90,11 @@ hima_classic <- function(X, M, Y, COV.XM = NULL, COV.MY = COV.XM,
                         M.type = c("gaussian", "negbin"),
                         penalty = c("MCP", "SCAD", "lasso"),
                         topN = NULL,
-                        parallel = FALSE,
-                        ncore = 1,
                         scale = TRUE,
                         Bonfcut = 0.05,
                         verbose = FALSE,
+                        parallel = FALSE,
+                        ncore = 1,
                         ...) {
   
   if (!is.null(COV.XM) && !is.data.frame(COV.XM) && !is.matrix(COV.XM)) {
