@@ -12,7 +12,9 @@ hima_efficient(
   topN = NULL,
   scale = TRUE,
   FDRcut = 0.05,
-  verbose = FALSE
+  verbose = FALSE,
+  parallel = FALSE,
+  ncore = 1
 )
 }
 \arguments{
@@ -34,6 +36,8 @@ If the sample size is greater than topN (pre-specified or calculated), all media
 \item{FDRcut}{Benjamini-Hochberg FDR cutoff applied to select significant mediators. Default = \code{0.05}.}
 
 \item{verbose}{logical. Should the function be verbose? Default = \code{FALSE}.}
+\item{parallel}{logical. Enable parallel computing feature? Default = \code{FALSE}.}
+\item{ncore}{number of cores to run parallel computing Valid when \code{parallel = TRUE}.}
 }
 \value{
 A data.frame containing mediation testing results of significant mediators (FDR <\code{FDRcut}).
