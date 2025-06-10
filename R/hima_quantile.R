@@ -180,7 +180,7 @@ hima_quantile <- function(X, M, Y, COV = NULL,
           IDE = IDE,
           rimp = abs(IDE) / sum(abs(IDE)) * 100,
           pmax = P_max_k_penalty[sig_ind],
-          tau = tau_temp
+          tau = tau_temp, row.names = NULL
         )
       )
       if (verbose) message(paste0("        ", length(ID_Non_penalty_Pmax), " significant mediator(s) identified."))

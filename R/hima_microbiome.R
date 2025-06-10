@@ -166,7 +166,7 @@ hima_microbiome <- function(X,
       beta_se = beta_SE[ID_FDR],
       IDE = IDE,
       rimp = abs(IDE) / sum(abs(IDE)) * 100,
-      pmax = P_adj_DLASSO[ID_FDR]
+      pmax = P_adj_DLASSO[ID_FDR], row.names = NULL
     )
     if (verbose) message(paste0("        ", length(ID_FDR), " significant mediator(s) identified."))
   } else {

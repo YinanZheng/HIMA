@@ -278,7 +278,7 @@ hima_classic <- function(X, M, Y, COV.XM = NULL, COV.MY = COV.XM,
       beta_hat = beta_est[sig_ind],
       IDE = IDE[sig_ind],
       rimp = (abs(IDE) / sum(abs(IDE)))[sig_ind] * 100,
-      pmax = Pmax[sig_ind], check.names = FALSE
+      pmax = Pmax[sig_ind], row.names = NULL
     )
 
     if (verbose) message("Done!", "     (", format(Sys.time(), "%X"), ")")

@@ -232,7 +232,7 @@ hima_efficient <- function(X, M, Y, COV = NULL,
       beta_se = beta_SE_orc[ID_BH_DACT],
       IDE = IDE,
       rimp = abs(IDE) / sum(abs(IDE)) * 100,
-      pmax = DACT_ora[ID_BH_DACT], check.names = FALSE
+      pmax = DACT_ora[ID_BH_DACT], row.names = NULL
     )
     if (verbose) message(paste0("        ", length(ID_BH_DACT), " significant mediator(s) identified."))
   } else {

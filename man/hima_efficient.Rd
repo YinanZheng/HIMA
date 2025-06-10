@@ -36,7 +36,9 @@ If the sample size is greater than topN (pre-specified or calculated), all media
 \item{FDRcut}{Benjamini-Hochberg FDR cutoff applied to select significant mediators. Default = \code{0.05}.}
 
 \item{verbose}{logical. Should the function be verbose? Default = \code{FALSE}.}
+
 \item{parallel}{logical. Enable parallel computing feature? Default = \code{FALSE}.}
+
 \item{ncore}{number of cores to run parallel computing Valid when \code{parallel = TRUE}.}
 }
 \value{

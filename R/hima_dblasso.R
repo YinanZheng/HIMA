@@ -215,7 +215,7 @@ hima_dblasso <- function(X, M, Y, COV = NULL,
       beta_se = beta_hat_SE,
       IDE = IDE,
       rimp = abs(IDE) / sum(abs(IDE)) * 100,
-      pmax = P.value_raw, check.names = FALSE
+      pmax = P.value_raw, row.names = NULL
     )
 
     if (verbose) message(paste0("        ", length(ID_fdr), " significant mediator(s) identified."))
