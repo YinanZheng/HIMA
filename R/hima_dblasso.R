@@ -14,6 +14,8 @@
 #' @param scale logical. Should the function scale the data? Default = \code{TRUE}.
 #' @param FDRcut HDMT pointwise FDR cutoff applied to select significant mediators. Default = \code{0.05}.
 #' @param verbose logical. Should the function be verbose? Default = \code{FALSE}.
+#' @param parallel logical. Enable parallel computing feature? Default = \code{FALSE}.
+#' @param ncore number of cores to run parallel computing Valid when \code{parallel = TRUE}.
 #'
 #' @return A data.frame containing mediation testing results of significant mediators (FDR <\code{FDRcut}).
 #' \describe{
@@ -58,7 +60,9 @@ hima_dblasso <- function(X, M, Y, COV = NULL,
                         topN = NULL,
                         scale = TRUE,
                         FDRcut = 0.05,
-                        verbose = FALSE) {
+                        verbose = FALSE,
+                        parallel = FALSE,
+                        ncore = 1) {
   n <- nrow(M)
   p <- ncol(M)
 
@@ -70,6 +74,8 @@ hima_dblasso <- function(X, M, Y, COV = NULL,
   COV <- process_var(COV, scale)
 
   if (scale && verbose) message("Data scaling is completed.")
+
+  checkParallel("hima_dblasso", parallel, ncore, verbose)
 
   if (is.null(COV)) {
     MZX <- cbind(M, X)
@@ -96,22 +102,17 @@ hima_dblasso <- function(X, M, Y, COV = NULL,
   if (is.null(topN)) d_0 <- ceiling(2 * n / log(n)) else d_0 <- topN
   d_0 <- min(p, d_0) # if d > p select all mediators
 
-  beta_SIS <- matrix(0, 1, p)
-
-  # Estimate the regression coefficients beta (mediators --> outcome)
-  for (i in 1:p) {
+  beta_SIS <- foreach(i = seq_len(p), .combine = "c") %dopar% {
     ID_S <- c(i, (p + 1):(p + q + 1))
     MZX_SIS <- MZX[, ID_S]
     fit <- lsfit(MZX_SIS, Y, intercept = TRUE)
-    beta_SIS[i] <- fit$coefficients[2]
+    fit$coefficients[2]
   }
 
   # Estimate the regression coefficients alpha (exposure --> mediators)
-  alpha_SIS <- matrix(0, 1, p)
-  for (i in 1:p) {
+  alpha_SIS <- foreach(i = seq_len(p), .combine = "c") %dopar% {
     fit_a <- lsfit(XZ, M[, i], intercept = TRUE)
-    est_a <- matrix(coef(fit_a))[2]
-    alpha_SIS[i] <- est_a
+    as.numeric(coef(fit_a))[2]
   }
 
   # Select the d_0 number of mediators with top largest effect
@@ -146,19 +147,17 @@ hima_dblasso <- function(X, M, Y, COV = NULL,
   P_beta_SIS <- t(DLASSO_fit$pval[1:d])
 
   ################### Estimate alpha ################
-  alpha_SIS_est <- matrix(0, 1, d)
-  alpha_SIS_SE <- matrix(0, 1, d)
-  P_alpha_SIS <- matrix(0, 1, d)
-
-  for (i in 1:d) {
+  alpha_results <- foreach(i = seq_len(d), .combine = rbind) %dopar% {
     fit_a <- lsfit(XZ, M[, ID_SIS[i]], intercept = TRUE)
     est_a <- matrix(coef(fit_a))[2]
     se_a <- ls.diag(fit_a)$std.err[2]
     sd_1 <- abs(est_a) / se_a
-    P_alpha_SIS[i] <- 2 * (1 - pnorm(sd_1, 0, 1)) ## the SIS for alpha
-    alpha_SIS_est[i] <- est_a
-    alpha_SIS_SE[i] <- se_a
+    c(est_a, se_a, 2 * (1 - pnorm(sd_1, 0, 1)))
   }
+  if (is.null(dim(alpha_results))) alpha_results <- matrix(alpha_results, nrow = 1)
+  alpha_SIS_est <- alpha_results[, 1]
+  alpha_SIS_SE <- alpha_results[, 2]
+  P_alpha_SIS <- alpha_results[, 3]
 
   #########################################################################
   ################ (step 3) The multiple-testing  procedure ###############
@@ -226,6 +225,8 @@ hima_dblasso <- function(X, M, Y, COV = NULL,
   }
 
   if (verbose) message("Done!", "     (", format(Sys.time(), "%X"), ")")
+
+  doParallel::stopImplicitCluster()
 
   return(results)
 }

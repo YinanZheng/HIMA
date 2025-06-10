@@ -264,7 +264,9 @@ hima <- function(formula,
         topN = NULL,
         scale = scale,
         FDRcut = sigcut,
-        verbose = verbose
+        verbose = verbose,
+        parallel = parallel,
+        ncore = ncore
       )
 
       results <- .res_prep(res, method_text = "DACT method with BH-FDR", sigcut = sigcut)
@@ -288,6 +290,8 @@ hima <- function(formula,
         scale = scale,
         Bonfcut = 0.05,
         verbose = verbose,
+        parallel = parallel,
+        ncore = ncore,
         ...
       )
 
@@ -307,7 +311,9 @@ hima <- function(formula,
             topN = NULL,
             scale = scale,
             FDRcut = sigcut,
-            verbose = verbose
+            verbose = verbose,
+            parallel = parallel,
+            ncore = ncore
           )
 
           results <- .res_prep(res, method_text = "HDMT pointwise FDR", sigcut = sigcut)
@@ -319,7 +325,9 @@ hima <- function(formula,
             Y = d$Y,
             COV = d$COV,
             FDRcut = sigcut,
-            verbose = verbose
+            verbose = verbose,
+            parallel = parallel,
+            ncore = ncore
           )
 
           results <- .res_prep(res, method_text = "Hommel FDR", sigcut = sigcut)

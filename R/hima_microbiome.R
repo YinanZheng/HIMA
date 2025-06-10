@@ -11,6 +11,8 @@
 #' microbiome variables. Can be \code{NULL}.
 #' @param FDRcut Hommel FDR cutoff applied to select significant mediators. Default = \code{0.05}.
 #' @param verbose logical. Should the function be verbose? Default = \code{FALSE}.
+#' @param parallel logical. Enable parallel computing feature? Default = \code{FALSE}.
+#' @param ncore number of cores to run parallel computing Valid when \code{parallel = TRUE}.
 #'
 #' @return A data.frame containing mediation testing results of significant mediators (FDR <\code{FDRcut}).
 #' \describe{
@@ -56,7 +58,9 @@ hima_microbiome <- function(X,
                             Y,
                             COV = NULL,
                             FDRcut = 0.05,
-                            verbose = FALSE) {
+                            verbose = FALSE,
+                            parallel = FALSE,
+                            ncore = 1) {
   X <- matrix(X, ncol = 1)
   
   M_raw <- as.matrix(OTU)
@@ -82,8 +86,10 @@ hima_microbiome <- function(X,
   beta_SE <- matrix(0, 1, d)
   P_raw_DLASSO <- matrix(0, 1, d)
   M1 <- t(t(M_raw[, 1]))
-  
+
   if (verbose) message("Step 1: ILR Transformation and De-biased Lasso estimates ...", "  (", format(Sys.time(), "%X"), ")")
+
+  checkParallel("hima_microbiome", parallel, ncore, verbose)
   
   if (verbose) {
     if (is.null(COV)) {
@@ -93,7 +99,7 @@ hima_microbiome <- function(X,
     }
   }
   
-  for (k in 1:d) {
+  results_loop <- foreach(k = seq_len(d), .combine = rbind) %dopar% {
     M <- M_raw
     M[, 1] <- M[, k]
     M[, k] <- M1
@@ -105,27 +111,30 @@ hima_microbiome <- function(X,
         MT[i, j] <- C_1 * log(M[i, j] / C_2)
       }
     }
-    
+
     MT <- scale(MT)
     MX <- cbind(MT, X)
-    
+
     fit.dlasso <- DLASSO_fun(MX, Y)
-    
+
     beta_est <- fit.dlasso[1]
     beta_se <- fit.dlasso[2]
     P_b <- 2 * (1 - pnorm(abs(beta_est / beta_se), 0, 1))
-    beta_EST[k] <- beta_est
-    beta_SE[k] <- beta_se
-    
+
     lm.fit <- stats::lm(MT[, 1] ~ X)
     lm.out <- summary(lm.fit)
     alpha_est <- lm.out$coefficients[2, 1]
     alpha_se <- lm.out$coefficients[2, 2]
     P_a <- 2 * (1 - pnorm(abs(alpha_est / alpha_se), 0, 1))
-    P_raw_DLASSO[k] <- max(P_a, P_b)
-    alpha_EST[k] <- alpha_est
-    alpha_SE[k] <- alpha_se
-  } # the end of k
+    c(beta_est, beta_se, alpha_est, alpha_se, max(P_a, P_b))
+  }
+  if (is.null(dim(results_loop))) results_loop <- matrix(results_loop, nrow = 1)
+  beta_EST <- results_loop[, 1]
+  beta_SE <- results_loop[, 2]
+  alpha_EST <- results_loop[, 3]
+  alpha_SE <- results_loop[, 4]
+  P_raw_DLASSO <- results_loop[, 5]
+  # the end of k
   
   P_adj_DLASSO <- as.numeric(P_raw_DLASSO)
   
@@ -166,6 +175,8 @@ hima_microbiome <- function(X,
   }
   
   if (verbose) message("Done!", "     (", format(Sys.time(), "%X"), ")")
-  
+
+  doParallel::stopImplicitCluster()
+
   return(out_result)
 }

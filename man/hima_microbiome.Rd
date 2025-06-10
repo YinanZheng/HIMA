@@ -4,7 +4,8 @@
 \alias{hima_microbiome}
 \title{High-dimensional mediation analysis for compositional microbiome data}
 \usage{
-hima_microbiome(X, OTU, Y, COV = NULL, FDRcut = 0.05, verbose = FALSE)
+hima_microbiome(X, OTU, Y, COV = NULL, FDRcut = 0.05, verbose = FALSE,
+  parallel = FALSE, ncore = 1)
 }
 \arguments{
 \item{X}{a vector of exposure. Do not use \code{data.frame} or \code{matrix}.}
@@ -20,6 +21,8 @@ microbiome variables. Can be \code{NULL}.}
 \item{FDRcut}{Hommel FDR cutoff applied to select significant mediators. Default = \code{0.05}.}
 
 \item{verbose}{logical. Should the function be verbose? Default = \code{FALSE}.}
+\item{parallel}{logical. Enable parallel computing feature? Default = \code{FALSE}.}
+\item{ncore}{number of cores to run parallel computing Valid when \code{parallel = TRUE}.}
 }
 \value{
 A data.frame containing mediation testing results of significant mediators (FDR <\code{FDRcut}).

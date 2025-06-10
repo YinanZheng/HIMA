@@ -18,6 +18,8 @@
 #' @param scale logical. Should the function scale the data? Default = \code{TRUE}.
 #' @param Bonfcut Bonferroni-corrected p value cutoff applied to select significant mediators. Default = \code{0.05}.
 #' @param verbose logical. Should the function be verbose? Default = \code{FALSE}.
+#' @param parallel logical. Enable parallel computing feature? Default = \code{FALSE}.
+#' @param ncore number of cores to run parallel computing Valid when \code{parallel = TRUE}.
 #' @param ... reserved passing parameter.
 #'
 #' @return A data.frame containing mediation testing results of selected mediators (Bonferroni-adjusted p value <\code{Bonfcut}).
@@ -64,6 +66,8 @@ hima_quantile <- function(X, M, Y, COV = NULL,
                   scale = TRUE,
                   Bonfcut = 0.05,
                   verbose = FALSE,
+                  parallel = FALSE,
+                  ncore = 1,
                   ...) {
   penalty <- match.arg(penalty)
 
@@ -78,6 +82,8 @@ hima_quantile <- function(X, M, Y, COV = NULL,
   COV <- process_var(COV, scale)
 
   if (scale && verbose) message("Data scaling is completed.")
+
+  checkParallel("hima_quantile", parallel, ncore, verbose)
 
   if (is.null(COV)) XZ <- X else XZ <- cbind(X, COV)
 
@@ -101,14 +107,19 @@ hima_quantile <- function(X, M, Y, COV = NULL,
     beta_SIS_est <- matrix(0, 1, p) # the screening based estimator of beta
     # beta_SIS_SE <- matrix(0, 1, p) # the SE of beta_SIS_est
 
-    for (k in 1:p) {
+    screening_res <- foreach(k = seq_len(p), .combine = rbind) %dopar% {
       MXZ_k <- cbind(M[, k], XZ)
-      fit_rq <- rq(Y ~ MXZ_k, tau = tau_temp, method = "fn", model = TRUE) # screening in the path M-Y
-      beta_SIS_est[k] <- fit_rq$coefficients[2]
-      fit_M <- lsfit(XZ, M[, k], intercept = TRUE) # screening in the path x-M
-      alpha_est[k] <- matrix(coef(fit_M))[2]
-      alpha_SE[k] <- ls.diag(fit_M)$std.err[2]
+      fit_rq <- rq(Y ~ MXZ_k, tau = tau_temp, method = "fn", model = TRUE)
+      beta_val <- fit_rq$coefficients[2]
+      fit_M <- lsfit(XZ, M[, k], intercept = TRUE)
+      alpha_val <- matrix(coef(fit_M))[2]
+      alpha_se <- ls.diag(fit_M)$std.err[2]
+      c(beta_val, alpha_val, alpha_se)
     }
+    if (is.null(dim(screening_res))) screening_res <- matrix(screening_res, nrow = 1)
+    beta_SIS_est <- screening_res[, 1]
+    alpha_est <- screening_res[, 2]
+    alpha_SE <- screening_res[, 3]
 
     T_sobel <- beta_SIS_est
     ID_SIS <- which(-abs(T_sobel) <= sort(-abs(T_sobel))[d]) # the index set in Step 1 after the screening
@@ -180,5 +191,7 @@ hima_quantile <- function(X, M, Y, COV = NULL,
   }
 
   if (verbose) message("Done!", "     (", format(Sys.time(), "%X"), ")")
+
+  doParallel::stopImplicitCluster()
   return(out_result)
 }
