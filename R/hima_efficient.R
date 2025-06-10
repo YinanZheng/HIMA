@@ -207,7 +207,7 @@ hima_efficient <- function(X, M, Y, COV = NULL,
   P_BH <- (1:p) * (FDRcut / p)
 
   ## DACT
-  DACT_ora <- DACT(p_a = t(P_oracle_alpha), p_b = t(P_oracle_beta))
+  DACT_ora <- DACT(p_a = as.numeric(P_oracle_alpha), p_b = as.numeric(P_oracle_beta))  
   P_sort_DACT <- sort(DACT_ora)
   SN <- sum(as.numeric(P_sort_DACT <= P_BH))
   ID_BH_DACT <- order(DACT_ora)[1:SN]
