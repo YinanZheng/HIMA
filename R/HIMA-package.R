@@ -66,4 +66,7 @@
 #' @importFrom MASS mvrnorm glm.nb
 #' @importFrom hommel hommel discoveries
 #' @importFrom stats contrasts<-
-NULL
+
+if (getRversion() >= "2.15.1") {
+  utils::globalVariables(c("i", "k"))
+}
