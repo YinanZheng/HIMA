@@ -99,6 +99,17 @@ In most real-world data analysis scenarios, `scale` is typically set to `TRUE`, 
 
 When applying `HIMA` to simulated data, if `scale` is set to `TRUE`, it is imperative to preprocess the mediators by scaling them to have a mean of zero and a variance of one prior to generating the outcome variables.
 
+## Parallel Computing Support
+
+The `hima()` function supports **parallel computing** to speed up high-dimensional mediation analysis, especially when dealing with a large number of mediators.
+
+### Enabling Parallel Computing
+
+To enable parallel computing, simply set `parallel = TRUE` and specify the number of CPU cores to use via the `ncore` argument:
+
+```{r parallel}
+hima(..., parallel = TRUE, ncore = 4)
+```
 
 # Applications and Examples
 
