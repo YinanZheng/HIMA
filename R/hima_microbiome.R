@@ -87,10 +87,10 @@ hima_microbiome <- function(X,
   P_raw_DLASSO <- matrix(0, 1, d)
   M1 <- t(t(M_raw[, 1]))
 
-  if (verbose) message("Step 1: ILR Transformation and De-biased Lasso estimates ...", "  (", format(Sys.time(), "%X"), ")")
-
   checkParallel("hima_microbiome", parallel, ncore, verbose)
   
+  if (verbose) message("Step 1: ILR Transformation and De-biased Lasso estimates ...", "  (", format(Sys.time(), "%X"), ")")
+
   if (verbose) {
     if (is.null(COV)) {
       message("        No covariate was adjusted.")

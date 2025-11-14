@@ -2,7 +2,7 @@
 % Please edit documentation in R/hima_survival.R
 \name{hima_survival}
 \alias{hima_survival}
-\title{High-dimensional mediation analysis for survival data}
+\title{High-dimensional mediation analysis for survival outcome data}
 \usage{
 hima_survival(
   X,

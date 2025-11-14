@@ -71,6 +71,41 @@
 #'
 "SurvivalData"
 
+#' Longitudinal Mediators with Survival Outcome Dataset for HIMA Demo
+#'
+#' A simulated dataset for demonstrating high-dimensional and longitudinal
+#' mediation analysis with survival outcomes in a counting-process framework.
+#' The data were generated under a longitudinal mediator model and a
+#' piecewise-constant Weibull survival model, mimicking real-world analysis
+#' settings.
+#'
+#' @format A list with the following components:
+#' \describe{
+#'   \item{PhenoData}{A data frame where each row represents one interval
+#'   (\code{tstart}, \code{tstop}) for a subject in counting-process format.
+#'   It contains:
+#'     \describe{
+#'       \item{ID}{Subject identifier (may appear multiple times due to interval splitting).}
+#'       \item{Tstart}{Start time of the interval.}
+#'       \item{Tstop}{Stop time of the interval (event or censoring time).}
+#'       \item{Status}{Event indicator for the interval (\code{1 = event}, \code{0 = no event}).}
+#'       \item{Treatment}{Exposure variable for each subject.}
+#'       \item{Sex}{Binary covariate: \code{1 = male}, \code{0 = female}.}
+#'       \item{Age}{Age of the subject in years.}
+#'     }
+#'   }
+#'   \item{Mediator}{A numeric matrix of high-dimensional longitudinal mediators
+#'   aligned with the rows of \code{PhenoData}.  
+#'   Columns correspond to mediator variables (\code{M1}, \code{M2}, …), and rows
+#'   correspond to observation intervals in the counting-process setup.}
+#' }
+#'
+#' @examples
+#' data(SurvivalLongData)
+#' head(SurvivalLongData$PhenoData)
+#'
+"SurvivalLongData"
+
 #' Compositional Mediator Dataset for HIMA Demo
 #'
 #' A dataset containing phenotype data and high-dimensional compositional mediators (e.g., microbiome).

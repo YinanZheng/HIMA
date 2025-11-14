@@ -11,7 +11,7 @@ checkParallel <- function(program.name, parallel, ncore, verbose) {
     }
     if (verbose) {
       message(
-        "    Running ", program.name, " with ", ncore, " cores in parallel...   (",
+        "Running ", program.name, " with ", ncore, " cores in parallel...   (",
         format(Sys.time(), "%X"), ")"
       )
     }
@@ -19,7 +19,7 @@ checkParallel <- function(program.name, parallel, ncore, verbose) {
   } else {
     if (verbose) {
       message(
-        "    Running ", program.name, " with single core...   (",
+        "Running ", program.name, " with single core...   (",
         format(Sys.time(), "%X"), ")"
       )
     }

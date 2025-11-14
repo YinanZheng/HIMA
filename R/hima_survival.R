@@ -1,5 +1,5 @@
 # This is the function for our proposed method for high-dimensional Cox mediation analysis
-#' High-dimensional mediation analysis for survival data
+#' High-dimensional mediation analysis for survival outcome data
 #'
 #' \code{hima_survival} is used to estimate and test high-dimensional mediation effects for survival data.
 #'
@@ -84,12 +84,13 @@ hima_survival <- function(X, M, OT, status, COV = NULL,
   if (scale && verbose) message("Data scaling is completed.")
 
   checkParallel("hima_survival", parallel, ncore, verbose)
-
+  
   #########################################################################
   ################################ STEP 1 #################################
   #########################################################################
   if (verbose) message("Step 1: Sure Independent Screening ...", "     (", format(Sys.time(), "%X"), ")")
 
+  
   if (is.null(topN)) d_0 <- ceiling(n / log(n)) else d_0 <- topN # the number of top mediators that associated with exposure (X)
   d_0 <- min(p, d_0) # if d_0 > p select all mediators
 

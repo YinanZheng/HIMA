@@ -12,6 +12,8 @@ hima(
   penalty = c("DBlasso", "MCP", "SCAD", "lasso"),
   quantile = FALSE,
   efficient = FALSE,
+  longitudinal = FALSE,
+  id.var = NULL,
   scale = TRUE,
   sigcut = 0.05,
   contrast = NULL,
@@ -47,6 +49,11 @@ HIMA can only be performed with \code{'DBlasso'}. Quantile HIMA and efficient HI
 
 \item{efficient}{logical. Indicates whether to use efficient HIMA (\code{hima_efficient}). Default is \code{FALSE}. Applicable only for classic HIMA with a continuous outcome and 
 \code{mediator.type = 'gaussian'}.}
+
+\item{longitudinal}{logical. Indicates whether to run the longitudinal survival mediation model \code{hima_survival_long} (requires a \code{Surv(tstart, tstop, status)} outcome). 
+Default = \code{FALSE}.}
+
+\item{id.var}{Character string specifying the column name in \code{data.pheno} that stores subject identifiers. Required when \code{longitudinal = TRUE}.}
 
 \item{scale}{logical. Determines whether the function scales the data (exposure, mediators, and covariates). Default is \code{TRUE}. Note: For simulation studies, set 
 \code{scale = FALSE} to avoid estimate compression (i.e., shrinkage of estimates toward zero due to scaling).}
@@ -95,8 +102,9 @@ e1 <- hima(Outcome ~ Treatment + Sex + Age,
   data.M = mediator_data,
   mediator.type = "gaussian",
   penalty = "MCP", # Can be "DBlasso" for hima_dblasso
-  scale = FALSE
-) # Disabled only for simulation data
+  scale = FALSE, # Disabled only for simulation data
+  verbose = TRUE
+) 
 summary(e1)
 
 # Efficient HIMA (only applicable to mediators and outcomes that are
@@ -107,8 +115,9 @@ e1e <- hima(Outcome ~ Treatment + Sex + Age,
   mediator.type = "gaussian",
   efficient = TRUE,
   penalty = "MCP", # Efficient HIMA does not support DBlasso
-  scale = FALSE
-) # Disabled only for simulation data
+  scale = FALSE, # Disabled only for simulation data
+  verbose = TRUE
+) 
 summary(e1e)
 
 # Example 2 (binary outcome - logistic HIMA):
@@ -121,8 +130,9 @@ e2 <- hima(Disease ~ Treatment + Sex + Age,
   data.M = mediator_data,
   mediator.type = "gaussian",
   penalty = "MCP",
-  scale = FALSE
-) # Disabled only for simulation data
+  scale = FALSE, # Disabled only for simulation data
+  verbose = TRUE
+) 
 summary(e2)
 
 # Example 3 (time-to-event outcome - survival HIMA):
@@ -135,9 +145,26 @@ e3 <- hima(Surv(Time, Status) ~ Treatment + Sex + Age,
   data.M = mediator_data,
   mediator.type = "gaussian",
   penalty = "DBlasso",
-  scale = FALSE
-) # Disabled only for simulation data
+  scale = FALSE, # Disabled only for simulation data
+  verbose = TRUE
+) # Parallel computing feature is recommended
 summary(e3)
+
+# Longitudinal mediator + survival HIMA:
+data(SurvivalLongData)
+pheno_data <- SurvivalLongData$PhenoData
+mediator_data <- SurvivalLongData$Mediator
+
+e3long <- hima(Surv(Tstart, Tstop, Status) ~ Treatment + Sex + Age,
+  data.pheno = pheno_data,
+  data.M = mediator_data,
+  mediator.type = "gaussian",
+  longitudinal = TRUE,
+  id.var = "ID",
+  scale = TRUE, # Disabled only for simulation data
+  verbose = TRUE
+) # Parallel computing feature is recommended
+summary(e3long)
 
 # Example 4 (compositional data as mediator, e.g., microbiome):
 data(MicrobiomeData)
@@ -148,7 +175,8 @@ e4 <- hima(Outcome ~ Treatment + Sex + Age,
   data.pheno = pheno_data,
   data.M = mediator_data,
   mediator.type = "compositional",
-  penalty = "DBlasso"
+  penalty = "DBlasso",
+  verbose = TRUE
 ) # Scaling is always enabled internally for hima_microbiome
 summary(e4)
 
@@ -165,32 +193,39 @@ e5 <- hima(Outcome ~ Treatment + Sex + Age,
   quantile = TRUE,
   penalty = "MCP", # Quantile HIMA does not support DBlasso
   scale = FALSE, # Disabled only for simulation data
-  tau = c(0.3, 0.5, 0.7)
+  tau = c(0.3, 0.5, 0.7),
+  verbose = TRUE
 ) # Specify multiple quantile level
 summary(e5)
 }
 
 }
 \references{
-1. Zhang H, Zheng Y, Zhang Z, Gao T, Joyce B, Yoon G, Zhang W, Schwartz J, Just A, Colicino E, Vokonas P, Zhao L,
+1. Zhang H, Zheng Y, Hou L, Liu L, HIMA: An R Package for High-Dimensional Mediation Analysis, J. data sci. 2025. 
+DOI: 10.6339/25-JDS1192
+
+2. Zhang H, Zheng Y, Zhang Z, Gao T, Joyce B, Yoon G, Zhang W, Schwartz J, Just A, Colicino E, Vokonas P, Zhao L,
 Lv J, Baccarelli A, Hou L, Liu L. Estimating and Testing High-dimensional Mediation Effects in Epigenetic Studies.
 Bioinformatics. 2016. DOI: 10.1093/bioinformatics/btw351. PMID: 27357171; PMCID: PMC5048064
 
-2. Zhang H, Zheng Y, Hou L, Zheng C, Liu L. Mediation Analysis for Survival Data with High-Dimensional Mediators.
+3. Zhang H, Zheng Y, Hou L, Zheng C, Liu L. Mediation Analysis for Survival Data with High-Dimensional Mediators.
 Bioinformatics. 2021. DOI: 10.1093/bioinformatics/btab564. PMID: 34343267; PMCID: PMC8570823
 
-3. Zhang H, Chen J, Feng Y, Wang C, Li H, Liu L. Mediation Effect Selection in High-dimensional and Compositional Microbiome data.
+4. Zhang H, Chen J, Feng Y, Wang C, Li H, Liu L. Mediation Effect Selection in High-dimensional and Compositional Microbiome data.
 Stat Med. 2021. DOI: 10.1002/sim.8808. PMID: 33205470; PMCID: PMC7855955
 
-4. Zhang H, Chen J, Li Z, Liu L. Testing for Mediation Effect with Application to Human Microbiome Data.
+5. Zhang H, Chen J, Li Z, Liu L. Testing for Mediation Effect with Application to Human Microbiome Data.
 Stat Biosci. 2021. DOI: 10.1007/s12561-019-09253-3. PMID: 34093887; PMCID: PMC8177450
 
-5. Perera C, Zhang H, Zheng Y, Hou L, Qu A, Zheng C, Xie K, Liu L. HIMA2: High-dimensional Mediation Analysis and Its Application in
+6. Perera C, Zhang H, Zheng Y, Hou L, Qu A, Zheng C, Xie K, Liu L. HIMA2: High-dimensional Mediation Analysis and Its Application in
 Epigenome-wide DNA Methylation Data. BMC Bioinformatics. 2022. DOI: 10.1186/s12859-022-04748-1. PMID: 35879655; PMCID: PMC9310002
 
-6. Zhang H, Hong X, Zheng Y, Hou L, Zheng C, Wang X, Liu L. High-Dimensional Quantile Mediation Analysis with Application to a Birth
+7. Zhang H, Hong X, Zheng Y, Hou L, Zheng C, Wang X, Liu L. High-Dimensional Quantile Mediation Analysis with Application to a Birth
 Cohort Study of Mother–Newborn Pairs. Bioinformatics. 2024. DOI: 10.1093/bioinformatics/btae055. PMID: 38290773; PMCID: PMC10873903
 
-7. Bai X, Zheng Y, Hou L, Zheng C, Liu L, Zhang H. An Efficient Testing Procedure for High-dimensional Mediators with FDR Control.
+8. Bai X, Zheng Y, Hou L, Zheng C, Liu L, Zhang H. An Efficient Testing Procedure for High-dimensional Mediators with FDR Control.
 Statistics in Biosciences. 2024. DOI: 10.1007/s12561-024-09447-4.
+
+9. Liu L, Zhang H, Zheng Y, Gao T, Zheng C, Zhang K, Hou L, Liu L. High-dimensional mediation analysis for longitudinal mediators and 
+survival outcomes. Briefings in Bioinformatics. 2025. DOI: 10.1093/bib/bbaf206. PMID: 40350699 PMCID: PMC12066418
 }

@@ -77,7 +77,6 @@ usethis::use_data(BinaryOutcome, overwrite = TRUE)
 
 
 
-
 ######################################################
 # Dataset - 3 (survival outcome)
 ######################################################
@@ -135,69 +134,191 @@ usethis::use_data(SurvivalData, overwrite = TRUE)
 
 
 
+######################################################
+# Dataset - 4 (longitudinal mediator + survival outcome)
+######################################################
+set.seed(18675)
+
+n <- 300   # sample size
+p <- 100   # the dimension of mediators
+q <- 2     # the dimension of covariates
+
+alpha <- c(c(0.5, 0.4, 0.3),
+           c(0.5, 0.4, 0.3),
+           rep(0, 3),
+           rep(0, p - 9))
+eta    <- matrix(0.01, q, p)
+theta1 <- 0.4
+theta2 <- rep(0.01, q)
+beta   <- c(c(0.5, 0.4, 0.3),
+            rep(0, 3),
+            c(0.5, 0.4, 0.3),
+            rep(0, p - 9))
+
+a1 <- rnorm(n, 0, 0.2)
+
+## ---------------------------------------------------
+## 1. Generate Sex / Age, then standardize for modeling
+## ---------------------------------------------------
+
+# Raw covariates (to be saved in PhenoData)
+Sex_raw <- rbinom(n, size = 1, prob = 0.5)         # sex: 1 = male, 0 = female
+Age_raw <- sample(18:65, n, replace = TRUE)        # age 18–65
+
+# Standardized version used in the longitudinal model
+Z <- scale(cbind(Sex_raw, Age_raw))                # mean 0, sd 1
+colnames(Z) <- c("Sex_z", "Age_z")
+
+## ---------------------------------------------------
+## 2. Exposure and time setup
+## ---------------------------------------------------
+
+x <- rnorm(n, 0, 0.5)
+
+# intervals D1 = [0, t1), D2 = [t1, +infty)
+interval.max <- 2
+delta1 <- 0.2
+t <- 0:(interval.max - 1) * delta1
+
+beta0.ti <- c(theta1, theta2)
+beta0.tv <- beta
+beta0    <- c(beta0.ti, rep(beta0.tv, each = interval.max))
+p.ti     <- 1 + q
+p.tv     <- p
+p.x      <- p.ti + p.tv * interval.max
+
+## ---------------------------------------------------
+## 3. Longitudinal mediators
+## ---------------------------------------------------
+
+M <- matrix(0, n, p * interval.max)
+for (k in 1:p) {
+  b1 <- rnorm(n, 0, 0.2)
+  for (j in 1:interval.max) {
+    M[, (k - 1) * interval.max + j] <-
+      as.vector(x * alpha[k] + Z %*% eta[, k]) +
+      a1 + b1 + rnorm(n, 0, 1)
+  }
+}
+
+########## Austin Weibull #################
+delta2 <- 1
+scale  <- 1
+nu     <- 4
+
+# Design matrix used for hazard
+xx0 <- cbind(x, Z, M, 1:n)   # last column is subject id
+u   <- runif(n, 0, 1)
+
+H    <- matrix(0, nrow = n, ncol = interval.max)
+R    <- matrix(0, nrow = n, ncol = interval.max)
+Hinv <- matrix(0, nrow = n, ncol = interval.max)
+flag <- matrix(0, nrow = n, ncol = interval.max)
+
+for (i in 1:interval.max) {
+  ind <- c(1:p.ti,
+           p.ti + (0:(p.tv - 1)) * interval.max + i)
+  H[, i] <- scale * exp(xx0[, ind, drop = FALSE] %*%
+                          c(beta0.ti, beta0.tv))
+  if (i > 1) {
+    R[, i]    <- R[, i - 1] + H[, i - 1] * (t[i]^nu - t[i - 1]^nu)
+    flag[, i] <- -log(u) < R[, i]
+  }
+  Hinv[, i] <- ((-log(u) - R[, i]) / H[, i] + t[i]^nu)^(1 / nu)
+  Hinv[, i][is.nan(Hinv[, i])] <- Inf
+}
+
+h.ind <- interval.max - rowSums(flag)
+
+## ---------------------------------------------------
+## 4. Build counting-process style data
+## ---------------------------------------------------
+
+xx <- NULL
+
+for (i in 1:interval.max) {
+  
+  ind.col  <- c(1:p.ti,
+                p.ti + (0:(p.tv - 1)) * interval.max + i,
+                ncol(xx0))
+  ind.elig <- h.ind >= i
+  n.elig   <- sum(ind.elig)
+  
+  if (n.elig == 0) next
+  
+  t0 <- rep(t[i], n.elig)
+  t1 <- Hinv[ind.elig, i]
+  
+  if (i == 1) {
+    t1[t1 > t[i] + delta1] <- t[i] + delta1
+    status <- t1 == Hinv[ind.elig, i]
+    
+    xx <- cbind(
+      t0     = t0,
+      t1     = t1,
+      status = status,
+      xx0[ind.elig, ind.col, drop = FALSE]
+    )
+  } else {
+    t1[t1 > t[i] + delta2] <- t[i] + delta2
+    status <- t1 == Hinv[ind.elig, i]
+    
+    xx <- rbind(
+      xx,
+      cbind(
+        t0     = t0,
+        t1     = t1,
+        status = status,
+        xx0[ind.elig, ind.col, drop = FALSE]
+      )
+    )
+  }
+}
+
+data <- xx[order(xx[, ncol(xx)]), ]
+
+id     <- data[, ncol(data)]
+tstart <- data[, "t0"]
+tstop  <- data[, "t1"]
+status <- data[, "status"]
+X      <- data[, 4]
+
+## ---------------------------------------------------
+## 5. PhenoData: attach raw Sex / Age by id
+## ---------------------------------------------------
+
+PhenoData <- data.frame(
+  ID       = id,
+  Tstart   = tstart,
+  Tstop    = tstop,
+  Status   = status,
+  Treatment = X,
+  Sex      = Sex_raw[id],
+  Age      = Age_raw[id],
+  row.names = NULL
+)
+
+## ---------------------------------------------------
+## 6. Mediator matrix (time-varying part)
+## ---------------------------------------------------
+
+Mt <- data[, (4 + q + 1):(4 + q + p), drop = FALSE]
+Mediator <- as.matrix(Mt)
+colnames(Mediator) <- paste0("M", 1:ncol(Mediator))
+
+SurvivalLongData <- list(
+  PhenoData = PhenoData,
+  Mediator  = Mediator
+)
+
+usethis::use_data(SurvivalLongData, overwrite = TRUE)
+
+
+
 
 
 ######################################################
-# Dataset - 4 (microbiome mediators)
-######################################################
-set.seed(1875)
-n <- 300 # the sample size
-p <- 100 # the dimension of mediator
-a <- matrix(0,1,p) # the coefficient a in Eq. (16)
-a[1] <- 1/3
-a[2] <- 1/4
-a[3] <- 1/5
-eta <- matrix(0.01,2,1) # the coefficients of covariates for M -> Y
-UR <- runif(p-3,0,1) # for generating a_4,...., a_p
-a[4:p] <- (1-sum(a[1:3]))*UR/sum(UR)
-b <- matrix(0,1,p) # the coefficient b in Eq. (17)
-b[1] <- 1.3
-b[2] <- -0.7
-b[3] <- -0.6
-SIG <- diag(p-1) + matrix(1,p-1,1)%*%matrix(1,1,p-1) # the covariance of e
-SIG_e <- 2*SIG
-M0 <- matrix(runif(n*p, min = 0, max = 1),n,p) # the baseline composition m0
-for (i in 1:n){
-  M0[i,] <- M0[i,]/sum(M0[i,])
-}
-trt <- matrix(rbinom(n, size=1, prob=0.6),n,1) # trt: 1=treatment; 0=placebo
-Z <- matrix(0,n,2) # covariates
-Z[,1] <- rbinom(n, size=1, prob=0.5) # sex:  male=1; female=0
-Z[,2] <- sample(18:65,n,replace=TRUE)   # age ranging from 18-65
-X <- trt + Z%*%eta  #  note that X is not the exposure, but only for generating M
-e <- MASS::mvrnorm(n, rep(0, p-1), SIG_e)
-U1 <- matrix(0,n,p) # generating compositional error e in Eq. (16)
-for (i in 1:n){
-  U1[i, 1:(p-1)] <- exp(e[i,])/(1+sum(exp(e[i,])))
-  U1[i, p]       <- 1/(1+sum(exp(e[i,])))
-}
-aX <- matrix(0,n,p) # the a^X term
-for (i in 1:n){
-  aX[i,] <- a^(X[i])/sum(a^(X[i]))
-}
-M_raw <- matrix(0,n,p) # the compositional mediators
-for (i in 1:n){
-  A1 <- M0[i,]*aX[i,]/sum(M0[i,]*aX[i,]) # the definition of  perturbation operator for M
-  M_raw[i,] <- A1*U1[i,]/sum(A1*U1[i,]) # the definition of  perturbation operator for M
-}
-U2 <- rnorm(n,0,2) # the error term for Y in Eq. (17)
-Y <- 1+ 0.5*trt + log(M_raw)%*%t(b) + Z%*%(eta)+ U2 # the outcome Y
-OTU <- M_raw # high-dimensional compositional matrix
-
-colnames(OTU) <- paste0("M", 1:p)
-rownames(OTU) <- paste0("S", 1:n)
-
-pheno <- data.frame(Treatment = trt, Outcome = Y, Sex = Z[,1], Age = Z[,2])
-
-MicrobiomeData <- list(PhenoData = pheno, Mediator = OTU)
-usethis::use_data(MicrobiomeData, overwrite = TRUE)
-
-
-
-
-
-######################################################
-# Dataset - 5 (quantile mediation analysis)
+# Dataset - 6 (quantile mediation analysis)
 ######################################################
 set.seed(1753)
 p <- 100 # the dimension of mediators
