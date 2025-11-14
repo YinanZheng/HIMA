@@ -161,7 +161,7 @@ e3long <- hima(Surv(Tstart, Tstop, Status) ~ Treatment + Sex + Age,
   mediator.type = "gaussian",
   longitudinal = TRUE,
   id.var = "ID",
-  scale = TRUE, # Disabled only for simulation data
+  scale = FALSE, # Disabled only for simulation data
   verbose = TRUE
 ) # Parallel computing feature is recommended
 summary(e3long)
