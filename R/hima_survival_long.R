@@ -208,7 +208,7 @@ hima_survival_long <- function(X,
   
   ab_SIS <- sis_results[, "beta"] * sis_results[, "alpha"]
   ab_SIS[is.na(ab_SIS)] <- 0
-  ID_SIS <- head(order(-abs(ab_SIS)), d_0)
+  ID_SIS <- order(-abs(ab_SIS))[seq_len(d_0)]
   
   if (verbose) {
     message("        Top ", length(ID_SIS), " mediators are selected: ", paste0(mediator_labels[ID_SIS], collapse = ", "))

@@ -59,7 +59,7 @@ A \code{data.frame} containing mediation testing results of significant mediator
   \item{beta_se}{Standard error for \code{beta_hat}.}
   \item{IDE}{Indirect (mediation) effect estimate, i.e., \code{alpha_hat * beta_hat}.}
   \item{rimp}{Relative importance of the mediator.}
-  \item{pmax}{Joint raw p-value of each selected mediator (based on HDMT pointwise FDR).}
+  \item{pmax}{joint raw p-value of selected significant mediator (based on Bonferroni method).}
 }
 }
 \description{
