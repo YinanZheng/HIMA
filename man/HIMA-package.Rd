@@ -17,7 +17,7 @@ Version: \tab 2.3.3\cr Date: \tab 2025-11-14\cr License: \tab GPL-3\cr }
 # through Bioconductor: https://www.bioconductor.org/packages/release/bioc/html/qvalue.html
 }
 \references{
-1. Zhang H, Zheng Y, Hou L, Liu L, HIMA: An R Package for High-Dimensional Mediation Analysis, J. data sci. 2025. DOI: 10.6339/25-JDS1192
+1. Zhang H, Zheng Y, Hou L, Liu L, HIMA: An R Package for High-Dimensional Mediation Analysis. Journal of Data Science. 2025. DOI: 10.6339/25-JDS1192
 
 2. Zhang H, Zheng Y, Zhang Z, Gao T, Joyce B, Yoon G, Zhang W, Schwartz J, Just A, Colicino E, Vokonas P, Zhao L,
 Lv J, Baccarelli A, Hou L, Liu L. Estimating and Testing High-dimensional Mediation Effects in Epigenetic Studies.
