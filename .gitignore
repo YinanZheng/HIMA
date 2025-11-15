@@ -39,9 +39,8 @@ vignettes/*.pdf
 *.o
 *.so
 *.dll
-
+docs
 *.Rproj
+/doc/
 /Meta/
-
-# DO NOT IGNORE docs/ FOR PKGDOWN
-# docs/ must be committed for GitHub Pages
+_pkgdown.yml
