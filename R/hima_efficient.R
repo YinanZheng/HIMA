@@ -243,5 +243,6 @@ hima_efficient <- function(X, M, Y, COV = NULL,
   if (verbose) message("Done!", "     (", format(Sys.time(), "%X"), ")")
 
   doParallel::stopImplicitCluster()
+  
   return(out_result)
 }

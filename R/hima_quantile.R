@@ -71,6 +71,14 @@ hima_quantile <- function(X, M, Y, COV = NULL,
                   ...) {
   penalty <- match.arg(penalty)
 
+  ## --- Validate tau: must be finite numeric in (0, 1) ---
+  if (!is.numeric(tau) || any(!is.finite(tau))) {
+    stop("`tau` must be a finite numeric vector.")
+  }
+  if (any(tau <= 0 | tau >= 1)) {
+    stop("All `tau` values must lie strictly between 0 and 1.")
+  }
+  
   n <- nrow(M)
   p <- ncol(M)
 
@@ -138,16 +146,28 @@ hima_quantile <- function(X, M, Y, COV = NULL,
       }
     }
 
+    # Design matrix including only SIS-selected mediators
     MXZ_ID_SIS <- cbind(M[, ID_SIS], XZ)
 
     fit.penalty <- conquer::conquer.cv.reg(X = MXZ_ID_SIS, Y = Y, tau = tau_temp, penalty = tolower(penalty))
-    beta.penalty <- fit.penalty$coeff.min[2:(d + 1)]
-
+    beta.penalty <- fit.penalty$coeff.min[seq_len(length(ID_SIS)) + 1L]
+    
+    # Indices of non-zero mediators after penalization
+    ID_penalty <- ID_SIS[which(beta.penalty != 0)]
+    
+    # if no mediators survive penalization, skip Step 3 for this tau
+    if (length(ID_penalty) == 0) {
+      if (verbose) {
+        message("Step 3: Joint significance test ...", "     (", format(Sys.time(), "%X"), ")")
+        message("        No mediators selected by penalized regression; skipping joint significance testing for this tau.")
+      }
+      next
+    }
+    
     #---------- Step 3: Mediator significance testing
     if (verbose) message("Step 3: Joint significance test ...", "     (", format(Sys.time(), "%X"), ")")
 
     beta_fit_penalty <- matrix(0, 1, p)
-    ID_penalty <- ID_SIS[which(beta.penalty != 0)] # the index of nonzero mediators
     MXZ_penalty <- cbind(M[, ID_penalty], XZ) # cbind M[ID_penalty], X, and COV
 
     fit_rq_penalty <- quantreg::rq(Y ~ MXZ_penalty, tau = tau_temp, method = "fn", model = TRUE)
@@ -193,5 +213,6 @@ hima_quantile <- function(X, M, Y, COV = NULL,
   if (verbose) message("Done!", "     (", format(Sys.time(), "%X"), ")")
 
   doParallel::stopImplicitCluster()
+  
   return(out_result)
 }

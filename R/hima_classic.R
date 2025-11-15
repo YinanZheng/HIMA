@@ -67,7 +67,7 @@
 #'
 #' # When Y is binary
 #' # Example 2 (binary outcome):
-#' data(BinaryOutcome$PhenoData)
+#' data(BinaryOutcome)
 #' pheno_data <- BinaryOutcome$PhenoData
 #' mediator_data <- BinaryOutcome$Mediator
 #'

@@ -306,5 +306,7 @@ hima_survival_long <- function(X,
     message("Done!     (", format(Sys.time(), "%X"), ")")
   }
   
+  doParallel::stopImplicitCluster()
+  
   return(out_result)
 }

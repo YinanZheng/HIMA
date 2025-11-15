@@ -138,12 +138,12 @@ hima_microbiome <- function(X,
   
   P_adj_DLASSO <- as.numeric(P_raw_DLASSO)
   
-  if (verbose) message("Step 2: Closted testing-based procedure ...", "     (", format(Sys.time(), "%X"), ")")
+  if (verbose) message("Step 2: Closed testing-based procedure ...", "     (", format(Sys.time(), "%X"), ")")
   
   ## The FDR method
   set <- which(P_adj_DLASSO < FDRcut)
   hom <- hommel::hommel(P_adj_DLASSO, simes = FALSE)
-  N1 <- hommel::discoveries(hom, set, incremental = TRUE, alpha = 0.05)
+  N1 <- hommel::discoveries(hom, set, incremental = TRUE, alpha = FDRcut)
   
   if (length(set) > 0) {
     L <- length(set)
