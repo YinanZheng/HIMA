@@ -30,9 +30,9 @@ Mediation analysis is a statistical method used to explore the mechanisms by whi
 
 # Package Overview
 
-The `HIMA` package provides robust tools for estimating and testing high-dimensional mediation effects, specifically designed for modern `omic` data, including epigenetics, transcriptomics, and microbiomics. It supports high-dimensional mediation analysis across continuous, binary, and survival outcomes, with specialized methods tailored for compositional microbiome data and quantile mediation analysis.
+The `HIMA` package provides robust tools for estimating and testing high-dimensional mediation effects, specifically designed for modern `omic` data, including epigenetics, transcriptomics, and microbiomics. It supports high-dimensional mediation analysis across continuous, binary, survival, and longitudinal-survival outcomes, with specialized methods tailored for compositional microbiome data and quantile mediation analysis.
 
-At the core of the package is the `hima` function, a flexible and powerful wrapper that integrates various high-dimensional mediation analysis methods for both effect estimation and hypothesis testing. The `hima` function automatically selects the most suitable analytical approach based on the outcome and mediator data type, streamlining complex workflows and reducing user burden.
+At the core of the package is the `hima` function, a flexible and powerful wrapper that integrates various high-dimensional mediation analysis methods for both effect estimation and hypothesis testing. The `hima` function automatically selects the most suitable analytical approach based on the outcome and mediator data type (including longitudinal mediators for survival outcomes), streamlining complex workflows and reducing user burden.
 
 `hima` is designed with extensibility in mind, allowing seamless integration of future features and methods. This ensures a consistent, user-friendly interface while staying adaptable to evolving analytical needs.
 
@@ -52,6 +52,8 @@ hima(
   penalty = "DBlasso",  # Penalty method: "DBlasso", "MCP", "SCAD", or "lasso"
   quantile = FALSE, # Use quantile mediation analysis (default: FALSE)
   efficient = FALSE,# Use efficient mediation analysis (default: FALSE)
+  longitudinal = FALSE, # Enable longitudinal-survival mediation (requires Surv(tstart, tstop, status))
+  id.var = NULL,    # Subject ID column in data.pheno when longitudinal = TRUE
   scale = TRUE,     # Scale data (default: TRUE)
   sigcut = 0.05,    # Significance cutoff for mediator selection
   contrast = NULL,  # Named list of contrasts for factor covariate(s)
@@ -69,6 +71,7 @@ Define the model formula to specify the relationship between the `Outcome`, `Exp
 - **General Form**: Use the format `Outcome ~ Exposure + Covariate(s)`. Note that the `Exposure` variable represents the exposure of interest (e.g., "Treatment" in the demo examples) and it has to be listed as the first independent variable in the formula. `Covariate(s)` are optional.
 
 - **Survival Data**: For survival analysis, use the format `Surv(time, event) ~ Exposure + Covariate(s)`. See data examples `SurvivalData$PhenoData` for more details.
+- **Longitudinal Survival Data**: When analyzing longitudinal mediators with survival outcomes, specify the counting-process style outcome `Surv(tstart, tstop, status) ~ Exposure + Covariate(s)`, set `longitudinal = TRUE`, and provide the subject identifier column through `id.var`.
 
 ### 2. Phenotype Data (`data.pheno`)
 
@@ -201,6 +204,29 @@ hima_survival.fit <- hima(
 )
 summary(hima_survival.fit)
 ```
+
+## Longitudinal Mediators with Survival Outcomes
+
+`HIMA` can also analyze longitudinal mediators in conjunction with survival outcomes by fitting the longitudinal survival mediation model. This requires the counting-process formulation of the survival outcome, along with subject identifiers to align repeated mediator measurements across intervals.
+
+```{r survival-longitudinal-example}
+data(SurvivalLongData)
+pheno_data <- SurvivalLongData$PhenoData
+mediator_data <- SurvivalLongData$Mediator
+
+hima_survival_long.fit <- hima(
+  Surv(Tstart, Tstop, Status) ~ Treatment + Sex + Age,
+  data.pheno = pheno_data,
+  data.M = mediator_data,
+  mediator.type = "gaussian",
+  longitudinal = TRUE,
+  id.var = "ID",
+  scale = FALSE # Demo data is already standardized
+)
+summary(hima_survival_long.fit)
+```
+
+Use `longitudinal = TRUE` only when the outcome is specified via `Surv(tstart, tstop, status)` and remember to supply the subject identifier through `id.var` so that the algorithm can correctly link repeated measures for each individual.
 
 ## Microbiome Mediation Analysis
 
