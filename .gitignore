@@ -39,8 +39,4 @@ vignettes/*.pdf
 *.o
 *.so
 *.dll
-docs
 *.Rproj
-/doc/
-/Meta/
-_pkgdown.yml
