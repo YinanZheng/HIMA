@@ -32,8 +32,7 @@
 #'   \item{pmax}{joint raw p-value of selected significant mediator (based on Bonferroni method).}
 #' }
 #'
-#' @references
-#' Liu L, Zhang H, Zheng Y, Gao T, Zheng C, Zhang K, Hou L, Liu L. High-dimensional mediation analysis for longitudinal mediators and 
+#' @references Liu L, Zhang H, Zheng Y, Gao T, Zheng C, Zhang K, Hou L, Liu L. High-dimensional mediation analysis for longitudinal mediators and 
 #' survival outcomes. Briefings in Bioinformatics. 2025. DOI: 10.1093/bib/bbaf206. PMID: 40350699 PMCID: PMC12066418
 #'
 #' @examples

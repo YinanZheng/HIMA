@@ -260,18 +260,6 @@ hima_classic <- function(X, M, Y, COV.XM = NULL, COV.MY = COV.XM,
     Pmax_Bonf <- Pmax * length(ID_test)
     sig_ind <- which(Pmax_Bonf < Bonfcut)
 
-    # FDRA <- rbind(P_fdr_beta, P_fdr_alpha)
-    # FDR <- apply(FDRA, 2, max)
-
-    # Total effect
-    # if(is.null(COV.MY)) {
-    #   YX <- data.frame(Y = Y, X = X)
-    # } else {
-    #   YX <- data.frame(Y = Y, X = X, COV.MY)
-    # }
-    #
-    # gamma_est <- coef(glm(Y ~ ., family = Y.type, data = YX))[2]
-
     results <- data.frame(
       Index = M_ID_name[ID_test][sig_ind],
       alpha_hat = alpha_est[sig_ind],

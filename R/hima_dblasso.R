@@ -197,15 +197,6 @@ hima_dblasso <- function(X, M, Y, COV = NULL,
   # Indirect effect
   IDE <- beta_hat_est * alpha_hat_est # mediation(indirect) effect
 
-  # # Total effect
-  # if(is.null(COV)) {
-  #   YX <- data.frame(Y = Y, X = X)
-  # } else {
-  #   YX <- data.frame(Y = Y, X = X, COV)
-  # }
-  #
-  # gamma_est <- coef(glm(Y ~ ., family = "gaussian", data = YX))[2]
-
   if (length(ID_fdr) > 0) {
     results <- data.frame(
       Index = M_ID_name_SIS[ID_fdr],

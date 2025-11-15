@@ -212,15 +212,6 @@ hima_efficient <- function(X, M, Y, COV = NULL,
   SN <- sum(as.numeric(P_sort_DACT <= P_BH))
   ID_BH_DACT <- order(DACT_ora)[1:SN]
 
-  # # Total effect
-  # if(is.null(COV)) {
-  #   YX <- data.frame(Y = Y, X = X)
-  # } else {
-  #   YX <- data.frame(Y = Y, X = X, COV)
-  # }
-  #
-  # gamma_est <- coef(glm(Y ~ ., family = Y.family, data = YX))[2]
-
   IDE <- alpha_est_orc[ID_BH_DACT] * beta_est_orc[ID_BH_DACT]
 
   if (length(ID_BH_DACT) > 0) {
