@@ -1,0 +1,21 @@
+url: https://github.com/YinanZheng/HIMA
+
+template:
+  bootstrap: 5
+  light-switch: true
+  bootswatch: minty
+
+navbar:
+  structure:
+    left: [articles, reference, news]
+    right: [search, github, lightswitch]
+  components:
+    articles:
+      text: Tutorials
+      href: articles/hima-vignette.html
+    news:
+      text: News
+      href: news/index.html
+
+development:
+  mode: auto

@@ -1,5 +1,3 @@
-inst/doc
-doc
 .Rproj.user
 .Rhistory
 .Rapp.history
@@ -41,8 +39,9 @@ vignettes/*.pdf
 *.o
 *.so
 *.dll
-docs
+
 *.Rproj
-/doc/
 /Meta/
-_pkgdown.yml
+
+# DO NOT IGNORE docs/ FOR PKGDOWN
+# docs/ must be committed for GitHub Pages
