@@ -180,7 +180,7 @@ e4 <- hima(Outcome ~ Treatment + Sex + Age,
 ) # Scaling is always enabled internally for hima_microbiome
 summary(e4)
 
-#' # Example 5 (quantile mediation anlaysis - quantile HIMA):
+#' # Example 5 (quantile mediation analysis - quantile HIMA):
 data(QuantileData)
 pheno_data <- QuantileData$PhenoData
 mediator_data <- QuantileData$Mediator

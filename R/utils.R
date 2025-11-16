@@ -124,16 +124,43 @@ himasis <- function(Y, M, X, COV, glm.family, modelstatement,
 # Helper function to process variables
 
 process_var <- function(var, scale) {
-  if (!is.null(var)) {
-    if (scale) {
-      return(scale(var))
-    } else {
-      return(as.matrix(var))
+  if (is.null(var)) return(NULL)
+  
+  # Enforce numeric input for all downstream HIMA internal functions
+  if (is.data.frame(var)) {
+    # Check for any non-numeric columns in data.frame
+    non_numeric_cols <- !vapply(var, is.numeric, logical(1))
+    if (any(non_numeric_cols)) {
+      bad_cols <- names(var)[non_numeric_cols]
+      stop(
+        sprintf(
+          "Non-numeric variable(s) detected: %s.\nPlease convert all factor/character variables to numeric or dummy variables before calling this function.",
+          paste(bad_cols, collapse = ", ")
+        )
+      )
     }
+    # At this point, all columns are numeric
+    var_num <- as.matrix(var)
   } else {
-    return(NULL)
+    # For vectors/matrices, require numeric as well
+    if (!is.numeric(var)) {
+      stop(
+        "Non-numeric input detected.\nPlease convert all factor/character variables to numeric or dummy variables before calling this function."
+      )
+    }
+    var_num <- as.matrix(var)
+  }
+  
+  # Now safely handle scaling
+  if (scale) {
+    # scale() will return a numeric matrix
+    return(scale(var_num))
+  } else {
+    return(var_num)
   }
 }
+
+
 
 
 

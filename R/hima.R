@@ -166,7 +166,7 @@
 #' ) # Scaling is always enabled internally for hima_microbiome
 #' summary(e4)
 #'
-#' #' # Example 5 (quantile mediation anlaysis - quantile HIMA):
+#' #' # Example 5 (quantile mediation analysis - quantile HIMA):
 #' data(QuantileData)
 #' pheno_data <- QuantileData$PhenoData
 #' mediator_data <- QuantileData$Mediator
@@ -338,7 +338,7 @@ hima <- function(formula,
         penalty = penalty,
         topN = NULL,
         scale = scale,
-        Bonfcut = 0.05,
+        Bonfcut = sigcut,
         verbose = verbose,
         parallel = parallel,
         ncore = ncore,
@@ -399,6 +399,7 @@ hima <- function(formula,
             parallel = parallel,
             ncore = ncore
           )
+          method_text <- "Bonferroni-adjusted p"
         } else {
           if (verbose) message("Running survival HIMA with de-biased Lasso...")
           res <- hima_survival(
@@ -414,9 +415,10 @@ hima <- function(formula,
             parallel = parallel,
             ncore = ncore
           )
+          method_text <- "HDMT pointwise FDR"
         }
         
-        results <- .res_prep(res, method_text = "HDMT pointwise FDR", sigcut = sigcut)
+        results <- .res_prep(res, method_text = method_text, sigcut = sigcut)
       }
     } else { # If penalty is not DBlasso
       res <- hima_classic(

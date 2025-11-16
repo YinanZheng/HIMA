@@ -1,4 +1,4 @@
-# HIMA 2.3.3 (2025-11-14)
+# HIMA 2.3.3 (2025-11-16)
 * Added longitudinal mediation data with survival outcome support via `hima_survival_long` and the `hima` wrapper.
 * Code optimization and bug fixes.
 

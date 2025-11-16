@@ -144,7 +144,7 @@ hima_dblasso <- function(X, M, Y, COV = NULL,
   DLASSO_fit <- suppressMessages(hdi::lasso.proj(x = MZX_SIS, y = Y, family = "gaussian"))
   beta_DLASSO_SIS_est <- DLASSO_fit$bhat[1:d]
   beta_DLASSO_SIS_SE <- DLASSO_fit$se
-  P_beta_SIS <- t(DLASSO_fit$pval[1:d])
+  P_beta_SIS  <- as.numeric(DLASSO_fit$pval[1:d])
 
   ################### Estimate alpha ################
   alpha_results <- foreach(i = seq_len(d), .combine = rbind) %dopar% {
@@ -164,7 +164,7 @@ hima_dblasso <- function(X, M, Y, COV = NULL,
   #########################################################################
   if (verbose) message("Step 3: Joint significance test ...", "     (", format(Sys.time(), "%X"), ")")
 
-  PA <- cbind(t(P_alpha_SIS), (t(P_beta_SIS)))
+  PA <- cbind(P_alpha_SIS, P_beta_SIS)
   P_value <- apply(PA, 1, max) # The joint p-values for SIS variable
 
   N0 <- dim(PA)[1] * dim(PA)[2]
