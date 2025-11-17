@@ -215,6 +215,14 @@ hima_survival_long <- function(X,
     message("Step 2: L1-penalized Cox lasso estimates ...     (", format(Sys.time(), "%X"), ")")
   }
   
+  if (verbose) {
+    if (is.null(COV)) {
+      message("        No covariate was adjusted.")
+    } else {
+      message("        Adjusting for covariate(s): ", paste0(colnames(COV), collapse = ", "))
+    }
+  }
+  
   design_mat <- as.matrix(cbind(X, COV, M[, ID_SIS, drop = FALSE]))
   penalty_factors <- c(rep(0, 1 + q), rep(1, length(ID_SIS)))
   
