@@ -64,7 +64,7 @@ hima_dblasso <- function(X, M, Y, COV = NULL,
                         parallel = FALSE,
                         ncore = 1) {
   
-  ## Outcome checks: only continuous Y is allowed
+  ## Outcome checks: only continuous Y is allowed for now
   if (is.factor(Y) && nlevels(Y) == 2L ||
       is.numeric(Y) && all(stats::na.omit(Y) %in% c(0, 1))) {
     stop("hima_dblasso() only supports continuous outcomes. ",
