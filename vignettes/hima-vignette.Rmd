@@ -221,6 +221,7 @@ hima_survival_long.fit <- hima(
   mediator.type = "gaussian",
   longitudinal = TRUE,
   id.var = "ID",
+  penalty = "lasso",
   scale = FALSE # Demo data is already standardized
 )
 summary(hima_survival_long.fit)

@@ -58,7 +58,7 @@
 #' @import glmnet
 #'
 #' @importFrom utils packageVersion
-#' @importFrom stats p.adjust rnorm runif rbinom lm glm model.matrix BIC coef ls.diag lsfit pnorm complete.cases rgamma
+#' @importFrom stats p.adjust rnorm runif rbinom lm glm model.matrix BIC coef ls.diag lsfit pnorm complete.cases rgamma contrasts<- na.pass
 #' @importFrom iterators idiv nextElem
 #' @importFrom parallel detectCores
 #' @importFrom foreach foreach %dopar% registerDoSEQ getDoParWorkers
@@ -70,7 +70,6 @@
 #' @importFrom survival Surv coxph
 #' @importFrom MASS mvrnorm glm.nb
 #' @importFrom hommel hommel discoveries
-#' @importFrom stats contrasts<-
 #' @importFrom nlme lme lmeControl
 #' 
 if (getRversion() >= "2.15.1") {
