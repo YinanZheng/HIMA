@@ -107,6 +107,7 @@ hima_survival_long <- function(X,
   X <- as.numeric(process_var(X, scale))
   
   if (scale && verbose) message("Data scaling is completed.")
+  
   checkParallel("hima_survival_long", parallel, ncore, verbose)
   
   colnames(M) <- mediator_model_names
