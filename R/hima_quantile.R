@@ -79,6 +79,16 @@ hima_quantile <- function(X, M, Y, COV = NULL,
     stop("All `tau` values must lie strictly between 0 and 1.")
   }
   
+  ## Outcome checks: only continuous Y is allowed for now
+  if (is.factor(Y) && nlevels(Y) == 2L ||
+      is.numeric(Y) && all(stats::na.omit(Y) %in% c(0, 1))) {
+    stop("hima_quantile() only supports continuous outcomes. ")
+  }
+  
+  if (!is.numeric(Y)) {
+    stop("Y must be numeric for hima_quantile().")
+  }
+  
   n <- nrow(M)
   p <- ncol(M)
 
@@ -89,6 +99,10 @@ hima_quantile <- function(X, M, Y, COV = NULL,
   # Process optional covariates
   COV <- process_var(COV, scale)
 
+  if (nrow(X) != n || length(Y) != n || (!is.null(COV) && nrow(COV) != n)) {
+    stop("X, M, Y, and COV (if provided) must have the same number of observations.")
+  }
+  
   if (scale && verbose) message("Data scaling is completed.")
 
   checkParallel("hima_quantile", parallel, ncore, verbose)

@@ -61,6 +61,17 @@ hima_microbiome <- function(X,
                             verbose = FALSE,
                             parallel = FALSE,
                             ncore = 1) {
+  
+  ## Outcome checks: only continuous Y is allowed for now
+  if (is.factor(Y) && nlevels(Y) == 2L ||
+      is.numeric(Y) && all(stats::na.omit(Y) %in% c(0, 1))) {
+    stop("hima_microbiome() only supports continuous outcomes. ")
+  }
+  
+  if (!is.numeric(Y)) {
+    stop("Y must be numeric for hima_microbiome().")
+  }
+  
   X <- matrix(X, ncol = 1)
   
   M_raw <- as.matrix(OTU)
@@ -80,6 +91,11 @@ hima_microbiome <- function(X,
   M <- M_raw
   n <- dim(M)[1]
   d <- dim(M)[2]
+  
+  if (nrow(X) != n || length(Y) != n || (!is.null(COV) && nrow(COV) != n)) {
+    stop("X, OTU, Y, and COV (if provided) must have the same number of observations.")
+  }
+  
   alpha_EST <- matrix(0, 1, d)
   alpha_SE <- matrix(0, 1, d)
   beta_EST <- matrix(0, 1, d)
