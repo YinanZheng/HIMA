@@ -148,7 +148,7 @@ hima_classic <- function(X, M, Y, COV.XM = NULL, COV.MY = COV.XM,
 
   if (Y.type == "binary") {
     # Screen M using X given the limited information provided by Y (binary)
-    if (verbose) message("    Screening M using the association between X (independent variable) and \nM (dependent variable): ", appendLF = FALSE)
+    if (verbose) message("    Screening M using the association between X (independent variable) and M (dependent variable): ", appendLF = FALSE)
     alpha <- SIS_Results <- himasis(NA, M, X, COV.XM,
       glm.family = M.type, modelstatement = "Mone ~ X",
       parallel = parallel, ncore = ncore, verbose, tag = paste0("Sure Independent Screening (M ~ X + COV.XM, family: ", M.type, ")")
@@ -156,7 +156,7 @@ hima_classic <- function(X, M, Y, COV.XM = NULL, COV.MY = COV.XM,
     SIS_Pvalue <- SIS_Results[2, ]
   } else if (Y.type == "continuous") {
     # Screen M using Y (continuous)
-    if (verbose) message("    Screening M using the association between M (independent variable) and \nY (dependent variable): ", appendLF = FALSE)
+    if (verbose) message("    Screening M using the association between M (independent variable) and Y (dependent variable): ", appendLF = FALSE)
     SIS_Results <- himasis(Y, M, X, COV.MY,
       glm.family = "gaussian", modelstatement = "Y ~ Mone + X",
       parallel = parallel, ncore = ncore, verbose, tag = paste0("Sure Independent Screening (Y ~ M + X + COV.MY, family: ", Y.type, ")")
