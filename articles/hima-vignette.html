@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">HIMA</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.3.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,7 +65,7 @@ Package</h3>
                         <h4 data-toc-skip class="author">The HIMA
 Development Team</h4>
             
-            <h4 data-toc-skip class="date">2025-01-27</h4>
+            <h4 data-toc-skip class="date">2025-11-17</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/YinanZheng/HIMA/blob/HEAD/vignettes/hima-vignette.Rmd"><code>vignettes/hima-vignette.Rmd</code></a></small>
       <div class="d-none name"><code>hima-vignette.Rmd</code></div>
@@ -98,15 +98,16 @@ diseases.</p>
 and testing high-dimensional mediation effects, specifically designed
 for modern <code>omic</code> data, including epigenetics,
 transcriptomics, and microbiomics. It supports high-dimensional
-mediation analysis across continuous, binary, and survival outcomes,
-with specialized methods tailored for compositional microbiome data and
-quantile mediation analysis.</p>
+mediation analysis across continuous, binary, survival, and
+longitudinal-survival outcomes, with specialized methods tailored for
+compositional microbiome data and quantile mediation analysis.</p>
 <p>At the core of the package is the <code>hima</code> function, a
 flexible and powerful wrapper that integrates various high-dimensional
 mediation analysis methods for both effect estimation and hypothesis
 testing. The <code>hima</code> function automatically selects the most
-suitable analytical approach based on the outcome and mediator data
-type, streamlining complex workflows and reducing user burden.</p>
+suitable analytical approach based on the outcome and mediator data type
+(including longitudinal mediators for survival outcomes), streamlining
+complex workflows and reducing user burden.</p>
 <p><code>hima</code> is designed with extensibility in mind, allowing
 seamless integration of future features and methods. This ensures a
 consistent, user-friendly interface while staying adaptable to evolving
@@ -133,6 +134,8 @@ survival, and compositional data. Below is an overview of the
 <span>  penalty <span class="op">=</span> <span class="st">"DBlasso"</span>,  <span class="co"># Penalty method: "DBlasso", "MCP", "SCAD", or "lasso"</span></span>
 <span>  quantile <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co"># Use quantile mediation analysis (default: FALSE)</span></span>
 <span>  efficient <span class="op">=</span> <span class="cn">FALSE</span>,<span class="co"># Use efficient mediation analysis (default: FALSE)</span></span>
+<span>  longitudinal <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co"># Enable longitudinal-survival mediation (requires Surv(tstart, tstop, status))</span></span>
+<span>  id.var <span class="op">=</span> <span class="cn">NULL</span>,    <span class="co"># Subject ID column in data.pheno when longitudinal = TRUE</span></span>
 <span>  scale <span class="op">=</span> <span class="cn">TRUE</span>,     <span class="co"># Scale data (default: TRUE)</span></span>
 <span>  sigcut <span class="op">=</span> <span class="fl">0.05</span>,    <span class="co"># Significance cutoff for mediator selection</span></span>
 <span>  contrast <span class="op">=</span> <span class="cn">NULL</span>,  <span class="co"># Named list of contrasts for factor covariate(s)</span></span>
@@ -159,6 +162,12 @@ optional.</p></li>
 format <code>Surv(time, event) ~ Exposure + Covariate(s)</code>. See
 data examples <code>SurvivalData$PhenoData</code> for more
 details.</p></li>
+<li><p><strong>Longitudinal Survival Data</strong>: When analyzing
+longitudinal mediators with survival outcomes, specify the
+counting-process style outcome
+<code>Surv(tstart, tstop, status) ~ Exposure + Covariate(s)</code>, set
+<code>longitudinal = TRUE</code>, and provide the subject identifier
+column through <code>id.var</code>.</p></li>
 </ul>
 </div>
 <div class="section level4">
@@ -223,6 +232,22 @@ prevent introducing biases or altering the original data structure.</p>
 preprocess the mediators by scaling them to have a mean of zero and a
 variance of one prior to generating the outcome variables.</p>
 </div>
+<div class="section level3">
+<h3 id="parallel-computing-support">Parallel Computing Support<a class="anchor" aria-label="anchor" href="#parallel-computing-support"></a>
+</h3>
+<p>The <code><a href="../reference/hima.html">hima()</a></code> function supports <strong>parallel
+computing</strong> to speed up high-dimensional mediation analysis,
+especially when dealing with a large number of mediators.</p>
+<div class="section level4">
+<h4 id="enabling-parallel-computing">Enabling Parallel Computing<a class="anchor" aria-label="anchor" href="#enabling-parallel-computing"></a>
+</h4>
+<p>To enable parallel computing, simply set <code>parallel = TRUE</code>
+and specify the number of CPU cores to use via the <code>ncore</code>
+argument:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/hima.html">hima</a></span><span class="op">(</span><span class="va">...</span>, parallel <span class="op">=</span> <span class="cn">TRUE</span>, ncore <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
+</div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="applications-and-examples">Applications and Examples<a class="anchor" aria-label="anchor" href="#applications-and-examples"></a>
@@ -230,7 +255,7 @@ variance of one prior to generating the outcome variables.</p>
 <div class="section level3">
 <h3 id="load-the-hima-package">Load the <code>HIMA</code> Package<a class="anchor" aria-label="anchor" href="#load-the-hima-package"></a>
 </h3>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/YinanZheng/HIMA/">HIMA</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -238,12 +263,15 @@ variance of one prior to generating the outcome variables.</p>
 </h3>
 <p>When analyzing continuous and normally distributed outcomes and
 mediators, we can use the following code snippet:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">ContinuousOutcome</span><span class="op">)</span></span>
+<span><span class="va">pheno_data</span> <span class="op">&lt;-</span> <span class="va">ContinuousOutcome</span><span class="op">$</span><span class="va">PhenoData</span></span>
+<span><span class="va">mediator_data</span> <span class="op">&lt;-</span> <span class="va">ContinuousOutcome</span><span class="op">$</span><span class="va">Mediator</span></span>
+<span></span>
 <span><span class="va">hima_continuous.fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hima.html">hima</a></span><span class="op">(</span></span>
 <span>  <span class="va">Outcome</span> <span class="op">~</span> <span class="va">Treatment</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">Age</span>,</span>
-<span>  data.pheno <span class="op">=</span> <span class="va">ContinuousOutcome</span><span class="op">$</span><span class="va">PhenoData</span>,</span>
-<span>  data.M <span class="op">=</span> <span class="va">ContinuousOutcome</span><span class="op">$</span><span class="va">Mediator</span>,</span>
+<span>  data.pheno <span class="op">=</span> <span class="va">pheno_data</span>,</span>
+<span>  data.M <span class="op">=</span> <span class="va">mediator_data</span>,</span>
 <span>  mediator.type <span class="op">=</span> <span class="st">"gaussian"</span>,</span>
 <span>  penalty <span class="op">=</span> <span class="st">"DBlasso"</span>,</span>
 <span>  scale <span class="op">=</span> <span class="cn">FALSE</span> <span class="co"># Demo data is already standardized</span></span>
@@ -263,11 +291,11 @@ efficient HIMA method can be activated with the
 <code>efficient = TRUE</code> option (penalty should be <code>MCP</code>
 for the best results). This method may also provide greater statistical
 power to detect mediators with weaker signals.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hima_efficient.fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hima.html">hima</a></span><span class="op">(</span></span>
 <span>  <span class="va">Outcome</span> <span class="op">~</span> <span class="va">Treatment</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">Age</span>,</span>
-<span>  data.pheno <span class="op">=</span> <span class="va">ContinuousOutcome</span><span class="op">$</span><span class="va">PhenoData</span>,</span>
-<span>  data.M <span class="op">=</span> <span class="va">ContinuousOutcome</span><span class="op">$</span><span class="va">Mediator</span>,</span>
+<span>  data.pheno <span class="op">=</span> <span class="va">pheno_data</span>,</span>
+<span>  data.M <span class="op">=</span> <span class="va">mediator_data</span>,</span>
 <span>  mediator.type <span class="op">=</span> <span class="st">"gaussian"</span>,</span>
 <span>  efficient <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  penalty <span class="op">=</span> <span class="st">"MCP"</span>,</span>
@@ -283,12 +311,15 @@ power to detect mediators with weaker signals.</p>
 </h3>
 <p>The package can handle binary outcomes based on logistic
 regression:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">BinaryOutcome</span><span class="op">)</span></span>
+<span><span class="va">pheno_data</span> <span class="op">&lt;-</span> <span class="va">BinaryOutcome</span><span class="op">$</span><span class="va">PhenoData</span></span>
+<span><span class="va">mediator_data</span> <span class="op">&lt;-</span> <span class="va">BinaryOutcome</span><span class="op">$</span><span class="va">Mediator</span></span>
+<span></span>
 <span><span class="va">hima_binary.fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hima.html">hima</a></span><span class="op">(</span></span>
 <span>  <span class="va">Disease</span> <span class="op">~</span> <span class="va">Treatment</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">Age</span>,</span>
-<span>  data.pheno <span class="op">=</span> <span class="va">BinaryOutcome</span><span class="op">$</span><span class="va">PhenoData</span>,</span>
-<span>  data.M <span class="op">=</span> <span class="va">BinaryOutcome</span><span class="op">$</span><span class="va">Mediator</span>,</span>
+<span>  data.pheno <span class="op">=</span> <span class="va">pheno_data</span>,</span>
+<span>  data.M <span class="op">=</span> <span class="va">mediator_data</span>,</span>
 <span>  mediator.type <span class="op">=</span> <span class="st">"gaussian"</span>,</span>
 <span>  penalty <span class="op">=</span> <span class="st">"MCP"</span>,</span>
 <span>  scale <span class="op">=</span> <span class="cn">FALSE</span> <span class="co"># Demo data is already standardized</span></span>
@@ -301,12 +332,15 @@ regression:</p>
 <p>For survival data, <code>HIMA</code> incorporates a Cox proportional
 hazards approach. Here is an example of survival outcome analysis using
 <code>HIMA</code>:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">SurvivalData</span><span class="op">)</span></span>
+<span><span class="va">pheno_data</span> <span class="op">&lt;-</span> <span class="va">SurvivalData</span><span class="op">$</span><span class="va">PhenoData</span></span>
+<span><span class="va">mediator_data</span> <span class="op">&lt;-</span> <span class="va">SurvivalData</span><span class="op">$</span><span class="va">Mediator</span></span>
+<span></span>
 <span><span class="va">hima_survival.fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hima.html">hima</a></span><span class="op">(</span></span>
 <span>  <span class="fu">Surv</span><span class="op">(</span><span class="va">Time</span>, <span class="va">Status</span><span class="op">)</span> <span class="op">~</span> <span class="va">Treatment</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">Age</span>,</span>
-<span>  data.pheno <span class="op">=</span> <span class="va">SurvivalData</span><span class="op">$</span><span class="va">PhenoData</span>,</span>
-<span>  data.M <span class="op">=</span> <span class="va">SurvivalData</span><span class="op">$</span><span class="va">Mediator</span>,</span>
+<span>  data.pheno <span class="op">=</span> <span class="va">pheno_data</span>,</span>
+<span>  data.M <span class="op">=</span> <span class="va">mediator_data</span>,</span>
 <span>  mediator.type <span class="op">=</span> <span class="st">"gaussian"</span>,</span>
 <span>  penalty <span class="op">=</span> <span class="st">"DBlasso"</span>,</span>
 <span>  scale <span class="op">=</span> <span class="cn">FALSE</span> <span class="co"># Demo data is already standardized</span></span>
@@ -314,17 +348,48 @@ hazards approach. Here is an example of survival outcome analysis using
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">hima_survival.fit</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
+<h3 id="longitudinal-mediators-with-survival-outcomes">Longitudinal Mediators with Survival Outcomes<a class="anchor" aria-label="anchor" href="#longitudinal-mediators-with-survival-outcomes"></a>
+</h3>
+<p><code>HIMA</code> can also analyze longitudinal mediators in
+conjunction with survival outcomes by fitting the longitudinal survival
+mediation model. This requires the counting-process formulation of the
+survival outcome, along with subject identifiers to align repeated
+mediator measurements across intervals.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">SurvivalLongData</span><span class="op">)</span></span>
+<span><span class="va">pheno_data</span> <span class="op">&lt;-</span> <span class="va">SurvivalLongData</span><span class="op">$</span><span class="va">PhenoData</span></span>
+<span><span class="va">mediator_data</span> <span class="op">&lt;-</span> <span class="va">SurvivalLongData</span><span class="op">$</span><span class="va">Mediator</span></span>
+<span></span>
+<span><span class="va">hima_survival_long.fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hima.html">hima</a></span><span class="op">(</span></span>
+<span>  <span class="fu">Surv</span><span class="op">(</span><span class="va">Tstart</span>, <span class="va">Tstop</span>, <span class="va">Status</span><span class="op">)</span> <span class="op">~</span> <span class="va">Treatment</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">Age</span>,</span>
+<span>  data.pheno <span class="op">=</span> <span class="va">pheno_data</span>,</span>
+<span>  data.M <span class="op">=</span> <span class="va">mediator_data</span>,</span>
+<span>  mediator.type <span class="op">=</span> <span class="st">"gaussian"</span>,</span>
+<span>  longitudinal <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  id.var <span class="op">=</span> <span class="st">"ID"</span>,</span>
+<span>  scale <span class="op">=</span> <span class="cn">FALSE</span> <span class="co"># Demo data is already standardized</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">hima_survival_long.fit</span><span class="op">)</span></span></code></pre></div>
+<p>Use <code>longitudinal = TRUE</code> only when the outcome is
+specified via <code>Surv(tstart, tstop, status)</code> and remember to
+supply the subject identifier through <code>id.var</code> so that the
+algorithm can correctly link repeated measures for each individual.</p>
+</div>
+<div class="section level3">
 <h3 id="microbiome-mediation-analysis">Microbiome Mediation Analysis<a class="anchor" aria-label="anchor" href="#microbiome-mediation-analysis"></a>
 </h3>
 <p>For compositional microbiome data, <code>HIMA</code> employs
 isometric Log-Ratio transformations. Here is an example of microbiome
 mediation analysis using <code>HIMA</code>:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">MicrobiomeData</span><span class="op">)</span></span>
+<span><span class="va">pheno_data</span> <span class="op">&lt;-</span> <span class="va">MicrobiomeData</span><span class="op">$</span><span class="va">PhenoData</span></span>
+<span><span class="va">mediator_data</span> <span class="op">&lt;-</span> <span class="va">MicrobiomeData</span><span class="op">$</span><span class="va">Mediator</span></span>
+<span></span>
 <span><span class="va">hima_microbiome.fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hima.html">hima</a></span><span class="op">(</span></span>
 <span>  <span class="va">Outcome</span> <span class="op">~</span> <span class="va">Treatment</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">Age</span>,</span>
-<span>  data.pheno <span class="op">=</span> <span class="va">MicrobiomeData</span><span class="op">$</span><span class="va">PhenoData</span>,</span>
-<span>  data.M <span class="op">=</span> <span class="va">MicrobiomeData</span><span class="op">$</span><span class="va">Mediator</span>,</span>
+<span>  data.pheno <span class="op">=</span> <span class="va">pheno_data</span>,</span>
+<span>  data.M <span class="op">=</span> <span class="va">mediator_data</span>,</span>
 <span>  mediator.type <span class="op">=</span> <span class="st">"compositional"</span>,</span>
 <span>  penalty <span class="op">=</span> <span class="st">"DBlasso"</span></span>
 <span><span class="op">)</span></span>
@@ -336,12 +401,15 @@ mediation analysis using <code>HIMA</code>:</p>
 <p>Perform quantile mediation analysis using the
 <code>quantile = TRUE</code> option and specify <code>tau</code> for
 desired quantile(s):</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">QuantileData</span><span class="op">)</span></span>
+<span><span class="va">pheno_data</span> <span class="op">&lt;-</span> <span class="va">QuantileData</span><span class="op">$</span><span class="va">PhenoData</span></span>
+<span><span class="va">mediator_data</span> <span class="op">&lt;-</span> <span class="va">QuantileData</span><span class="op">$</span><span class="va">Mediator</span></span>
+<span></span>
 <span><span class="va">hima_quantile.fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hima.html">hima</a></span><span class="op">(</span></span>
 <span>  <span class="va">Outcome</span> <span class="op">~</span> <span class="va">Treatment</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">Age</span>,</span>
-<span>  data.pheno <span class="op">=</span> <span class="va">QuantileData</span><span class="op">$</span><span class="va">PhenoData</span>,</span>
-<span>  data.M <span class="op">=</span> <span class="va">QuantileData</span><span class="op">$</span><span class="va">Mediator</span>,</span>
+<span>  data.pheno <span class="op">=</span> <span class="va">pheno_data</span>,</span>
+<span>  data.M <span class="op">=</span> <span class="va">mediator_data</span>,</span>
 <span>  mediator.type <span class="op">=</span> <span class="st">"gaussian"</span>,</span>
 <span>  quantile <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  penalty <span class="op">=</span> <span class="st">"MCP"</span>,</span>

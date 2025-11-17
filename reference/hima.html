@@ -9,7 +9,7 @@ hima can automatically select the appropriate HIMA method based on the outcome a
 
     <a class="navbar-brand me-2" href="../index.html">HIMA</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.3.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,11 +57,15 @@ hima can automatically select the appropriate HIMA method based on the outcome a
 <span>  penalty <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DBlasso"</span>, <span class="st">"MCP"</span>, <span class="st">"SCAD"</span>, <span class="st">"lasso"</span><span class="op">)</span>,</span>
 <span>  quantile <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  efficient <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  longitudinal <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  id.var <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  scale <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  sigcut <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>  contrast <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  subset <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  parallel <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  ncore <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -72,7 +76,9 @@ hima can automatically select the appropriate HIMA method based on the outcome a
 
 <dl><dt id="arg-formula">formula<a class="anchor" aria-label="anchor" href="#arg-formula"></a></dt>
 <dd><p>an object of class <code>formula</code> representing the overall effect model to be fitted, specified as <code>outcome ~ exposure + covariates</code>.
-The "exposure" variable (the variable of interest) must be listed first on the right-hand side of the formula.</p></dd>
+The "exposure" variable (the variable of interest) must be listed first on the right-hand side of the formula.
+For survival outcomes specified using <code>Surv()</code>, the exposure should be the first
+variable after the <code><a href="https://rdrr.io/r/base/tilde.html" class="external-link">~</a></code>.</p></dd>
 
 
 <dt id="arg-data-pheno">data.pheno<a class="anchor" aria-label="anchor" href="#arg-data-pheno"></a></dt>
@@ -107,6 +113,15 @@ HIMA can only be performed with <code>'DBlasso'</code>. Quantile HIMA and effici
 <code>mediator.type = 'gaussian'</code>.</p></dd>
 
 
+<dt id="arg-longitudinal">longitudinal<a class="anchor" aria-label="anchor" href="#arg-longitudinal"></a></dt>
+<dd><p>logical. Indicates whether to run the longitudinal survival mediation model <code>hima_survival_long</code> (requires a <code>Surv(tstart, tstop, status)</code> outcome).
+Default = <code>FALSE</code>.</p></dd>
+
+
+<dt id="arg-id-var">id.var<a class="anchor" aria-label="anchor" href="#arg-id-var"></a></dt>
+<dd><p>Character string specifying the column name in <code>data.pheno</code> that stores subject identifiers. Required when <code>longitudinal = TRUE</code>.</p></dd>
+
+
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>logical. Determines whether the function scales the data (exposure, mediators, and covariates). Default is <code>TRUE</code>. Note: For simulation studies, set
 <code>scale = FALSE</code> to avoid estimate compression (i.e., shrinkage of estimates toward zero due to scaling).</p></dd>
@@ -128,6 +143,14 @@ HIMA can only be performed with <code>'DBlasso'</code>. Quantile HIMA and effici
 <dd><p>logical. Determines whether the function displays progress messages. Default is <code>FALSE</code>.</p></dd>
 
 
+<dt id="arg-parallel">parallel<a class="anchor" aria-label="anchor" href="#arg-parallel"></a></dt>
+<dd><p>logical. Enable parallel computing feature? Default = <code>FALSE</code>.</p></dd>
+
+
+<dt id="arg-ncore">ncore<a class="anchor" aria-label="anchor" href="#arg-ncore"></a></dt>
+<dd><p>number of cores to run parallel computing Valid when <code>parallel = TRUE</code>.</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>reserved passing parameter (or for future use).</p></dd>
 
@@ -146,8 +169,8 @@ HIMA can only be performed with <code>'DBlasso'</code>. Quantile HIMA and effici
     <dt>alpha*beta: </dt>
 <dd><p>The estimated indirect (mediation) effect of exposure on outcome through each mediator.</p></dd>
 
-    <dt>Relative Importance: </dt>
-<dd><p>The proportion of each mediator's mediation effect relative to the sum of the absolute mediation effects of all significant mediators.</p></dd>
+    <dt>rimp: </dt>
+<dd><p>Relative importance- the proportion of each mediator's mediation effect relative to the sum of the absolute mediation effects of all significant mediators.</p></dd>
 
     <dt>p-value: </dt>
 <dd><p>The joint p-value assessing the significance of each mediator's indirect effect, calculated based on the corresponding statistical approach.</p></dd>
@@ -159,21 +182,24 @@ HIMA can only be performed with <code>'DBlasso'</code>. Quantile HIMA and effici
 </dl></div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
-    <p>1. Zhang H, Zheng Y, Zhang Z, Gao T, Joyce B, Yoon G, Zhang W, Schwartz J, Just A, Colicino E, Vokonas P, Zhao L,
+    <p>1. Zhang H, Zheng Y, Hou L, Liu L, HIMA: An R Package for High-Dimensional Mediation Analysis. Journal of Data Science. 2025. DOI: 10.6339/25-JDS1192</p>
+<p>2. Zhang H, Zheng Y, Zhang Z, Gao T, Joyce B, Yoon G, Zhang W, Schwartz J, Just A, Colicino E, Vokonas P, Zhao L,
 Lv J, Baccarelli A, Hou L, Liu L. Estimating and Testing High-dimensional Mediation Effects in Epigenetic Studies.
 Bioinformatics. 2016. DOI: 10.1093/bioinformatics/btw351. PMID: 27357171; PMCID: PMC5048064</p>
-<p>2. Zhang H, Zheng Y, Hou L, Zheng C, Liu L. Mediation Analysis for Survival Data with High-Dimensional Mediators.
+<p>3. Zhang H, Zheng Y, Hou L, Zheng C, Liu L. Mediation Analysis for Survival Data with High-Dimensional Mediators.
 Bioinformatics. 2021. DOI: 10.1093/bioinformatics/btab564. PMID: 34343267; PMCID: PMC8570823</p>
-<p>3. Zhang H, Chen J, Feng Y, Wang C, Li H, Liu L. Mediation Effect Selection in High-dimensional and Compositional Microbiome data.
+<p>4. Zhang H, Chen J, Feng Y, Wang C, Li H, Liu L. Mediation Effect Selection in High-dimensional and Compositional Microbiome data.
 Stat Med. 2021. DOI: 10.1002/sim.8808. PMID: 33205470; PMCID: PMC7855955</p>
-<p>4. Zhang H, Chen J, Li Z, Liu L. Testing for Mediation Effect with Application to Human Microbiome Data.
+<p>5. Zhang H, Chen J, Li Z, Liu L. Testing for Mediation Effect with Application to Human Microbiome Data.
 Stat Biosci. 2021. DOI: 10.1007/s12561-019-09253-3. PMID: 34093887; PMCID: PMC8177450</p>
-<p>5. Perera C, Zhang H, Zheng Y, Hou L, Qu A, Zheng C, Xie K, Liu L. HIMA2: High-dimensional Mediation Analysis and Its Application in
+<p>6. Perera C, Zhang H, Zheng Y, Hou L, Qu A, Zheng C, Xie K, Liu L. HIMA2: High-dimensional Mediation Analysis and Its Application in
 Epigenome-wide DNA Methylation Data. BMC Bioinformatics. 2022. DOI: 10.1186/s12859-022-04748-1. PMID: 35879655; PMCID: PMC9310002</p>
-<p>6. Zhang H, Hong X, Zheng Y, Hou L, Zheng C, Wang X, Liu L. High-Dimensional Quantile Mediation Analysis with Application to a Birth
+<p>7. Zhang H, Hong X, Zheng Y, Hou L, Zheng C, Wang X, Liu L. High-Dimensional Quantile Mediation Analysis with Application to a Birth
 Cohort Study of Mother–Newborn Pairs. Bioinformatics. 2024. DOI: 10.1093/bioinformatics/btae055. PMID: 38290773; PMCID: PMC10873903</p>
-<p>7. Bai X, Zheng Y, Hou L, Zheng C, Liu L, Zhang H. An Efficient Testing Procedure for High-dimensional Mediators with FDR Control.
+<p>8. Bai X, Zheng Y, Hou L, Zheng C, Liu L, Zhang H. An Efficient Testing Procedure for High-dimensional Mediators with FDR Control.
 Statistics in Biosciences. 2024. DOI: 10.1007/s12561-024-09447-4.</p>
+<p>9. Liu L, Zhang H, Zheng Y, Gao T, Zheng C, Zhang K, Hou L, Liu L. High-dimensional mediation analysis for longitudinal mediators and
+survival outcomes. Briefings in Bioinformatics. 2025. DOI: 10.1093/bib/bbaf206. PMID: 40350699 PMCID: PMC12066418</p>
     </div>
 
     <div class="section level2">
@@ -182,76 +208,109 @@ Statistics in Biosciences. 2024. DOI: 10.1007/s12561-024-09447-4.</p>
 <span class="r-in"><span><span class="co"># Note: In the following examples, M1, M2, and M3 are true mediators.</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example 1 (continuous outcome - linear HIMA):</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ContinuousOutcome</span><span class="op">$</span><span class="va">PhenoData</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">ContinuousOutcome</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">pheno_data</span> <span class="op">&lt;-</span> <span class="va">ContinuousOutcome</span><span class="op">$</span><span class="va">PhenoData</span></span></span>
+<span class="r-in"><span><span class="va">mediator_data</span> <span class="op">&lt;-</span> <span class="va">ContinuousOutcome</span><span class="op">$</span><span class="va">Mediator</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">e1</span> <span class="op">&lt;-</span> <span class="fu">hima</span><span class="op">(</span><span class="va">Outcome</span> <span class="op">~</span> <span class="va">Treatment</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">Age</span>,</span></span>
-<span class="r-in"><span>  data.pheno <span class="op">=</span> <span class="va">ContinuousOutcome</span><span class="op">$</span><span class="va">PhenoData</span>,</span></span>
-<span class="r-in"><span>  data.M <span class="op">=</span> <span class="va">ContinuousOutcome</span><span class="op">$</span><span class="va">Mediator</span>,</span></span>
+<span class="r-in"><span>  data.pheno <span class="op">=</span> <span class="va">pheno_data</span>,</span></span>
+<span class="r-in"><span>  data.M <span class="op">=</span> <span class="va">mediator_data</span>,</span></span>
 <span class="r-in"><span>  mediator.type <span class="op">=</span> <span class="st">"gaussian"</span>,</span></span>
 <span class="r-in"><span>  penalty <span class="op">=</span> <span class="st">"MCP"</span>, <span class="co"># Can be "DBlasso" for hima_dblasso</span></span></span>
-<span class="r-in"><span>  scale <span class="op">=</span> <span class="cn">FALSE</span></span></span>
-<span class="r-in"><span><span class="op">)</span> <span class="co"># Disabled only for simulation data</span></span></span>
+<span class="r-in"><span>  scale <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co"># Disabled only for simulation data</span></span></span>
+<span class="r-in"><span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span> </span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">e1</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Efficient HIMA (only applicable to mediators and outcomes that are</span></span></span>
 <span class="r-in"><span><span class="co"># both continuous and normally distributed.)</span></span></span>
 <span class="r-in"><span><span class="va">e1e</span> <span class="op">&lt;-</span> <span class="fu">hima</span><span class="op">(</span><span class="va">Outcome</span> <span class="op">~</span> <span class="va">Treatment</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">Age</span>,</span></span>
-<span class="r-in"><span>  data.pheno <span class="op">=</span> <span class="va">ContinuousOutcome</span><span class="op">$</span><span class="va">PhenoData</span>,</span></span>
-<span class="r-in"><span>  data.M <span class="op">=</span> <span class="va">ContinuousOutcome</span><span class="op">$</span><span class="va">Mediator</span>,</span></span>
+<span class="r-in"><span>  data.pheno <span class="op">=</span> <span class="va">pheno_data</span>,</span></span>
+<span class="r-in"><span>  data.M <span class="op">=</span> <span class="va">mediator_data</span>,</span></span>
 <span class="r-in"><span>  mediator.type <span class="op">=</span> <span class="st">"gaussian"</span>,</span></span>
 <span class="r-in"><span>  efficient <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  penalty <span class="op">=</span> <span class="st">"MCP"</span>, <span class="co"># Efficient HIMA does not support DBlasso</span></span></span>
-<span class="r-in"><span>  scale <span class="op">=</span> <span class="cn">FALSE</span></span></span>
-<span class="r-in"><span><span class="op">)</span> <span class="co"># Disabled only for simulation data</span></span></span>
+<span class="r-in"><span>  scale <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co"># Disabled only for simulation data</span></span></span>
+<span class="r-in"><span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span> </span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">e1e</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example 2 (binary outcome - logistic HIMA):</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">BinaryOutcome</span><span class="op">$</span><span class="va">PhenoData</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">BinaryOutcome</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">pheno_data</span> <span class="op">&lt;-</span> <span class="va">BinaryOutcome</span><span class="op">$</span><span class="va">PhenoData</span></span></span>
+<span class="r-in"><span><span class="va">mediator_data</span> <span class="op">&lt;-</span> <span class="va">BinaryOutcome</span><span class="op">$</span><span class="va">Mediator</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">e2</span> <span class="op">&lt;-</span> <span class="fu">hima</span><span class="op">(</span><span class="va">Disease</span> <span class="op">~</span> <span class="va">Treatment</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">Age</span>,</span></span>
-<span class="r-in"><span>  data.pheno <span class="op">=</span> <span class="va">BinaryOutcome</span><span class="op">$</span><span class="va">PhenoData</span>,</span></span>
-<span class="r-in"><span>  data.M <span class="op">=</span> <span class="va">BinaryOutcome</span><span class="op">$</span><span class="va">Mediator</span>,</span></span>
+<span class="r-in"><span>  data.pheno <span class="op">=</span> <span class="va">pheno_data</span>,</span></span>
+<span class="r-in"><span>  data.M <span class="op">=</span> <span class="va">mediator_data</span>,</span></span>
 <span class="r-in"><span>  mediator.type <span class="op">=</span> <span class="st">"gaussian"</span>,</span></span>
 <span class="r-in"><span>  penalty <span class="op">=</span> <span class="st">"MCP"</span>,</span></span>
-<span class="r-in"><span>  scale <span class="op">=</span> <span class="cn">FALSE</span></span></span>
-<span class="r-in"><span><span class="op">)</span> <span class="co"># Disabled only for simulation data</span></span></span>
+<span class="r-in"><span>  scale <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co"># Disabled only for simulation data</span></span></span>
+<span class="r-in"><span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span> </span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">e2</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example 3 (time-to-event outcome - survival HIMA):</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">SurvivalData</span><span class="op">$</span><span class="va">PhenoData</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">SurvivalData</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">pheno_data</span> <span class="op">&lt;-</span> <span class="va">SurvivalData</span><span class="op">$</span><span class="va">PhenoData</span></span></span>
+<span class="r-in"><span><span class="va">mediator_data</span> <span class="op">&lt;-</span> <span class="va">SurvivalData</span><span class="op">$</span><span class="va">Mediator</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">e3</span> <span class="op">&lt;-</span> <span class="fu">hima</span><span class="op">(</span><span class="fu">Surv</span><span class="op">(</span><span class="va">Time</span>, <span class="va">Status</span><span class="op">)</span> <span class="op">~</span> <span class="va">Treatment</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">Age</span>,</span></span>
-<span class="r-in"><span>  data.pheno <span class="op">=</span> <span class="va">SurvivalData</span><span class="op">$</span><span class="va">PhenoData</span>,</span></span>
-<span class="r-in"><span>  data.M <span class="op">=</span> <span class="va">SurvivalData</span><span class="op">$</span><span class="va">Mediator</span>,</span></span>
+<span class="r-in"><span>  data.pheno <span class="op">=</span> <span class="va">pheno_data</span>,</span></span>
+<span class="r-in"><span>  data.M <span class="op">=</span> <span class="va">mediator_data</span>,</span></span>
 <span class="r-in"><span>  mediator.type <span class="op">=</span> <span class="st">"gaussian"</span>,</span></span>
 <span class="r-in"><span>  penalty <span class="op">=</span> <span class="st">"DBlasso"</span>,</span></span>
-<span class="r-in"><span>  scale <span class="op">=</span> <span class="cn">FALSE</span></span></span>
-<span class="r-in"><span><span class="op">)</span> <span class="co"># Disabled only for simulation data</span></span></span>
+<span class="r-in"><span>  scale <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co"># Disabled only for simulation data</span></span></span>
+<span class="r-in"><span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span> <span class="co"># Parallel computing feature is recommended</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">e3</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Longitudinal mediator + survival HIMA:</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">SurvivalLongData</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">pheno_data</span> <span class="op">&lt;-</span> <span class="va">SurvivalLongData</span><span class="op">$</span><span class="va">PhenoData</span></span></span>
+<span class="r-in"><span><span class="va">mediator_data</span> <span class="op">&lt;-</span> <span class="va">SurvivalLongData</span><span class="op">$</span><span class="va">Mediator</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">e3long</span> <span class="op">&lt;-</span> <span class="fu">hima</span><span class="op">(</span><span class="fu">Surv</span><span class="op">(</span><span class="va">Tstart</span>, <span class="va">Tstop</span>, <span class="va">Status</span><span class="op">)</span> <span class="op">~</span> <span class="va">Treatment</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">Age</span>,</span></span>
+<span class="r-in"><span>  data.pheno <span class="op">=</span> <span class="va">pheno_data</span>,</span></span>
+<span class="r-in"><span>  data.M <span class="op">=</span> <span class="va">mediator_data</span>,</span></span>
+<span class="r-in"><span>  mediator.type <span class="op">=</span> <span class="st">"gaussian"</span>,</span></span>
+<span class="r-in"><span>  penalty <span class="op">=</span> <span class="st">"lasso"</span>,</span></span>
+<span class="r-in"><span>  longitudinal <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>  id.var <span class="op">=</span> <span class="st">"ID"</span>,</span></span>
+<span class="r-in"><span>  scale <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co"># Disabled only for simulation data</span></span></span>
+<span class="r-in"><span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span> <span class="co"># Parallel computing feature is recommended</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">e3long</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example 4 (compositional data as mediator, e.g., microbiome):</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">MicrobiomeData</span><span class="op">$</span><span class="va">PhenoData</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">MicrobiomeData</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">pheno_data</span> <span class="op">&lt;-</span> <span class="va">MicrobiomeData</span><span class="op">$</span><span class="va">PhenoData</span></span></span>
+<span class="r-in"><span><span class="va">mediator_data</span> <span class="op">&lt;-</span> <span class="va">MicrobiomeData</span><span class="op">$</span><span class="va">Mediator</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">e4</span> <span class="op">&lt;-</span> <span class="fu">hima</span><span class="op">(</span><span class="va">Outcome</span> <span class="op">~</span> <span class="va">Treatment</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">Age</span>,</span></span>
-<span class="r-in"><span>  data.pheno <span class="op">=</span> <span class="va">MicrobiomeData</span><span class="op">$</span><span class="va">PhenoData</span>,</span></span>
-<span class="r-in"><span>  data.M <span class="op">=</span> <span class="va">MicrobiomeData</span><span class="op">$</span><span class="va">Mediator</span>,</span></span>
+<span class="r-in"><span>  data.pheno <span class="op">=</span> <span class="va">pheno_data</span>,</span></span>
+<span class="r-in"><span>  data.M <span class="op">=</span> <span class="va">mediator_data</span>,</span></span>
 <span class="r-in"><span>  mediator.type <span class="op">=</span> <span class="st">"compositional"</span>,</span></span>
-<span class="r-in"><span>  penalty <span class="op">=</span> <span class="st">"DBlasso"</span></span></span>
+<span class="r-in"><span>  penalty <span class="op">=</span> <span class="st">"DBlasso"</span>,</span></span>
+<span class="r-in"><span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span></span>
 <span class="r-in"><span><span class="op">)</span> <span class="co"># Scaling is always enabled internally for hima_microbiome</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">e4</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#' # Example 5 (quantile mediation anlaysis - quantile HIMA):</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">QuantileData</span><span class="op">$</span><span class="va">PhenoData</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">#' # Example 5 (quantile mediation analysis - quantile HIMA):</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">QuantileData</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">pheno_data</span> <span class="op">&lt;-</span> <span class="va">QuantileData</span><span class="op">$</span><span class="va">PhenoData</span></span></span>
+<span class="r-in"><span><span class="va">mediator_data</span> <span class="op">&lt;-</span> <span class="va">QuantileData</span><span class="op">$</span><span class="va">Mediator</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Note that the function will prompt input for quantile level.</span></span></span>
 <span class="r-in"><span><span class="va">e5</span> <span class="op">&lt;-</span> <span class="fu">hima</span><span class="op">(</span><span class="va">Outcome</span> <span class="op">~</span> <span class="va">Treatment</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">Age</span>,</span></span>
-<span class="r-in"><span>  data.pheno <span class="op">=</span> <span class="va">QuantileData</span><span class="op">$</span><span class="va">PhenoData</span>,</span></span>
-<span class="r-in"><span>  data.M <span class="op">=</span> <span class="va">QuantileData</span><span class="op">$</span><span class="va">Mediator</span>,</span></span>
+<span class="r-in"><span>  data.pheno <span class="op">=</span> <span class="va">pheno_data</span>,</span></span>
+<span class="r-in"><span>  data.M <span class="op">=</span> <span class="va">mediator_data</span>,</span></span>
 <span class="r-in"><span>  mediator.type <span class="op">=</span> <span class="st">"gaussian"</span>,</span></span>
 <span class="r-in"><span>  quantile <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  penalty <span class="op">=</span> <span class="st">"MCP"</span>, <span class="co"># Quantile HIMA does not support DBlasso</span></span></span>
 <span class="r-in"><span>  scale <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co"># Disabled only for simulation data</span></span></span>
-<span class="r-in"><span>  tau <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">0.5</span>, <span class="fl">0.7</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  tau <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">0.5</span>, <span class="fl">0.7</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span></span>
 <span class="r-in"><span><span class="op">)</span> <span class="co"># Specify multiple quantile level</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">e5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>

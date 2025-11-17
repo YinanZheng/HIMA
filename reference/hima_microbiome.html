@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">HIMA</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.3.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,7 +46,16 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">hima_microbiome</span><span class="op">(</span><span class="va">X</span>, <span class="va">OTU</span>, <span class="va">Y</span>, COV <span class="op">=</span> <span class="cn">NULL</span>, FDRcut <span class="op">=</span> <span class="fl">0.05</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">hima_microbiome</span><span class="op">(</span></span>
+<span>  <span class="va">X</span>,</span>
+<span>  <span class="va">OTU</span>,</span>
+<span>  <span class="va">Y</span>,</span>
+<span>  COV <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  FDRcut <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  parallel <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  ncore <span class="op">=</span> <span class="fl">1</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -77,6 +86,14 @@ microbiome variables. Can be <code>NULL</code>.</p></dd>
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
 <dd><p>logical. Should the function be verbose? Default = <code>FALSE</code>.</p></dd>
+
+
+<dt id="arg-parallel">parallel<a class="anchor" aria-label="anchor" href="#arg-parallel"></a></dt>
+<dd><p>logical. Enable parallel computing feature? Default = <code>FALSE</code>.</p></dd>
+
+
+<dt id="arg-ncore">ncore<a class="anchor" aria-label="anchor" href="#arg-ncore"></a></dt>
+<dd><p>number of cores to run parallel computing Valid when <code>parallel = TRUE</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -120,13 +137,15 @@ Stat Biosci. 2021. DOI: 10.1007/s12561-019-09253-3. PMID: 34093887; PMCID: PMC81
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="co"># Note: In the following example, M1, M2, and M3 are true mediators.</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">MicrobiomeData</span><span class="op">$</span><span class="va">PhenoData</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">MicrobiomeData</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">pheno_data</span> <span class="op">&lt;-</span> <span class="va">MicrobiomeData</span><span class="op">$</span><span class="va">PhenoData</span></span></span>
+<span class="r-in"><span><span class="va">mediator_data</span> <span class="op">&lt;-</span> <span class="va">MicrobiomeData</span><span class="op">$</span><span class="va">Mediator</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">hima_microbiome.fit</span> <span class="op">&lt;-</span> <span class="fu">hima_microbiome</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  X <span class="op">=</span> <span class="va">MicrobiomeData</span><span class="op">$</span><span class="va">PhenoData</span><span class="op">$</span><span class="va">Treatment</span>,</span></span>
-<span class="r-in"><span>  Y <span class="op">=</span> <span class="va">MicrobiomeData</span><span class="op">$</span><span class="va">PhenoData</span><span class="op">$</span><span class="va">Outcome</span>,</span></span>
-<span class="r-in"><span>  OTU <span class="op">=</span> <span class="va">MicrobiomeData</span><span class="op">$</span><span class="va">Mediator</span>,</span></span>
-<span class="r-in"><span>  COV <span class="op">=</span> <span class="va">MicrobiomeData</span><span class="op">$</span><span class="va">PhenoData</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Sex"</span>, <span class="st">"Age"</span><span class="op">)</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>  X <span class="op">=</span> <span class="va">pheno_data</span><span class="op">$</span><span class="va">Treatment</span>,</span></span>
+<span class="r-in"><span>  Y <span class="op">=</span> <span class="va">pheno_data</span><span class="op">$</span><span class="va">Outcome</span>,</span></span>
+<span class="r-in"><span>  OTU <span class="op">=</span> <span class="va">mediator_data</span>,</span></span>
+<span class="r-in"><span>  COV <span class="op">=</span> <span class="va">pheno_data</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Sex"</span>, <span class="st">"Age"</span><span class="op">)</span><span class="op">]</span>,</span></span>
 <span class="r-in"><span>  FDRcut <span class="op">=</span> <span class="fl">0.05</span>,</span></span>
 <span class="r-in"><span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>

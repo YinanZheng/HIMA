@@ -1,0 +1,13 @@
+data(BinaryOutcome)
+pheno_data <- BinaryOutcome$PhenoData
+mediator_data <- BinaryOutcome$Mediator
+
+e2 <- hima(Disease ~ Treatment + Sex + Age,
+  data.pheno = pheno_data,
+  data.M = mediator_data,
+  mediator.type = "gaussian",
+  penalty = "MCP",
+  scale = FALSE, # Disabled only for simulation data
+  verbose = TRUE
+)
+summary(e2)

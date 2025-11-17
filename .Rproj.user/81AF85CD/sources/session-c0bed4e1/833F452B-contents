@@ -1,0 +1,15 @@
+data(SurvivalLongData)
+pheno_data <- SurvivalLongData$PhenoData
+mediator_data <- SurvivalLongData$Mediator
+
+e3long <- hima(Surv(Tstart, Tstop, Status) ~ Treatment + Sex + Age,
+  data.pheno = pheno_data,
+  data.M = mediator_data,
+  mediator.type = "gaussian",
+  penalty = "MCP",
+  longitudinal = TRUE,
+  id.var = "ID",
+  scale = FALSE, # Disabled only for simulation data
+  verbose = TRUE
+) # Parallel computing feature is recommended
+summary(e3long)
