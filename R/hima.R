@@ -145,6 +145,7 @@
 #'   data.pheno = pheno_data,
 #'   data.M = mediator_data,
 #'   mediator.type = "gaussian",
+#'   penalty = "lasso",
 #'   longitudinal = TRUE,
 #'   id.var = "ID",
 #'   scale = FALSE, # Disabled only for simulation data
@@ -310,8 +311,8 @@ hima <- function(formula,
   
   ######
   
-  # hima_efficient / hima_quantile
-  if (efficient || quantile) {
+  # hima_efficient / hima_quantile / hima_survival_long
+  if (efficient || quantile || longitudinal) {
     if (efficient) {
       if (penalty != "MCP") {
         if (verbose) message("Note: Efficient HIMA works best with 'MCP' penalty. Switching penalty to 'MCP'...")
@@ -320,7 +321,6 @@ hima <- function(formula,
       if (d$type != "continuous" || mediator.type != "gaussian") {
         stop("Efficient HIMA is only applicable to mediators and outcomes that are BOTH continuous and normally distributed.")
       }
-      
       res <- hima_efficient(
         X = d$X,
         M = data.M,
@@ -333,7 +333,6 @@ hima <- function(formula,
         parallel = parallel,
         ncore = ncore
       )
-      
       results <- .res_prep(res, method_text = "DACT method with BH-FDR", sigcut = sigcut)
     }
     
@@ -342,9 +341,6 @@ hima <- function(formula,
       if (d$type != "continuous" || mediator.type != "gaussian") {
         stop("Quantile HIMA is only applicable to mediators and outcomes that are BOTH continuous and normally distributed.")
       }
-      
-      # tau <- readline(prompt = "Enter quantile level(s) (between 0-1, multiple values accepted): ")
-      # tau <- eval(parse(text = paste0("c(", tau, ")")))
       res <- hima_quantile(
         X = d$X,
         M = data.M,
@@ -359,11 +355,29 @@ hima <- function(formula,
         ncore = ncore,
         ...
       )
-      
       results <- .res_prep(res, method_text = "Bonferroni-adjusted p", sigcut = sigcut, q = TRUE)
     }
-  } else { # If not hima_efficient AND not hima_quantile
-    # DBlasso
+    
+    if (longitudinal) {
+      if (verbose) message("Running longitudinal survival HIMA with L1-penalized Cox lasso...")
+      res <- hima_survival_long(
+        X = d$X,
+        M = data.M,
+        tstart = d$Y$tstart,
+        tstop = d$Y$tstop,
+        status = d$Y$status,
+        id = id_vec,
+        COV = d$COV,
+        topN = NULL,
+        Bonfcut = sigcut,
+        verbose = verbose,
+        parallel = parallel,
+        ncore = ncore
+      )
+      results <- .res_prep(res, method_text = "Bonferroni-adjusted p", sigcut = sigcut)
+    }
+  } else { # If not hima_efficient AND not hima_quantile AND not hima_survival_long
+    
     if (penalty == "DBlasso") {
       if (d$type == "continuous") {
         if (mediator.type == "gaussian") {
@@ -380,7 +394,6 @@ hima <- function(formula,
             parallel = parallel,
             ncore = ncore
           )
-          
           results <- .res_prep(res, method_text = "HDMT pointwise FDR", sigcut = sigcut)
         } else if (mediator.type == "compositional") {
           if (verbose) message("Running compositional HIMA with de-biased Lasso penalty...")
@@ -394,47 +407,25 @@ hima <- function(formula,
             parallel = parallel,
             ncore = ncore
           )
-          
           results <- .res_prep(res, method_text = "Hommel FDR", sigcut = sigcut)
         }
       } else if (d$type == "survival") {
-        if (longitudinal) {
-          if (verbose) message("Running longitudinal survival HIMA with L1-penalized Cox Lasso...")
-          res <- hima_survival_long(
-            X = d$X,
-            M = data.M,
-            tstart = d$Y$tstart,
-            tstop = d$Y$tstop,
-            status = d$Y$status,
-            id = id_vec,
-            COV = d$COV,
-            topN = NULL,
-            Bonfcut = sigcut,
-            verbose = verbose,
-            parallel = parallel,
-            ncore = ncore
-          )
-          method_text <- "Bonferroni-adjusted p"
-        } else {
-          if (verbose) message("Running survival HIMA with de-biased Lasso...")
-          res <- hima_survival(
-            X = d$X,
-            M = data.M,
-            OT = d$Y$OT,
-            status = d$Y$status,
-            COV = d$COV,
-            topN = NULL,
-            scale = scale,
-            FDRcut = sigcut,
-            verbose = verbose,
-            parallel = parallel,
-            ncore = ncore
-          )
-          method_text <- "HDMT pointwise FDR"
-        }
-        
-        results <- .res_prep(res, method_text = method_text, sigcut = sigcut)
+        if (verbose) message("Running survival HIMA with de-biased Lasso penalty...")
+        res <- hima_survival(
+          X = d$X,
+          M = data.M,
+          OT = d$Y$OT,
+          status = d$Y$status,
+          COV = d$COV,
+          topN = NULL,
+          scale = scale,
+          FDRcut = sigcut,
+          verbose = verbose,
+          parallel = parallel,
+          ncore = ncore
+        )
       }
+      results <- .res_prep(res, method_text = "HDMT pointwise FDR", sigcut = sigcut)
     } else { # If penalty is not DBlasso
       res <- hima_classic(
         X = d$X,
@@ -451,7 +442,6 @@ hima <- function(formula,
         parallel = parallel,
         ncore = ncore
       )
-      
       results <- .res_prep(res, method_text = "Bonferroni-adjusted p", sigcut = sigcut)
     }
   }

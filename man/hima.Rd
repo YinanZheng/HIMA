@@ -159,6 +159,7 @@ e3long <- hima(Surv(Tstart, Tstop, Status) ~ Treatment + Sex + Age,
   data.pheno = pheno_data,
   data.M = mediator_data,
   mediator.type = "gaussian",
+  penalty = "lasso",
   longitudinal = TRUE,
   id.var = "ID",
   scale = FALSE, # Disabled only for simulation data
