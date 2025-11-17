@@ -1,7 +1,0 @@
-"0","knitr::opts_chunk$set("
-"0","  collapse = TRUE,"
-"0","  comment = ""#>"","
-"0","  eval = FALSE,"
-"0","  echo = TRUE # Ensures all code is displayed by default"
-"0",")"
-"0","library(HIMA)"

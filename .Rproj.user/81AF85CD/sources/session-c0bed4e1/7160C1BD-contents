@@ -1,9 +1,0 @@
-e1 <- hima(Outcome ~ Treatment,
-  data.pheno = pheno_data,
-  data.M = mediator_data,
-  mediator.type = "gaussian",
-  penalty = "MCP", # Can be "DBlasso" for hima_dblasso
-  scale = FALSE, # Disabled only for simulation data
-  verbose = TRUE
-)
-summary(e1)
