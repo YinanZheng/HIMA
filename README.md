@@ -55,4 +55,4 @@ Explore the tutorial for the `HIMA` package, which provides detailed usage examp
 
 Yinan Zheng 
 
-Email: y-zheng@northwestern.edu / yinan.zheng@abbvie.come
+Email: y-zheng@northwestern.edu / yinan.zheng@abbvie.com
