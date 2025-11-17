@@ -244,15 +244,24 @@ hima <- function(formula,
   # extract data from formula and input dataset
   d <- .f_extract(data.pheno = data.pheno, f = formula)
   
-  if (d$type == "categorical") stop("Currently HIMA does not support categorical outcome.")
+  # check mutually exclusive analysis modes
+  mode_flags <- c(
+    efficient   = isTRUE(efficient),
+    quantile    = isTRUE(quantile),
+    longitudinal = isTRUE(longitudinal)
+  )
+  if (sum(mode_flags) > 1L) {
+    stop("Arguments 'efficient', 'quantile', and 'longitudinal' are mutually exclusive; please set at most one of them to TRUE.")
+  }
   
-  if (efficient && quantile) stop("Cannot have both 'efficient' and 'quantile' set to TRUE simultaneously.")
+  if (d$type == "categorical") stop("Currently HIMA does not support categorical outcome.")
   
   if (longitudinal && d$type != "survival") {
     stop("Longitudinal mediation is only available for survival outcomes specified via Surv().")
   }
   
   id_vec <- NULL
+  
   if (longitudinal) {
     if (is.null(d$Y$tstart) || is.null(d$Y$tstop)) {
       stop("Please specify the survival outcome as Surv(tstart, tstop, status) when longitudinal = TRUE.")
@@ -269,19 +278,25 @@ hima <- function(formula,
   mediator.type <- match.arg(mediator.type)
   penalty <- match.arg(penalty)
   
+  # Longitudinal: penalty must be lasso
+  if (longitudinal && penalty != "lasso") {
+    if (verbose) message("Note: For longitudinal survival mediation, only 'lasso' penalty is supported. \nSwitching to 'lasso' ...")
+    penalty <- "lasso"
+  }
+  
   if (sigcut > 1) sigcut <- 1
   
   if (is.null(colnames(data.M))) colnames(data.M) <- seq_len(ncol(data.M))
   
   # Conditions where 'DBlasso' is not applicable
-  invalid_dblasso <- efficient || quantile || d$type == "binary" || mediator.type == "negbin"
+  invalid_dblasso <- efficient || quantile || longitudinal || d$type == "binary" || mediator.type == "negbin"
   
   # Conditions where 'DBlasso' must be used
-  require_dblasso <- d$type == "survival" || mediator.type == "compositional"
+  require_dblasso <- (!longitudinal) && (d$type == "survival" || mediator.type == "compositional")
   
   # Check for conflicting conditions
   if (invalid_dblasso && require_dblasso) {
-    stop("Conflicting conditions: Cannot determine appropriate penalty under the \ncurrent settings.")
+    stop("Conflicting conditions: Cannot determine appropriate penalty under the current settings.")
   }
   
   # Adjust 'penalty' based on the conditions
@@ -303,7 +318,7 @@ hima <- function(formula,
       }
       if (verbose) message("Running efficient HIMA with 'MCP' penalty...")
       if (d$type != "continuous" || mediator.type != "gaussian") {
-        stop("Efficient HIMA is only applicable to mediators and outcomes that are BOTH \ncontinuous and normally distributed.")
+        stop("Efficient HIMA is only applicable to mediators and outcomes that are BOTH continuous and normally distributed.")
       }
       
       res <- hima_efficient(
@@ -325,7 +340,7 @@ hima <- function(formula,
     if (quantile) {
       if (verbose) message("Running quantile HIMA with ", penalty, " penalty...")
       if (d$type != "continuous" || mediator.type != "gaussian") {
-        stop("Quantile HIMA is only applicable to mediators and outcomes that are BOTH \ncontinuous and normally distributed.")
+        stop("Quantile HIMA is only applicable to mediators and outcomes that are BOTH continuous and normally distributed.")
       }
       
       # tau <- readline(prompt = "Enter quantile level(s) (between 0-1, multiple values accepted): ")
@@ -557,7 +572,7 @@ summary.hima <- function(object, desc = FALSE, ...) {
 .convert_to_dummies <- function(df) {
   char_cols <- sapply(df, is.character)
   df[char_cols] <- lapply(df[char_cols], as.factor)
-  df_dummies <- as.data.frame(model.matrix(~ . - 1, data = df))
+  df_dummies <- as.data.frame(model.matrix(~ . - 1, data = df, na.action = na.pass))
   non_char_cols <- names(df)[!char_cols]
   df_dummies[non_char_cols] <- df[non_char_cols]
   return(df_dummies)
@@ -673,7 +688,7 @@ hima2 <- function(formula,
   outcome.family <- match.arg(outcome.family)
   if (outcome.family == "quantile") quantile <- TRUE else quantile <- FALSE
   if (!missing(outcome.family)) {
-    warning("'outcome.family' is deprecated. The outcome data type can now be \nautomatically recognized.")
+    warning("'outcome.family' is deprecated. The outcome data type can now be automatically recognized.")
   }
   
   mediator.type <- match.arg(mediator.family)
