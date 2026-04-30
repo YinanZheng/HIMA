@@ -222,7 +222,7 @@ hima_classic <- function(X, M, Y, COV.XM = NULL, COV.MY = COV.XM,
       if (verbose) message("    Estimating alpha (effect of X on M): ", appendLF = FALSE)
       alpha <- himasis(NA, M[, ID_test, drop = FALSE], X, COV.XM,
         glm.family = M.type,
-        modelstatement = "Mone ~ X", parallel = FALSE, ncore = ncore,
+        modelstatement = "Mone ~ X", parallel = parallel, ncore = ncore,
         verbose, tag = paste0("site-by-site alpha estimation (M ~ X + COV.XM, family: ", M.type, ")")
       )
     } else {
