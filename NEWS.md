@@ -1,3 +1,7 @@
+# HIMA 2.3.4 (2026-08-30)
+* Implemented native de-biased LASSO inference routine (`dlasso_proj`) using `glmnet`, removing dependency on the archived `hdi` package.
+* Code optimization, test coverage enhancement, and bug fixes for CRAN re-submission.
+
 # HIMA 2.3.3 (2025-11-17)
 * Added longitudinal mediation data with survival outcome support via `hima_survival_long` and the `hima` wrapper.
 * Code optimization and bug fixes.

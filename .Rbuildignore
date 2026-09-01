@@ -2,3 +2,6 @@
 ^\.Rproj\.user$
 ^doc$
 ^Meta$
+^tutorials$
+^cran-comments\.md$
+

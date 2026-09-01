@@ -7,7 +7,7 @@
 #' HIMA can also handle survival data mediation analysis and perform quantile mediation analysis.
 #'
 #' \tabular{ll}{ Package: \tab HIMA\cr Type: \tab Package\cr
-#' Version: \tab 2.3.3\cr Date: \tab 2025-11-17\cr License: \tab GPL-3\cr }
+#' Version: \tab 2.3.4\cr Date: \tab 2026-08-30\cr License: \tab GPL-3\cr }
 #'
 #' @name HIMA-package
 #'
@@ -64,7 +64,6 @@
 #' @importFrom foreach foreach %dopar% registerDoSEQ getDoParWorkers
 #' @importFrom doParallel registerDoParallel
 #' @importFrom HDMT fdr_est
-#' @importFrom hdi lasso.proj
 #' @importFrom conquer conquer.cv.reg
 #' @importFrom quantreg rq
 #' @importFrom survival Surv coxph
@@ -73,5 +72,5 @@
 #' @importFrom nlme lme lmeControl
 #' 
 if (getRversion() >= "2.15.1") {
-  utils::globalVariables(c("i", "k"))
+  utils::globalVariables(c("i", "j", "k"))
 }

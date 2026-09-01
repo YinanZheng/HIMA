@@ -153,15 +153,15 @@ hima_dblasso <- function(X, M, Y, COV = NULL,
   beta_DLASSO_SIS_SE <- matrix(0, 1, d)
   MZX_SIS <- MZX[, c(ID_SIS, (p + 1):(p + q + 1))]
 
-  DLASSO_fit <- suppressMessages(hdi::lasso.proj(
+  DLASSO_fit <- dlasso_proj(
     x = MZX_SIS,
     y = Y,
-    family = "gaussian",
+    standardize = TRUE,
     parallel = parallel,
-    ncores = ncore
-  ))
+    ncore = ncore
+  )
   beta_DLASSO_SIS_est <- DLASSO_fit$bhat[1:d]
-  beta_DLASSO_SIS_SE <- DLASSO_fit$se
+  beta_DLASSO_SIS_SE <- DLASSO_fit$se[1:d]
   P_beta_SIS  <- as.numeric(DLASSO_fit$pval[1:d])
 
   ################### Estimate alpha ################

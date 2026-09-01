@@ -436,3 +436,70 @@ DACT <- function(p_a, p_b) {
   
   list(mu = uhat, s = shat)
 }
+
+
+# Internal function: dlasso_proj
+# High-dimensional de-biased LASSO inference for linear models
+# Native replacement for hdi::lasso.proj
+
+dlasso_proj <- function(x, y, standardize = TRUE, parallel = FALSE, ncore = 1) {
+  n <- nrow(x)
+  p <- ncol(x)
+  
+  if (standardize) {
+    sds <- apply(x, 2, stats::sd)
+    sds[sds == 0] <- 1
+    x_scaled <- scale(x, center = TRUE, scale = sds)
+  } else {
+    sds <- rep(1, p)
+    x_scaled <- scale(x, center = TRUE, scale = FALSE)
+  }
+  y_centered <- as.numeric(scale(y, center = TRUE, scale = FALSE))
+  
+  # Initial Lasso fit
+  fit_init <- glmnet::cv.glmnet(x_scaled, y_centered)
+  lambda_init <- fit_init$lambda.1se
+  betalasso <- as.vector(stats::coef(fit_init, s = lambda_init))[-1]
+  res_init <- y_centered - stats::predict(fit_init, newx = x_scaled, s = lambda_init)
+  df_resid <- n - sum(betalasso != 0)
+  if (df_resid <= 0) df_resid <- 1
+  sigmahat <- sqrt(sum(res_init^2) / df_resid)
+  
+  # Nodewise LASSO regressions to construct projection matrix Z
+  if (parallel && (ncore > 1)) {
+    Z <- foreach(j = seq_len(p), .combine = "cbind") %dopar% {
+      fit_node <- glmnet::cv.glmnet(x_scaled[, -j, drop = FALSE], x_scaled[, j])
+      pred_node <- stats::predict(fit_node, newx = x_scaled[, -j, drop = FALSE], s = fit_node$lambda.min)
+      zj <- x_scaled[, j] - pred_node
+      scale_factor <- as.numeric(crossprod(zj, x_scaled[, j])) / n
+      if (abs(scale_factor) < 1e-10) scale_factor <- 1e-10
+      zj / scale_factor
+    }
+  } else {
+    Z <- matrix(0, nrow = n, ncol = p)
+    for (j in seq_len(p)) {
+      fit_node <- glmnet::cv.glmnet(x_scaled[, -j, drop = FALSE], x_scaled[, j])
+      pred_node <- stats::predict(fit_node, newx = x_scaled[, -j, drop = FALSE], s = fit_node$lambda.min)
+      zj <- x_scaled[, j] - pred_node
+      scale_factor <- as.numeric(crossprod(zj, x_scaled[, j])) / n
+      if (abs(scale_factor) < 1e-10) scale_factor <- 1e-10
+      Z[, j] <- zj / scale_factor
+    }
+  }
+  
+  # De-sparsified (de-biased) Lasso estimator
+  bproj <- betalasso + as.vector(crossprod(Z, y_centered - x_scaled %*% betalasso)) / n
+  
+  # Standard errors
+  se <- (sigmahat * sqrt(colSums(Z^2))) / n
+  
+  # Rescale back to original scale
+  bhat <- bproj / sds
+  se_out <- se / sds
+  pval <- 2 * stats::pnorm(abs(bproj / se), lower.tail = FALSE)
+  
+  names(bhat) <- names(se_out) <- names(pval) <- colnames(x)
+  
+  list(bhat = bhat, se = se_out, pval = pval)
+}
+
